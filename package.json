@@ -1,0 +1,36 @@
+{
+  "name": "j-collection-ai-concierge",
+  "version": "1.0.0",
+  "description": "J Collection AI Concierge - Milestone 0 Data Foundation & Invariants",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:live": "node -e \"process.env.RUN_REAL_API_TESTS='true'; const { spawnSync } = require('child_process'); spawnSync('npx', ['vitest', 'run', 'tests/real-api-live-verification.test.ts', 'tests/free-api-smoke.test.ts'], { stdio: 'inherit', shell: true, env: process.env });\"",
+    "test:watch": "vitest",
+    "benchmark": "node dist/benchmark/search-benchmark.js",
+    "chat": "node dist/demo/chat-cli.js",
+    "dashboard": "node dist/demo/dashboard-demo.js",
+    "dashboard:demo": "node dist/demo/dashboard-demo.js"
+  },
+  "keywords": [
+    "j-collection",
+    "ai-concierge",
+    "milestone-0",
+    "hotel",
+    "data-foundation"
+  ],
+  "author": "Antigravity AI Architecture Team",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "playwright": "^1.65.1",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  },
+  "dependencies": {
+    "zod": "^3.24.2"
+  }
+}

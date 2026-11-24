@@ -1,0 +1,1284 @@
+{
+  "nguon": "https://www.bookphong.com (trích nguyên văn ngày 06/11/2026)",
+  "ghi_chu_website": [
+    "Giá “Từ” là giá tham khảo. Giá chính xác theo ngày/giờ khi đặt phòng.",
+    "Giá có thể thay đổi theo ngày và khung giờ. Giá chính xác được xác nhận khi đặt phòng."
+  ],
+  "quy_dinh": {
+    "nguon": "Chủ cơ sở cung cấp (website bookphong.com không đăng quy định)",
+    "gio_luu_tru": {
+      "nghi_gio": "Giá áp dụng cho 2 giờ đầu (theo website)",
+      "qua_dem": "Từ 22h đến 12h hôm sau",
+      "ngay_dem": "Từ 14h đến 12h hôm sau"
+    },
+    "phu_thu_gio": "Quá giờ sau 10 phút thì tính thêm 1 giờ.",
+    "gio_phat_sinh_mac_dinh": {
+      "gia_tri": 100000,
+      "ghi_chu": "Mức mặc định do chủ cơ sở đặt. Phòng nào website có ghi mức riêng thì dùng mức của website. Không cần chủ động nhắc đến khi tư vấn."
+    },
+    "do_xe": "Có chỗ đỗ xe.",
+    "giay_to": "Không cần thông báo đến khách hàng.",
+    "huy_phong": "Do nhân viên (người thật) xử lý, chatbot không xử lý.",
+    "quy_dinh_khac": "Các quy định khác do cơ sở phổ biến trực tiếp khi khách đến."
+  },
+  "co_so": {
+    "ma": "jacayl-tran-khat-chan",
+    "ten": "Jacayl Hotel Trần Khát Chân",
+    "dia_chi": "283 Trần Khát Chân",
+    "gioi_thieu": "19 phòng với 4 hạng phòng riêng biệt, nổi bật với 8 phòng concept độc đáo và 1 phòng VIP Signature.",
+    "so_hang_so_phong": "4 hạng phòng · 19 phòng",
+    "dien_thoai": "0921 123 939",
+    "website": "https://jacaylhotel.vn",
+    "zalo": "https://zalo.me/0921123939",
+    "link": "https://www.bookphong.com/co-so/jacayl-tran-khat-chan",
+    "gia_tu_theo_hang": {
+      "Standard": 500000,
+      "Premium": 600000,
+      "Concept": 600000,
+      "VIP Signature": 900000
+    },
+    "anh_dai_dien": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/properties/j-khat-chan/cover.large.webp"
+  },
+  "nhom_nhu_cau_theo_website": {
+    "bathtub": {
+      "ten": "Phòng có bồn tắm",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=bathtub",
+      "so_phong_website_ghi": 5,
+      "phong": [
+        "1001-dem"
+      ]
+    },
+    "nice-view": {
+      "ten": "Phòng view đẹp",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=nice-view",
+      "so_phong_website_ghi": 24,
+      "phong": [
+        "201-sapphire",
+        "301-ivory",
+        "401-blush",
+        "501-onyx",
+        "202-walnut",
+        "402-teak",
+        "502-hammrock",
+        "602-slate",
+        "702-silver",
+        "303-bali",
+        "601-golden-inox",
+        "701-50-sac-thai",
+        "302-kimochi",
+        "203-tau-hoa",
+        "403-morocco",
+        "503-long-chim",
+        "603-playboy",
+        "703-mumbai",
+        "1001-dem"
+      ]
+    },
+    "couples": {
+      "ten": "Phòng dành cho cặp đôi",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=couples",
+      "so_phong_website_ghi": 17,
+      "phong": [
+        "401-blush",
+        "601-golden-inox",
+        "701-50-sac-thai",
+        "302-kimochi",
+        "203-tau-hoa",
+        "403-morocco",
+        "503-long-chim",
+        "603-playboy",
+        "703-mumbai",
+        "1001-dem"
+      ]
+    },
+    "stay": {
+      "ten": "Phòng phù hợp lưu trú",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=stay",
+      "so_phong_website_ghi": 49,
+      "phong": [
+        "201-sapphire",
+        "301-ivory",
+        "501-onyx",
+        "202-walnut",
+        "402-teak",
+        "502-hammrock",
+        "602-slate",
+        "702-silver",
+        "303-bali"
+      ]
+    }
+  },
+  "phong": [
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/1001-dem",
+      "ma_phong": "1001-dem",
+      "meta_description": "Phòng 1001 — Đêm, hạng VIP Signature tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Jacayl · Trần Khát Chân · Tầng 8",
+      "tieu_de_nguyen_van": "VIPSIGNATURE801–1001 Đêm",
+      "cau_gioi_thieu_ngan": "Một khoảng riêng đủ khác để buổi tối trở nên đáng nhớ hơn.",
+      "gia": {
+        "nghi_gio_2h": 900000,
+        "qua_dem": 1500000,
+        "ngay_dem": 2000000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 900K | Qua đêm 1.500K | Ngày đêm 2.000K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "I / Một pavilion riêng | ## MỘT NHỊP CHẬM LẠI. | Giường tròn giữ tâm điểm. Màn đỏ tạo thành những lớp riêng tư. Ánh vàng từ vòm và đèn lồng làm căn phòng có chiều sâu. | Một không gian được cảm nhận bằng nhịp điệu của chất liệu — không cần thêm quá nhiều lời.",
+        "II / Tâm điểm | ## VÒNG TRÒN. MÀN ĐỎ. | Bố cục chính của căn phòng được kéo về một tâm điểm duy nhất: một chiếc giường tròn nằm dưới lớp màn đỏ rượu vang.",
+        "III / Những lớp ánh sáng | ## Ở LẠI BÊN TRONG. | Một góc lounge trắng, màn đỏ kéo dài và màn hình nằm trong nhịp kiến trúc — đủ gần để căn phòng vẫn giữ được sự riêng tư.",
+        "IV / Chất liệu | ## ĐỦ ẤM. ĐỦ SÂU. | Từ rèm nhung đến những đốm sáng kim loại, mỗi chi tiết đều phục vụ cho cảm giác bao bọc của một đêm đặc biệt.",
+        "01 MÀN ĐỎ: Những lớp vải buông xuống như một lớp kiến trúc riêng, làm căn phòng chậm lại.",
+        "02 GIƯỜNG TRÒN: Tâm điểm tròn giữ nhịp cho toàn bộ bố cục và cảm giác được bao bọc.",
+        "03 VÒM SÁNG: Ánh vàng hắt lên các vòm nhọn, tạo chiều sâu mà vẫn giữ sự ấm áp.",
+        "04 ĐÈN LỒNG: Những điểm sáng kim loại treo thấp, đủ để buổi tối có thêm một lớp ánh sáng.",
+        "CTA: Jacayl Trần Khát Chân · VIP Signature | ## MỘT ĐÊM ĐÁNG NHỚ HƠN. | 801–1001 Đêm VIP Signature — một khoảng riêng đủ khác để buổi tối có nhịp của riêng mình."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/vip-signature__1001-dem/cover.large.webp",
+          "alt": "801–1001 Đêm VIP Signature — giường tròn, màn đỏ và vòm sáng vàng"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/vip-signature__1001-dem/01.large.webp",
+          "alt": "801–1001 Đêm VIP Signature — góc chính diện của giường tròn dưới màn đỏ"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/vip-signature__1001-dem/02.large.webp",
+          "alt": "801–1001 Đêm VIP Signature — lounge ghế trắng, màn đỏ và TV"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/vip-signature__1001-dem/03.large.webp",
+          "alt": "801–1001 Đêm VIP Signature — giường tròn, cây xanh và những vòm sáng"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "tên phòng trong danh sách: \"1001 — Đêm\"; trang ghi \"801–1001 Đêm VIP Signature\""
+      ],
+      "ten_phong": "1001 — Đêm",
+      "hang": "VIP Signature",
+      "tang_theo_website": 8,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng có bồn tắm",
+        "Phòng view đẹp",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/201-sapphire",
+      "ma_phong": "201-sapphire",
+      "meta_description": "Phòng 201 — Sapphire, hạng Standard tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Standard room · Jacayl Hotel Trần Khát Chân",
+      "tieu_de_nguyen_van": "SAPPHIRE201",
+      "cau_gioi_thieu_ngan": "Một khoảng xanh sâu vừa đủ để thành phố ngoài kia chậm lại.",
+      "gia": {
+        "nghi_gio_2h": 500000,
+        "qua_dem": 900000,
+        "ngay_dem": 1100000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 500K | Qua đêm 900K | Ngày đêm 1.100K",
+      "noi_dung_nguyen_van": [
+        "SUBTAGLINE: Xanh sapphire, ga trắng và ánh đèn ấm giữ căn phòng ở trạng thái yên, sáng và cân bằng.",
+        "TEXT_BLOCKS:",
+        "Opening / Khoảng riêng | ## XANH SÂU. NHỊP YÊN. | Sapphire 201 giữ nhận diện ở những mảng tường xanh đậm, rồi để màu trắng mở ra khoảng thở quanh giường. | Ánh vàng chỉ xuất hiện ở đúng nơi cần thiết — đủ ấm để căn phòng dịu xuống khi nhịp tối bắt đầu.",
+        "01 / Sapphire wall | ## MẢNG XANH GIỮ CĂN PHÒNG. | Ga trắng, gối xanh xám và một điểm vàng phía trên đầu giường tạo nên sự cân bằng rõ ràng, không cần phô trương.",
+        "02 / City side | ## THÀNH PHỐ Ở NGOÀI KHUNG. | Góc ngồi cạnh cửa sổ đưa ánh sáng và nhịp phố vào trong tầm mắt, vẫn giữ được cảm giác kín đáo của một căn phòng riêng.",
+        "03 / Warm light | ## ÁNH VÀNG. ĐỘ SÂU XANH. | Khi ánh đèn cầu bật lên, sắc xanh trở nên mềm hơn — một nhịp chuyển nhẹ từ ngày sang tối.",
+        "01 ### BLUE | Chiều sâu và nhận diện.",
+        "02 ### WHITE | Khoảng thở sạch và sáng.",
+        "03 ### GOLD | Một điểm ấm vừa đủ.",
+        "CTA: Jacayl Hotel Trần Khát Chân · Standard | ## Ở LẠI TRONG SẮC XANH SÂU. | Một khoảng riêng kín đáo, nơi nhịp tối chậm lại vừa đủ."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/standard__201/cover.large.webp",
+          "alt": "Sapphire 201 với tường xanh sâu, giường trắng, đèn vàng và cửa sổ hướng phố"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/standard__201/01.large.webp",
+          "alt": "Sapphire 201 với giường trắng trước mảng tường xanh sapphire và tranh ánh vàng"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/standard__201/02.large.webp",
+          "alt": "Sapphire 201 với góc ngồi xanh cạnh cửa sổ nhìn ra thành phố"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/standard__201/03.large.webp",
+          "alt": "Sapphire 201 với đèn cầu ánh vàng cạnh giường và tường panel xanh"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "201 — Sapphire",
+      "hang": "Standard",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/202-walnut",
+      "ma_phong": "202-walnut",
+      "meta_description": "Phòng 202 — Walnut, hạng Premium tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Concept room · Tầng 2 · Trần Khát Chân",
+      "tieu_de_nguyen_van": "WALNUT202",
+      "cau_gioi_thieu_ngan": "Một căn phòng ấm hơn, chậm hơn và dễ ở bên nhau hơn.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1000000,
+        "ngay_dem": 1200000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.000K | Ngày đêm 1.200K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "Walnut · Warm light · Shelter | ## Ở LẠI CHẬM HƠN. | Walnut 202 được định hình bởi một khung gỗ lớn chạy từ tường lên trần, ôm lấy khu vực giường và giữ ánh sáng ấm quanh không gian. Những phần còn lại được giữ nhẹ để căn phòng có cảm giác bao bọc mà không nặng.",
+        "01 / Khung gỗ | ## GỖ ẤM. NỀN NHẸ. | Giường trắng, vải be và một đường sáng mềm làm phần gỗ trở thành cấu trúc chính — rõ ràng, nhưng không phô trương.",
+        "02 / Nhịp vật liệu | ## MỘT CĂN PHÒNG CÓ ĐỘ ẤM. | Vật liệu được giữ ở mức vừa đủ để không gian không thành showroom. Gỗ, ánh sáng, rèm và một vài mảng xanh làm nhịp nghỉ trở nên tự nhiên hơn.",
+        "01 ### WALNUT FRAME | Khung gỗ chạy liền từ tường lên trần, ôm lấy khu vực nghỉ.",
+        "02 ### WARM EDGE LIGHT | Ánh sáng ẩn làm nổi chiều sâu của gỗ mà vẫn giữ căn phòng dịu.",
+        "03 ### TAUPE + WHITE | Nền be, vải trung tính và ga trắng để vật liệu chính được thở.",
+        "04 ### CITY WINDOW | Một góc ngồi nhỏ để chậm lại bên rèm nâu và nhịp phố ngoài cửa.",
+        "03 / Góc cửa sổ | ## THÀNH PHỐ NGOÀI KHUNG CỬA. | Rèm nâu, ghế mềm, bàn phụ ánh kim và một khoảng xanh phía ngoài — phần thân mật nhất của căn phòng để ngồi lại mà không cần vội.",
+        "04 / Khoảng riêng | ## KHI NHỊP TỐI BẮT ĐẦU. | Một căn phòng ấm, grounded và đủ yên để thành phố ở lại phía ngoài. Walnut giữ vật liệu chính trong tầm mắt, còn khoảng trống giữ cho cảm giác ở không bị nặng."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__202/cover.large.webp",
+          "alt": "Walnut 202 — giường, khung gỗ walnut và cửa sổ nhìn ra thành phố"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__202/01.large.webp",
+          "alt": "Walnut 202 — bố cục giường chính diện dưới khung gỗ và ánh sáng ấm"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__202/02.large.webp",
+          "alt": "Walnut 202 — góc lounge, rèm nâu và bàn phụ ánh kim bên cửa sổ"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__202/03.large.webp",
+          "alt": "Walnut 202 — toàn cảnh phòng với ghế lounge đen, giường và trần gỗ"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "LƯU Ý: dòng này ghi \"Concept room\" nhưng meta/danh sách ghi hạng Premium — website không thống nhất"
+      ],
+      "ten_phong": "202 — Walnut",
+      "hang": "Premium",
+      "tang_theo_website": 2,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/203-tau-hoa",
+      "ma_phong": "203-tau-hoa",
+      "meta_description": "Phòng 203 — Tàu Hỏa, hạng Concept tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Private carriage · Jacayl Trần Khát Chân",
+      "tieu_de_nguyen_van": "NIGHTTRAIN",
+      "cau_gioi_thieu_ngan": "Một đêm không cần đi đâu xa, nhưng vẫn có cảm giác như đang bắt đầu một chuyến đi.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1100000,
+        "ngay_dem": 1300000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.100K | Ngày đêm 1.300K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "HN — 203 · After dark",
+        "01 / Departure | ## NO PLATFORM REQUIRED. | 203 · Tàu Hỏa mở ra một nhịp nghỉ khác: bước qua lớp kim loại đen, nhìn thấy ánh sáng thành phố ngoài ô cửa và để căn phòng đổi bối cảnh của buổi tối.",
+        "02 / Private carriage | ## Bước vào khoang riêng. | Khối ngủ được tạo như một toa tàu thu nhỏ — có thân vỏ, ô cửa, bậc bước lên và những đường nét công nghiệp đủ mạnh để căn phòng có một câu chuyện riêng.",
+        "03 / Journey log | ## MỘT ĐÊM. MỘT ĐIỂM ĐẾN. | Không cần rời Hà Nội. Chỉ cần khép cửa lại, chuyển sang một nhịp ánh sáng chậm hơn và bắt đầu hành trình của riêng mình.",
+        "ORIGIN: HÀ NỘI | CARRIAGE: 203 · NIGHT TRAIN | MOOD: AFTER DARK | ARRIVAL: WHENEVER YOU ARE READY",
+        "01 Concept khoang tàu độc đáo | 02 Không gian mang cảm hứng hành trình châu Âu | 03 Thiết kế riêng biệt thuộc bộ sưu tập Concept | 04 COUPLES",
+        "04 / Between stops | ## Ngoài kia là thành phố. | Bên trong là một góc riêng để nhìn đèn đường, lật một trang sách, hoặc đơn giản là ngồi yên giữa những vật thể gợi nhớ về các chuyến đi.",
+        "Keep moving | Night Train · Jacayl Hotel Trần Khát Chân | ## ONE NIGHT. SOMEWHERE ELSE. | Một đêm thôi, nhưng như đang ở một nơi khác. | Xem thời gian lưu trú, giá hiện tại và tình trạng phòng trong luồng đặt phòng chính thức."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__tau-hoa/cover.large.webp",
+          "alt": "Night Train — khoang tàu kim loại đen, tường đỏ và ánh đèn thành phố phía sau ô cửa"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__tau-hoa/01.large.webp",
+          "alt": "Night Train — thân toa tàu với cửa sổ, bậc lên khoang ngủ và chi tiết bánh xe"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__tau-hoa/02.large.webp",
+          "alt": "Night Train — góc lounge với ghế kim loại, poster du lịch và vali cũ"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "203 — Tàu Hỏa",
+      "hang": "Concept",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/301-ivory",
+      "ma_phong": "301-ivory",
+      "meta_description": "Phòng 301 — Ivory, hạng Standard tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Standard room · Tầng 3 · Trần Khát Chân",
+      "tieu_de_nguyen_van": "IVORY301",
+      "cau_gioi_thieu_ngan": "Một căn phòng nhẹ, sáng và đủ riêng để buổi hẹn tự trở nên đẹp hơn.",
+      "gia": {
+        "nghi_gio_2h": 500000,
+        "qua_dem": 900000,
+        "ngay_dem": 1100000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 500K | Qua đêm 900K | Ngày đêm 1.100K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "Ivory · Circle · Balance | ## NHẸ HƠN. RÕ HƠN. | Ivory 301 giữ mọi thứ ở mức vừa đủ: sắc ivory sáng, phào tường gọn, một vòng tròn đen – gold và những khoảng trắng để căn phòng có nhịp thở. Một không gian giống một căn hộ gallery đương đại hơn là một căn phòng cần phô trương.",
+        "01 / Tâm điểm | ## VÒNG TRÒN. KHOẢNG TRẮNG. | Artwork tròn đen – gold neo lại ánh nhìn phía sau giường. Phần còn lại được giữ sáng, phẳng và bình tĩnh.",
+        "02 / Thành phần | ## ĐỦ SÁNG. ĐỦ SÂU. | Rèm xám, giường trắng, bề mặt gỗ ấm và một góc cửa sổ hướng ra thành phố tạo nên lớp nền trưởng thành. Màu xanh – gold trên textile chỉ là một điểm nhấn nhỏ.",
+        "01 ### IVORY | Nền sáng, gọn và đủ yên để những chi tiết còn lại được nhìn rõ.",
+        "02 ### BLACK | Một mảng tương phản giữ căn phòng có chiều sâu mà không làm nặng không gian.",
+        "03 ### GOLD | Đường gold mảnh, đèn cầu và textile xanh chỉ xuất hiện ở mức vừa đủ.",
+        "04 ### BALANCE | Giường, artwork, cửa sổ và khoảng trắng nằm trong cùng một nhịp.",
+        "03 / Ánh sáng | ## HAI QUẢ CẦU. MỘT NHỊP YÊN. | Hai đèn cầu trắng cạnh giường lặp lại hình tròn của artwork, còn những đường gold mảnh giữ tổng thể polished nhưng không bóng bẩy quá mức.",
+        "CTA: Jacayl Trần Khát Chân · Ivory 301 | ## MỘT KHOẢNG YÊN HƠN. | Sáng, cân bằng và đủ riêng để buổi hẹn không cần thêm quá nhiều lời."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/standard__301/cover.large.webp",
+          "alt": "Ivory 301 — giường trắng, artwork tròn đen – gold và ánh sáng sạch"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/standard__301/01.large.webp",
+          "alt": "Ivory 301 — bố cục giường chính diện dưới artwork tròn đen – gold"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/standard__301/02.large.webp",
+          "alt": "Ivory 301 — góc nhìn cạnh cửa sổ, bàn ngồi và sắc ivory"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/standard__301/03.large.webp",
+          "alt": "Ivory 301 — đèn cầu trắng, phào tường và giường nhìn từ bên hông"
+        }
+      ],
+      "ten_phong": "301 — Ivory",
+      "hang": "Standard",
+      "tang_theo_website": 3,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/302-kimochi",
+      "ma_phong": "302-kimochi",
+      "meta_description": "Phòng 302 — Kimochi, hạng Concept tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Private room for two · Jacayl Trần Khát Chân",
+      "tieu_de_nguyen_van": "KIMOCHI",
+      "cau_gioi_thieu_ngan": "Vẫn là hai người. Chỉ là tối nay thử một cảm giác khác.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1100000,
+        "ngay_dem": 1300000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.100K | Ngày đêm 1.300K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 ## BREAK THE ROUTINE | Có những buổi hẹn không cần thêm một địa điểm mới — chỉ cần một không gian đủ khác để thoát khỏi cảm giác quen thuộc. | Manga, màu sắc, gương và ánh sáng biến căn phòng thành một câu chuyện riêng cho tối nay.",
+        "02 ## STEP INTO THE PANELS | Những khung truyện phủ gần như toàn bộ căn phòng khiến mỗi góc nhìn đều có một chi tiết mới để khám phá.",
+        "03 ## CHANGE THE LIGHT. CHANGE THE MOOD. | Pink, đỏ, xanh hay tím — chỉ cần đổi ánh sáng, cảm giác của căn phòng cũng thay đổi theo. | PINK · ĐỎ · XANH · TÍM",
+        "04 ## ANOTHER ROOM ABOVE YOU | Những mảng gương phía trên phản chiếu ánh sáng và artwork, khiến không gian tiếp tục mở rộng theo một hướng khác.",
+        "05 ## NOT YOUR USUAL DATE NIGHT | Không phải lúc nào hai người cũng cần làm điều gì thật lớn. Đôi khi chỉ cần đổi bối cảnh, đổi ánh sáng và bước vào một không gian đủ lạ. | - Một chút tò mò. - Một chút riêng tư. - Một tối khác với thường ngày.",
+        "06 ## THE CURVE | Một đường cong đen nổi bật giữa những bức tường đầy hình ảnh và ánh sáng.",
+        "MANGA / MIRROR / MOOD",
+        "## SIGNATURE EXPERIENCE: 01 ### MANGA WALLS | Artwork phủ gần như toàn bộ không gian. || 02 ### COLOR LIGHTING | Nhiều sắc ánh sáng tạo nhiều mood khác nhau. || 03 ### MIRRORED CEILING | Không gian tiếp tục phản chiếu phía trên. || 04 ### ROUND BED | Tâm điểm mềm mại giữa một căn phòng đầy hình ảnh. || 05 ### PRIVATE FOR TWO | Một không gian được tạo ra cho một cuộc hẹn khác thường.",
+        "Thông tin phòng: Concept Nhật Bản hiện đại | Không gian lấy cảm hứng từ manga | Ánh sáng neon tạo dấu ấn riêng | NICE_VIEW | COUPLES",
+        "CTA: ## TRY A DIFFERENT NIGHT. | Tối nay, thử một cảm giác khác. | Kimochi · Jacayl Hotel Trần Khát Chân"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__kimochi/cover.large.webp",
+          "alt": "Kimochi — toàn cảnh phòng manga và ánh sáng neon"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__kimochi/02.large.webp",
+          "alt": "Tường manga và trần gương trong phòng Kimochi"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__kimochi/01.large.webp",
+          "alt": "Giường tròn trong phòng Kimochi"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__kimochi/03.large.webp",
+          "alt": "Ghế lounge đen dáng cong giữa những mảng manga"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "302 — Kimochi",
+      "hang": "Concept",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/303-bali",
+      "ma_phong": "303-bali",
+      "meta_description": "Phòng 303 — Bali, hạng Premium tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Premium room · Tầng 3 · Trần Khát Chân",
+      "tieu_de_nguyen_van": "BALI303",
+      "cau_gioi_thieu_ngan": "Một khoảng nghỉ nhẹ hơn, thoáng hơn, riêng hơn.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1000000,
+        "ngay_dem": 1200000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.000K | Ngày đêm 1.200K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "Canopy · Frame · Light | ## MỘT NHỊP NHẸ HƠN. | Bali 303 bắt đầu từ chiếc giường dưới tán voan trắng — nơi ánh sáng đi qua lớp vải mỏng và dịu lại. | Khung gỗ sáng, ga trắng, rèm nâu trầm và một chút xanh tạo nên một căn phòng có khoảng thở. Không cần nhiều, chỉ đủ để bạn chậm lại.",
+        "Voan: Tán vải trắng | Gỗ: Khung tự nhiên | Riêng: Yên tĩnh trọn vẹn",
+        "01 / Tán voan | ## ÁNH SÁNG LAN RA. | Rèm canopy không làm căn phòng khép lại. Nó tạo một lớp mềm quanh giường, giữ sự riêng tư mà vẫn để không gian thở.",
+        "02 / Nơi chậm lại | ## CỬA SỔ RỘNG HƠN. | Một góc ngồi cạnh cửa sổ, cây xanh ở gần, và những đường gỗ ấm giữ cho căn phòng có cảm giác tự nhiên, nhẹ mắt.",
+        "03 / Chất liệu | ## FRAME. FABRIC. AIR. | Một vài chất liệu đúng chỗ là đủ: voan trắng, gỗ sáng, nền xám dịu và mảng xanh nhỏ làm mềm những đường nét hiện đại.",
+        "01 ### VOAN | Lớp vải trắng giữ cho ánh sáng đi vào thật mềm.",
+        "02 ### GỖ SÁNG | Khung gỗ mở ra một cảm giác tự nhiên, không nặng nề.",
+        "03 ### CÂY XANH | Một chút xanh làm dịu những đường nét sạch của căn phòng.",
+        "04 ### KHOẢNG THỞ | Bố cục thoáng để nhịp nghỉ được chậm lại.",
+        "04 / Khoảng riêng | ## CHẬM LẠI. Ở LẠI. | Một căn phòng nhẹ, có rèm, gỗ và cây xanh — đủ riêng để nghỉ, đủ thoáng để bạn không bị bao quanh bởi vật liệu."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__303/cover.large.webp",
+          "alt": "Bali 303 — giường canopy trắng, khung gỗ sáng và khoảng nhìn thoáng"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__303/01.large.webp",
+          "alt": "Bali 303 — tán voan trắng buông quanh giường"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__303/02.large.webp",
+          "alt": "Bali 303 — góc ngồi, cây xanh và ánh sáng tự nhiên"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__303/03.large.webp",
+          "alt": "Bali 303 — khung gỗ, rèm vải và góc nghỉ trong phòng"
+        },
+        {
+          "nhan": "04",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__303/04.large.webp",
+          "alt": "Bali 303 — giường, cây xanh và khoảng thở cạnh cửa sổ"
+        }
+      ],
+      "ten_phong": "303 — Bali",
+      "hang": "Premium",
+      "tang_theo_website": 3,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/401-blush",
+      "ma_phong": "401-blush",
+      "meta_description": "Phòng 401 — Blush, hạng Standard tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Standard room · Tầng 4 · Trần Khát Chân",
+      "tieu_de_nguyen_van": "BLUSH401",
+      "cau_gioi_thieu_ngan": "Một buổi hẹn nhẹ hơn, đẹp hơn, riêng hơn.",
+      "gia": {
+        "nghi_gio_2h": 500000,
+        "qua_dem": 900000,
+        "ngay_dem": 1100000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 500K | Qua đêm 900K | Ngày đêm 1.100K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "Blush · Moon · Balance | ## MỘT BUỔI HẸN NHẸ HƠN. | Blush 401 đặt sắc hồng dusty cạnh ga trắng, bề mặt xám và một điểm vàng vừa đủ. Căn phòng sáng, mềm và cân bằng — để hai người có thể chậm lại mà thành phố vẫn ở ngay ngoài khung cửa.",
+        "01 / Vầng trăng vàng | ## ÁNH VÀNG. NỀN HỒNG. | Bức tranh tối phía sau giường là điểm neo của căn phòng: tròn, sáng và đủ tĩnh để những chi tiết còn lại được giữ nhẹ.",
+        "02 / Những điểm sáng | ## MỀM HƠN. RÕ HƠN. | Không cần nhiều hiệu ứng. Chỉ một đường gold mảnh, hai quầng sáng trắng và một vài mảng xanh nhỏ để màu hồng giữ được sự trưởng thành.",
+        "01 ### BLUSH WALL | Sắc hồng dusty đi cùng phào chỉ để căn phòng mềm mà vẫn gọn.",
+        "02 ### GOLDEN MOON | Một vòng tròn ánh vàng giữ lại điểm nhìn chính phía sau giường.",
+        "03 ### SOFT GLOW | Hai đèn cầu trắng và những đường kim loại mảnh làm ánh sáng dịu hơn.",
+        "04 ### CITY PAUSE | Một khung cửa rộng, một góc ngồi nhỏ và nhịp phố ở ngay phía ngoài.",
+        "03 / Nhịp nghỉ | ## GIỮ LẠI KHOẢNG RIÊNG. | Rèm charcoal, đèn cầu trắng, ga giường sạch và những đường gold nhỏ tạo nên một nhịp nghỉ vừa đủ riêng — thân mật nhưng không nặng.",
+        "04 / Thành phố phía ngoài | ## Ở LẠI TRONG ÁNH SÁNG DỊU. | Một khoảng hồng bên trong, những con phố ngoài cửa sổ và một buổi tối không cần quá nhiều kế hoạch."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__blush/cover.large.webp",
+          "alt": "Blush 401 — giường trắng, tường hồng dusty và vầng trăng vàng"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__blush/01.large.webp",
+          "alt": "Blush 401 — bố cục giường chính diện dưới tranh vầng trăng vàng"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__blush/02.large.webp",
+          "alt": "Blush 401 — góc nhìn sâu với rèm charcoal, đèn cầu và giường trắng"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__blush/03.large.webp",
+          "alt": "Blush 401 — góc ngồi cạnh cửa sổ nhìn ra thành phố"
+        }
+      ],
+      "ten_phong": "401 — Blush",
+      "hang": "Standard",
+      "tang_theo_website": 4,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/402-teak",
+      "ma_phong": "402-teak",
+      "meta_description": "Phòng 402 — Teak, hạng Premium tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Concept room · Tầng 4 · Trần Khát Chân",
+      "tieu_de_nguyen_van": "TEAK402",
+      "cau_gioi_thieu_ngan": "Một căn phòng ấm vừa đủ để hai người ở lại lâu hơn một chút.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1000000,
+        "ngay_dem": 1200000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.000K | Ngày đêm 1.200K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "Teak · Light · Air | ## ẤM VỪA ĐỦ. NHẸ ĐỂ THỞ. | Teak 402 lấy gỗ làm điểm chính nhưng giữ mọi thứ còn lại thật nhẹ. | Những nan gỗ chạy từ tường lên trần tạo nên một khung kiến trúc rõ ràng; ga trắng, nền be và ánh sáng ngoài cửa giữ cho căn phòng luôn có khoảng thở.",
+        "01 / Khung teak | ## GỖ CHẠY LÊN. ÁNH SÁNG Ở LẠI. | Từ mảng tường sau giường lên đến trần, từng đường đứng kéo ánh nhìn theo chiều sâu của căn phòng mà không làm không gian trở nên nặng.",
+        "02 / Nhịp vật liệu | ## FRAME. GRAIN. AIR. | Một vài vật liệu đúng chỗ là đủ: gỗ ấm, nền trung tính, vải xanh xám và mảng xanh làm mềm những đường nét hiện đại.",
+        "01 ### TEAK FRAME | Nan gỗ chạy từ tường lên trần, tạo chiều sâu theo phương đứng.",
+        "02 ### TAUPE + WHITE | Nền be, ga trắng và phần vải trung tính giữ căn phòng nhẹ mắt.",
+        "03 ### BLUE GREY | Những mảng xanh xám vừa đủ để cân bằng sắc gỗ ấm.",
+        "04 ### CITY WINDOW | Hai ghế nhỏ và khung cửa mở ra một khoảng nhìn của thành phố.",
+        "03 / Góc cửa sổ | ## NGỒI LẠI. NHÌN PHỐ. | Hai chiếc ghế cạnh cửa sổ tạo một khoảng riêng để trò chuyện, uống gì đó hoặc đơn giản là nhìn thành phố chậm lại.",
+        "04 / Khoảng riêng | ## KHI NHỊP TỐI BẮT ĐẦU. | Một căn phòng gọn, ấm và hướng ra phố — đủ riêng để nghỉ, đủ thoáng để không bị bao quanh bởi vật liệu."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__402/cover.large.webp",
+          "alt": "Teak 402 — phòng ngủ với nan gỗ teak chạy từ tường lên trần và góc cửa sổ nhìn ra phố"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__402/01.large.webp",
+          "alt": "Teak 402 — bố cục giường chính diện, ga trắng và tường nan gỗ teak"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__402/02.large.webp",
+          "alt": "Teak 402 — hai ghế cạnh cửa sổ, cây xanh và khoảng nhìn ra thành phố"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__402/03.large.webp",
+          "alt": "Teak 402 — góc nhìn rộng với giường, trần nan gỗ và gương lớn"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "LƯU Ý: dòng này ghi \"Concept room\" nhưng meta/danh sách ghi hạng Premium — website không thống nhất"
+      ],
+      "ten_phong": "402 — Teak",
+      "hang": "Premium",
+      "tang_theo_website": 4,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/403-morocco",
+      "ma_phong": "403-morocco",
+      "meta_description": "Phòng 403 — Morocco, hạng Concept tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Jacayl Hotel · Trần Khát Chân",
+      "tieu_de_nguyen_van": "Morocco",
+      "cau_gioi_thieu_ngan": "Một không gian Bắc Phi lấy cảm hứng từ Marrakech — ấm, riêng tư và đầy cá tính.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1100000,
+        "ngay_dem": 1300000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.100K | Ngày đêm 1.300K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "The sanctuary | ## Không chỉ là một căn phòng. | Những đường cong, chất liệu ấm và ánh sáng dịu tạo nên một nơi chậm lại giữa thành phố. Morocco được thiết kế cho những buổi tối có nhịp điệu riêng.",
+        "The arches | ## Marrakech after dark. | Các vòm cong kéo dài tầm nhìn, nối khu nghỉ với những lớp ánh sáng và rèm mềm.",
+        "Ánh sáng là lớp vật liệu thứ hai của Morocco: đủ ấm để căn phòng trở nên gần gũi, đủ sâu để mỗi góc nhìn có một câu chuyện.",
+        "Signature details: 01 The arches | 02 The glow | 03 The bed | 04 The quiet",
+        "The bed | ## A softer kind of night. | Một góc nghỉ rộng rãi, ánh sáng thấp và chất liệu chạm vào là thấy dễ chịu.",
+        "In the room | ## Everything has a place. | 01 Concept Bắc Phi lấy cảm hứng từ Marrakech | 02 Họa tiết và đường nét kiến trúc đặc trưng | 03 Không gian sử dụng gam màu ấm và ánh sáng dịu | 04 NICE_VIEW | 05 COUPLES",
+        "Practical notes | Đặt phòng trực tiếp để kiểm tra tình trạng phòng và nhận mức giá chính xác theo ngày, giờ lưu trú. | Morocco nằm tại Jacayl Hotel Trần Khát Chân, Hà Nội.",
+        "## Đêm nay có thể khác đi. | 403 Morocco · Jacayl Hotel Trần Khát Chân"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__morroco/cover.large.webp",
+          "alt": "403 Morocco — toàn cảnh phòng"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__morroco/01.large.webp",
+          "alt": "Những vòm cong đặc trưng của phòng Morocco"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__morroco/02.large.webp",
+          "alt": "Ánh sáng đỏ ấm trong phòng Morocco"
+        },
+        {
+          "nhan": "05",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__morroco/05.large.webp",
+          "alt": "Chi tiết vật liệu và đèn treo"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__morroco/03.large.webp",
+          "alt": "Ghế lounge cong trong phòng Morocco"
+        },
+        {
+          "nhan": "06",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__morroco/06.large.webp",
+          "alt": "Khu vực ghế và rèm trong phòng Morocco"
+        },
+        {
+          "nhan": "04",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__morroco/04.large.webp",
+          "alt": "Giường và không gian nghỉ trong phòng Morocco"
+        },
+        {
+          "nhan": "07",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__morroco/07.large.webp",
+          "alt": "Toàn cảnh cuối phòng Morocco"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "403 — Morocco",
+      "hang": "Concept",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/501-onyx",
+      "ma_phong": "501-onyx",
+      "meta_description": "Phòng 501 — Onyx, hạng Standard tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Standard room · Jacayl Trần Khát Chân",
+      "tieu_de_nguyen_van": "ONYX501",
+      "cau_gioi_thieu_ngan": "Một căn phòng tối hơn một chút để thành phố ở ngoài kia sáng hơn.",
+      "gia": {
+        "nghi_gio_2h": 500000,
+        "qua_dem": 900000,
+        "ngay_dem": 1100000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 500K | Qua đêm 900K | Ngày đêm 1.100K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "Opening / Khoảng riêng | ## KHUNG TỐI. NHỊP YÊN. | ONYX giữ những mảng tối ở đúng nơi để căn phòng có chiều sâu, nhưng để ga trắng, ánh sáng sạch và khoảng thở ở lại. | Một đường vàng mảnh, một góc nhìn ra phố, rồi sự yên lắng bắt đầu từ những tương phản rất rõ.",
+        "01 / Dark frame | ## ĐƯỜNG VÀNG TRONG BÓNG TỐI. | Trần nan gỗ và những đường panel tối tạo thành một khung kiến trúc rõ ràng; giường trắng giữ trung tâm căn phòng sáng và nhẹ.",
+        "02 / City at the edge | ## THÀNH PHỐ Ở MÉP KHUNG. | Hai ghế cạnh cửa sổ giữ ánh sáng và nhịp phố ở ngay bên ngoài — một khoảng nghỉ ngắn, kín đáo, không cần thêm lời.",
+        "Onyx / Material notes | ## DARK. LINE. CITY.",
+        "01 ### DARK FRAME | Nan tối chạy từ tường lên trần.",
+        "02 ### GOLD LINES | Điểm sáng mảnh, vừa đủ để định hình không gian.",
+        "03 ### WHITE BED | Một vùng sáng sạch giữa bảng màu charcoal và espresso.",
+        "04 ### CITY WINDOW | Thành phố ở ngoài khung, sự yên ở bên trong.",
+        "CTA: Onyx 501 | ## Ở LẠI SAU KHI THÀNH PHỐ LÊN ĐÈN. | Một căn phòng tối hơn một chút để ánh sáng bên ngoài được nhìn thấy rõ hơn."
+      ],
+      "anh": [
+        {
+          "nhan": "cover (meta og:image)",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/standard__501/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/standard__501/01.large.webp",
+          "alt": "Onyx 501 với giường trắng, đèn tripod đen và khung gỗ tối"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/standard__501/02.large.webp",
+          "alt": "Onyx 501 với ghế charcoal, bàn hình học vàng và cửa sổ nhìn ra phố"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "501 — Onyx",
+      "hang": "Standard",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/502-hammrock",
+      "ma_phong": "502-hammrock",
+      "meta_description": "Phòng 502 — Hammrock, hạng Premium tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Premium room · Tầng 5 · Trần Khát Chân",
+      "tieu_de_nguyen_van": "HAMMROCK502",
+      "cau_gioi_thieu_ngan": "Một căn phòng nhẹ hơn một chút, nơi chiếc giường như đang lơ lửng giữa khoảng thở của thành phố.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1000000,
+        "ngay_dem": 1200000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.000K | Ngày đêm 1.200K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "Gravity · Air · Timber | ## GIƯỜNG KHÔNG CHẠM ĐẤT. | Hammrock 502 được tạo quanh một chi tiết duy nhất nhưng rất khó bỏ qua: chiếc giường treo bằng những sợi dây lớn từ trần nhà. | Xung quanh là bê tông xám, gỗ sáng, ga trắng và những khoảng trống có chủ ý. Mọi thứ đủ yên để cảm giác lơ lửng ở lại.",
+        "01 / The floating center | ## DÂY KÉO THẲNG. KHOẢNG THỞ MỞ. | Không có chân giường để giữ ánh nhìn ở lại mặt sàn. Chỉ có dây, gỗ và một khoảng trống khiến căn phòng nhẹ đi.",
+        "02 / Urban calm | ## THÀNH PHỐ LÙI LẠI. | Hai ghế lounge màu kem và một khung cửa lớn tạo nên nơi ngồi nhìn ánh sáng thành phố chuyển từ xanh sang ấm. Một nhịp nghỉ, không cần thêm lời.",
+        "03 / Balance | ## CÂN BẰNG TỪ NHỮNG ĐƯỜNG THẲNG.",
+        "01 ### FLOAT | Chiếc giường là tâm điểm, được giữ lại trong một khoảng trống có chủ ý.",
+        "02 ### TIMBER | Gỗ sáng làm mềm nền bê tông và giữ cho căn phòng luôn ấm.",
+        "03 ### CITY | Ánh sáng xanh từ cửa sổ mở ra một nhịp thành phố vừa đủ xa.",
+        "04 ### BALANCE | Rope, gỗ, vải be và những đường đen tạo nên một bố cục nhẹ mà chắc.",
+        "CTA: Hammrock 502 · Jacayl Trần Khát Chân | Một nơi để thành phố ở ngoài cửa sổ, và cơ thể được nghỉ trong khoảng không. | Khi muốn giữ lại cảm giác lơ lửng, hãy để Hammrock 502 bắt đầu từ chiếc giường."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__502/cover.large.webp",
+          "alt": "Hammrock 502 — giường treo giữa tường bê tông, gỗ sáng và khoảng thở"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__502/01.large.webp",
+          "alt": "Hammrock 502 — giường treo với những sợi dây chạy từ trần xuống và khung gỗ sáng"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__502/02.large.webp",
+          "alt": "Hammrock 502 — góc lounge màu kem cạnh cửa sổ nhìn ra thành phố"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/premium__502/03.large.webp",
+          "alt": "Hammrock 502 — góc nhìn rộng của giường treo, tường xám và nội thất gỗ"
+        }
+      ],
+      "ten_phong": "502 — Hammrock",
+      "hang": "Premium",
+      "tang_theo_website": 5,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/503-long-chim",
+      "ma_phong": "503-long-chim",
+      "meta_description": "Phòng 503 — Lồng Chim, hạng Concept tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Room 503 · Jacayl Trần Khát Chân",
+      "tieu_de_nguyen_van": "BIRD CAGE",
+      "cau_gioi_thieu_ngan": "Một khu vườn riêng, khép mình trong khung kim loại — nơi đêm xuống chậm hơn một chút.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1100000,
+        "ngay_dem": 1300000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.100K | Ngày đêm 1.300K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 ## A ROOM INSIDE A CAGE | Chiếc giường tròn nằm giữa phòng, được vây quanh bởi khung kim loại màu đồng. Bên trong trở nên kín đáo hơn, tách khỏi phần còn lại của căn phòng. | Ánh sáng ấm đi qua từng thanh kim loại, in bóng lên tường than chì và những tán lá phía sau.",
+        "02 ## THE GARDEN GROWS INDOORS | Những mảng cây xanh, dây leo và thân cây thật tạo nên cảm giác thiên nhiên xuất hiện ngay bên cạnh giường ngủ.",
+        "Quote: \"Cây mọc sát đầu giường, và mọi thứ trở nên yên hơn một chút.\"",
+        "Trần sao ## A SKY OF YOUR OWN | Khi ánh sáng trong phòng dịu xuống, những điểm sáng trên trần tạo cảm giác như một bầu trời nhỏ chỉ dành cho căn phòng này.",
+        "04 ## A CORNER TO STAY A LITTLE LONGER | Ghế treo, ghế thư giãn dáng cong, bàn thấp và vùng sáng nhỏ phía sau tán cây không chỉ là tiện nghi — chúng là những khoảnh khắc bên trong căn phòng.",
+        "Ghế treo — một chỗ ngồi lơ lửng giữa tán lá.",
+        "Gương viền đèn — ánh sáng ấm cho buổi tối.",
+        "Một căn phòng có nhiều lớp ánh sáng, để mỗi góc nhỏ giữ lại một nhịp riêng.",
+        "Căn phòng không cần giới thiệu. Chỉ cần bước vào, đèn dịu xuống và khu vườn bắt đầu lên tiếng.",
+        "Điểm đặc trưng ## THE PRIVATE GARDEN: 01 ### CAGE BED | Giường tròn nằm trong khung kim loại màu đồng, trở thành tâm điểm của căn phòng. || 02 ### INDOOR GARDEN | Cây xanh, dây leo và thân cây thật đưa cảm giác khu vườn vào trong phòng. || 03 ### STAR CEILING | Những điểm sáng xanh tím trải trên trần, mở ra một bầu trời rất riêng. || 04 ### HANGING CHAIR | Một góc ngồi lơ lửng cạnh tán cây, dành cho những khoảng lặng nhỏ. || 05 ### WARM GLOW | Gương đèn và ánh sáng nhiều lớp giữ lại sắc ấm giữa nền than chì.",
+        "Thông tin phòng: Một không gian riêng cho hai người. | Jacayl Hotel Trần Khát Chân | 503 · Lồng Chim | Concept lấy cảm hứng từ phong cách Đông Dương | Thiết kế Lồng Chim tạo dấu ấn riêng | Không gian chú trọng sự riêng tư | COUPLES",
+        "CTA: ## STAY WHERE THE GARDEN SLEEPS. | 503 · Lồng Chim · Jacayl Hotel Trần Khát Chân"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__long-chim/cover.large.webp",
+          "alt": "Toàn cảnh phòng 503 với giường tròn trong khung lồng đồng, cây xanh và ghế treo"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__long-chim/01.large.webp",
+          "alt": "Khung lồng đồng bao quanh giường tròn giữa những tán cây"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__long-chim/03.large.webp",
+          "alt": "Khu vườn trong nhà và ghế thư giãn bên cạnh chiếc giường tròn"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__long-chim/02.large.webp",
+          "alt": "Ghế treo và góc ngồi yên tĩnh dưới tán cây, cạnh gương đèn ấm"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "503 — Lồng Chim",
+      "hang": "Concept",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/601-golden-inox",
+      "ma_phong": "601-golden-inox",
+      "meta_description": "Phòng 601 — Golden Inox, hạng Concept tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Concept room · Tầng 6 · Trần Khát Chân",
+      "tieu_de_nguyen_van": "GOLDENINOX601",
+      "cau_gioi_thieu_ngan": "Một khoảng riêng sáng, mềm và vừa đủ lấp lánh.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1100000,
+        "ngay_dem": 1300000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.100K | Ngày đêm 1.300K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 / Ánh sáng và chất liệu | ## NHẸ MÀ SÁNG. | Golden Inox 601 giữ sắc peach ở lại cùng khung inox ánh vàng, rèm trắng và những khoảng trắng sạch. Cảm giác mềm đến từ ánh sáng và cách các đường nét nhường chỗ cho nhau.",
+        "Sắc peach. Rèm trắng. Ánh kim. Một nhịp nghỉ thật nhẹ.",
+        "Đủ polished để căn phòng có cá tính, đủ calm để mắt nhìn được nghỉ.",
+        "02 / Khung và rèm | ## KHUNG GIỮ NHỊP. | Các thanh inox ánh vàng chạy quanh giường, còn lớp voan trắng làm dịu toàn bộ cấu trúc. Căn phòng vì thế vẫn có điểm nhấn mà không trở nên nặng nề.",
+        "03 / Điểm tròn | ## THE GLOWING CIRCLE. | Gương tròn phát sáng là nét cong cân bằng căn phòng: một điểm nhìn rõ, sáng và thân mật giữa những đường ngang dọc của khung inox.",
+        "04 / Nhịp nghỉ | ## Ở LẠI BÊN TRONG. | Một căn phòng sáng, mềm và vừa đủ lấp lánh — để thời gian chậm lại theo cách tự nhiên.",
+        "01 ÁNH SÁNG MỀM: Nền peach ấm và ánh sáng trắng giữ cho căn phòng luôn sáng, nhẹ và dễ thở.",
+        "02 KHUNG INOX: Những đường kim loại ánh vàng chạy quanh giường và console, tạo nhịp thay vì chiếm lấy không gian.",
+        "03 LỚP RÈM TRẮNG: Rèm voan bao quanh giường, làm dịu các đường thẳng và giữ lại một khoảng riêng vừa đủ.",
+        "04 ĐIỂM TRÒN: Gương tròn phát sáng cân bằng những đường ngang dọc bằng một nét cong rõ ràng, thân mật.",
+        "CTA: Jacayl Trần Khát Chân · Golden Inox 601"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__goldeninox/cover.large.webp",
+          "alt": "Golden Inox 601 — giường phủ rèm trắng, tường peach và gương tròn phát sáng"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__goldeninox/01.large.webp",
+          "alt": "Golden Inox 601 — góc nhìn rộng với khung inox ánh vàng, giường trắng và mảng tường peach"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__goldeninox/02.large.webp",
+          "alt": "Golden Inox 601 — chính diện giường, rèm trắng và console ánh vàng trong căn phòng sáng"
+        }
+      ],
+      "ten_phong": "601 — Golden Inox",
+      "hang": "Concept",
+      "tang_theo_website": 6,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/602-slate",
+      "ma_phong": "602-slate",
+      "meta_description": "Phòng 602 — Slate, hạng Premium tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Premium room · Tầng 6 · Trần Khát Chân",
+      "tieu_de_nguyen_van": "SLATE602",
+      "cau_gioi_thieu_ngan": "Một khoảng yên ấm và vừa đủ riêng giữa nhịp thành phố.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1000000,
+        "ngay_dem": 1200000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.000K | Ngày đêm 1.200K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "Stone · Timber · Lounge · City | ## Ở LẠI CHẬM HƠN. | Slate 602 không cố làm mọi thứ thật tối giản. Tường xám đá giữ cho căn phòng có nền vững, gỗ tự nhiên mang lại độ ấm, còn góc lounge và khung cửa mở ra một nhịp sống khác — dịu hơn, gần với cảm giác ở hơn.",
+        "01 / Bệ giường gỗ | ## NỀN XÁM. HƠI ẤM. | Một bố cục rộng và rõ: giường trắng, vân gỗ, mảng tường xám và một đường sáng mềm chạy dọc phía sau.",
+        "02 / Nhịp vật liệu | ## MỘT CĂN PHÒNG CÓ ĐỘ ẤM. | Các bề mặt được giữ ở mức vừa đủ để căn phòng không thành showroom. Ánh sáng, gỗ và những chỗ ngồi nhỏ làm không gian trở nên dễ ở.",
+        "01 ### ĐÁ XÁM | Một nền trung tính có chiều sâu, để ánh sáng và đồ gỗ hiện lên vừa đủ.",
+        "02 ### GỖ TỰ NHIÊN | Bệ giường và những món nội thất gỗ kéo căn phòng về gần cảm giác ở.",
+        "03 ### GÓC LOUNGE | Những chiếc ghế mềm bên cửa sổ tạo ra một khoảng riêng để ngồi lại.",
+        "04 ### ÁNH SÁNG ẤM | Ánh hắt sau đầu giường làm sắc xám dịu xuống khi thành phố chuyển tối.",
+        "03 / Góc lounge | ## THÀNH PHỐ NGOÀI KHUNG CỬA. | Hai chiếc ghế kem, một chiếc bàn gỗ và khoảng trời xanh cuối ngày. Đây là phần mềm nhất của Slate 602 — nơi có thể ngồi xuống mà không cần vội.",
+        "04 / Khoảng riêng | ## KHI NHỊP TỐI BẮT ĐẦU. | Một căn phòng có thể vừa gọn gàng, vừa có chút đời sống. Slate giữ lại ánh sáng hắt, ghế lounge và những đường gỗ để cảm giác ở không bị phẳng đi."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__slate/cover.large.webp",
+          "alt": "Slate 602 — giường gỗ, tường xám đá và khung cửa nhìn ra thành phố lúc chạng vạng"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__slate/01.large.webp",
+          "alt": "Slate 602 — bố cục giường chính diện với tranh và ánh sáng hắt ấm"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__slate/02.large.webp",
+          "alt": "Slate 602 — góc lounge và cửa sổ thành phố"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__slate/03.large.webp",
+          "alt": "Slate 602 — ghế lounge điêu khắc, giường gỗ và mảng tường xám"
+        }
+      ],
+      "ten_phong": "602 — Slate",
+      "hang": "Premium",
+      "tang_theo_website": 6,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/603-playboy",
+      "ma_phong": "603-playboy",
+      "meta_description": "Phòng 603 — Playboy, hạng Concept tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Room 603 · Jacayl Trần Khát Chân",
+      "tieu_de_nguyen_van": "PLAYBOY HIGH CLASS",
+      "cau_gioi_thieu_ngan": "Khi thành phố lên đèn, căn phòng mở ra một thế giới riêng: tối hơn, sâu hơn và được kiểm soát trong từng phản chiếu.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1100000,
+        "ngay_dem": 1300000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.100K | Ngày đêm 1.300K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 ## AFTER MIDNIGHT | Playboy High Class được tạo cho những buổi tối muốn tách khỏi nhịp quen thuộc bên ngoài — ánh neon, trần gương, sắc đỏ và khung cảnh thành phố cùng tạo nên một không gian riêng. | Một private penthouse sau nửa đêm, nơi mọi bề mặt đều giữ lại một chút ánh sáng.",
+        "02 ## THE ROOM ABOVE THE ROOM | Những ô gương trên trần nhân đôi ánh đèn, rèm và đường cong của chiếc giường tròn — khiến căn phòng tiếp tục mở rộng theo một hướng khác.",
+        "03 ## THE CENTER OF THE NIGHT | Giường tròn đỏ nằm giữa hệ thống ánh sáng và phản chiếu, trở thành tâm điểm của trải nghiệm 603.",
+        "04 ## SIGNATURE IN LIGHT | Biểu tượng Playboy, những tủ trưng bày và acrylic đỏ bắt sáng tạo nên nhịp điệu thị giác riêng của căn phòng.",
+        "05 ## CITY OUTSIDE. PRIVATE WORLD INSIDE. | Bên ngoài là ánh đèn của Hà Nội. Bên trong, mọi thứ chuyển sang một nhịp khác.",
+        "Signature features ## THE PRIVATE COLLECTION: 01 ### MIRROR CEILING | Trần gương mở rộng ánh sáng, phản chiếu chuyển động và sắc magenta. || 02 ### ROUND BED | Giường tròn đỏ là tâm điểm của căn phòng khi đêm xuống. || 03 ### NEON SIGNATURE | Biểu tượng Playboy tạo dấu hiệu nhận diện giữa những bề mặt đen bóng. || 04 ### CITY VIEW | Khung cửa mở ra nhịp sống Trần Khát Chân ở phía ngoài. || 05 ### PRIVATE COLLECTION | Tủ trưng bày, acrylic và những chi tiết táo bạo hoàn thiện concept.",
+        "Room information: Concept boudoir lấy cảm hứng từ Paris | Không gian mang cá tính táo bạo | Thiết kế chú trọng trải nghiệm riêng tư | NICE_VIEW | COUPLES",
+        "Choose your time ## OWN THE NIGHT | Chọn khoảng thời gian phù hợp cho buổi tối của bạn.",
+        "CTA: ## THE NIGHT IS YOURS. | 603 Playboy High Class · Jacayl Trần Khát Chân"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__playboy/cover.large.webp",
+          "alt": "Phòng 603 Playboy High Class nhìn ra thành phố về đêm"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__playboy/01.large.webp",
+          "alt": "Trần gương và giường tròn đỏ của Playboy High Class"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__playboy/03.large.webp",
+          "alt": "Giường tròn đỏ giữa ánh neon và những mảng gương"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__playboy/02.large.webp",
+          "alt": "Biểu tượng Playboy neon và tủ trưng bày ánh magenta"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "603 — Playboy",
+      "hang": "Concept",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/701-50-sac-thai",
+      "ma_phong": "701-50-sac-thai",
+      "meta_description": "Phòng 701 — 50 Sắc Thái, hạng Concept tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Private room · Jacayl Trần Khát Chân",
+      "tieu_de_nguyen_van": "50 SẮC THÁI",
+      "cau_gioi_thieu_ngan": "Một sân khấu riêng được phủ bằng sắc đỏ, nhung và những đường nét đen mạnh.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1100000,
+        "ngay_dem": 1300000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.100K | Ngày đêm 1.300K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "The room begins with red | ## Không chỉ là một căn phòng. | 50 Sắc Thái được tạo nên từ những lớp đỏ đậm, rèm nhung, khung giường đen và các chi tiết hình khối. Căn phòng không cố gắng nhẹ nhàng — nó tạo cảm giác rõ ràng ngay từ khoảnh khắc bước vào.",
+        "The velvet stage | ## Màn nhung mở ra. | Những lớp rèm đỏ với tua vàng bao quanh giường như một sân khấu riêng — kín đáo, kịch tính và được kiểm soát trong từng nếp gấp.",
+        "The X | ## ĐƯỜNG X | Một hình khối đen trở thành dấu hiệu trực quan mạnh nhất của căn phòng, tạo tương phản trực tiếp với những mảng tường đỏ.",
+        "The center of the room | ## Bốn cột đen. Một tâm điểm. | Khung giường bốn cột đặt giữa những lớp rèm đỏ, giữ cho toàn bộ không gian có một trung tâm rõ ràng.",
+        "Red against black",
+        "Outside, the city | ## Bên ngoài vẫn là Hà Nội. | Bên trong, mọi thứ chuyển sang một bầu không khí hoàn toàn khác.",
+        "Signature details: 01 ### FOUR-POSTER BED | Khung giường đen tạo tâm điểm cho toàn bộ căn phòng. || 02 ### VELVET DRAPERY | Rèm đỏ nhiều lớp với tua vàng tạo cảm giác sân khấu riêng. || 03 ### THE X | Một hình khối đen mạnh, đối lập trực tiếp với nền đỏ. || 04 ### CITY VIEW | Khung cảnh thành phố tạo nhịp thở bên ngoài sân khấu.",
+        "Thông tin phòng: Concept lấy cảm hứng từ 50 Sắc Thái | Gam đỏ và ánh sáng trầm đặc trưng | Không gian chú trọng sự riêng tư | NICE_VIEW | COUPLES",
+        "Choose your time | ## Tấm rèm chưa cần khép lại. | Kiểm tra giá và tình trạng phòng thực tế cho Nghỉ giờ, Qua đêm hoặc Ngày đêm.",
+        "CTA: ## THE CURTAIN STAYS OPEN. | Đêm nay có thể khác đi. | 701 50 Sắc Thái · Jacayl Hotel Trần Khát Chân"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__50sacthai/cover.large.webp",
+          "alt": "Phòng 701 50 Sắc Thái với giường bốn cột và rèm nhung đỏ"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__50sacthai/01.large.webp",
+          "alt": "Rèm nhung đỏ tua vàng bao quanh sân khấu riêng"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__50sacthai/02.large.webp",
+          "alt": "Khung chữ X đen giữa những mảng tường đỏ"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__50sacthai/03.large.webp",
+          "alt": "Giường bốn cột đen nhìn ra thành phố"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "701 — 50 Sắc Thái",
+      "hang": "Concept",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/702-silver",
+      "ma_phong": "702-silver",
+      "meta_description": "Phòng 702 — Silver, hạng Premium tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Premium room · Tầng 7 · Trần Khát Chân",
+      "tieu_de_nguyen_van": "SILVER702",
+      "cau_gioi_thieu_ngan": "Một khoảng yên bằng bê tông, gỗ và ánh sáng giữa nhịp thành phố.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1000000,
+        "ngay_dem": 1200000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.000K | Ngày đêm 1.200K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "## MỘT KHOẢNG YÊN GIỮA THÀNH PHỐ | Silver 702 giữ mọi thứ ở đúng chỗ: nền bê tông xám, gỗ tự nhiên, vải sáng màu và ánh sáng ấm. Một không gian đủ yên để nhịp phố lùi lại, nhưng thành phố vẫn ở ngay ngoài khung cửa.",
+        "## BÊ TÔNG LÀM NỀN. GỖ GIỮ HƠI ẤM. | Chiếc giường đặt trên một bệ gỗ lớn, để vân gỗ trở thành một phần của kiến trúc. Bề mặt bê tông phía sau giữ cho căn phòng có chất riêng mà không trở nên nặng nề.",
+        "Chất liệu · ánh sáng · khoảng thở | ## KHÔNG GIAN CÓ NHỊP NGHỈ.",
+        "01 ### BÊ TÔNG | Một nền xám có chiều sâu, đủ tĩnh để ánh sáng và gỗ hiện lên tự nhiên.",
+        "02 ### GỖ TỰ NHIÊN | Bệ giường và nội thất gỗ giữ lại cảm giác ấm, gần và có nhịp sống.",
+        "03 ### ÁNH SÁNG | Đèn đan, ánh hắt sau đầu giường và ánh trời ngoài cửa tạo nên độ mềm.",
+        "04 ### KHOẢNG THỞ | Không gian được giữ thoáng để căn phòng không cần thêm quá nhiều trang trí.",
+        "## ÁNH SÁNG NGOÀI KHUNG CỬA | Một góc ngồi nhỏ bên cửa sổ để nhìn thành phố chuyển từ ngày sang tối.",
+        "CTA: Silver 702 · Jacayl Trần Khát Chân | ## Ở LẠI NƠI THÀNH PHỐ YÊN HƠN. | Không có gì thừa trong căn phòng. Chỉ vật liệu thật, ánh sáng và một nhịp nghỉ vừa đủ riêng."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__silver/cover.large.webp",
+          "alt": "Silver 702 — giường gỗ trước tường bê tông và cửa sổ nhìn ra thành phố"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__silver/01.large.webp",
+          "alt": "Silver 702 — giường trắng, bệ gỗ và mảng tường bê tông xám"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__silver/02.large.webp",
+          "alt": "Silver 702 — góc cửa sổ, ghế gỗ và ánh sáng thành phố"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__silver/03.large.webp",
+          "alt": "Silver 702 — toàn cảnh phòng với ghế lounge đen và nội thất gỗ"
+        }
+      ],
+      "ten_phong": "702 — Silver",
+      "hang": "Premium",
+      "tang_theo_website": 7,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-tran-khat-chan",
+      "co_so_ten": "Jacayl Hotel Trần Khát Chân",
+      "link_phong": "https://www.bookphong.com/phong/703-mumbai",
+      "ma_phong": "703-mumbai",
+      "meta_description": "Phòng 703 — Mumbai, hạng Concept tại Jacayl Hotel Trần Khát Chân. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Concept room · Tầng 7 · Trần Khát Chân",
+      "tieu_de_nguyen_van": "MUMBAI703",
+      "cau_gioi_thieu_ngan": "Một khoảng riêng ấm và nhiều lớp, như bước vào một pavilion khép kín giữa thành phố.",
+      "gia": {
+        "nghi_gio_2h": 600000,
+        "qua_dem": 1100000,
+        "ngay_dem": 1300000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 600K | Qua đêm 1.100K | Ngày đêm 1.300K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 / Một pavilion riêng | ## BƯỚC QUA LỚP VẢI. | Mumbai 703 được tạo nên từ trần vải, rèm nâu, sắc đỏ và những mảng hoa văn ánh đồng — một không gian kín, sâu và đủ riêng để nhịp bên ngoài lùi lại.",
+        "02 / Vòm và sắc đỏ | ## KHUNG VÒM GIỮ TÂM. | Những đường cong hoa văn phía sau giường tạo chiều sâu, để sắc đỏ trở thành điểm nhấn rõ ràng mà không đẩy căn phòng về phía phô trương.",
+        "03 / Chiều sâu | ## Ở LẠI BÊN TRONG. | Ghế da, bàn gỗ, rèm dày và ánh đèn thấp kéo không gian lại gần — như một lounge nhỏ được giấu sau lớp cửa riêng.",
+        "04 / Chất liệu | ## NHIỀU LỚP. ĐỦ ẤM. | Từ hoa văn đến ánh đồng, mọi chi tiết được giữ trong cùng một nhịp ấm và trầm để căn phòng có cảm giác bao bọc.",
+        "01 DRAPED CEILING: Những lớp vải hội tụ phía trên, làm mềm toàn bộ khối phòng.",
+        "02 ROUND BED: Sắc đỏ giữ tâm điểm, nổi bật giữa nền nâu, đồng và vàng ấm.",
+        "03 CARVED ARCHES: Các khung vòm hoa văn tạo nhịp kiến trúc và chiều sâu phía sau giường.",
+        "04 WARM GOLD LIGHT: Ánh sáng thấp, vàng và thân mật làm nổi bật từng lớp chất liệu.",
+        "CTA: Mumbai 703 · Jacayl Hotel Trần Khát Chân | ## PRIVATE PAVILION. | Một khoảng riêng có ánh vàng, sắc đỏ và chiều sâu của chất liệu. | Kiểm tra ngày ở, giá hiện tại và lựa chọn lưu trú trong luồng đặt phòng chính thức."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__mumbai/cover.large.webp",
+          "alt": "Mumbai 703 — giường tròn đỏ dưới trần vải nhiều lớp, khung vòm và ánh đèn vàng ấm"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__mumbai/01.large.webp",
+          "alt": "Mumbai 703 — giường tròn và những khung vòm hoa văn phía sau giường"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__mumbai/02.large.webp",
+          "alt": "Mumbai 703 — góc lounge với rèm nhung, ghế da, đèn bàn và bàn gỗ"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-khat-chan/concept__mumbai/03.large.webp",
+          "alt": "Mumbai 703 — lớp rèm hoa văn, trần vải và góc ngồi ánh đồng"
+        }
+      ],
+      "ten_phong": "703 — Mumbai",
+      "hang": "Concept",
+      "tang_theo_website": 7,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng dành cho cặp đôi"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0",
+  "config_id": "J_COLLECTION_PRICING_ADDENDUM_2026_11_21",
+  "currency": "VND",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "source_metadata": {
+    "source_type": "OWNER_DIRECT_INSTRUCTION",
+    "source_recorded_on": "2026-11-21",
+    "effective_from": null,
+    "status": "PARTIALLY_SPECIFIED",
+    "base_dataset": "j_collection_dataset.json",
+    "notes": "Không sửa dữ liệu gốc; bổ sung qua lớp pricing policy có phiên bản."
+  },
+  "scope": {
+    "stay_type": "nghi_gio",
+    "duration_minutes": 120,
+    "applies_to": "first_two_hours_only",
+    "not_applied_to": [
+      "qua_dem",
+      "ngay_dem",
+      "gio_phat_sinh"
+    ]
+  },
+  "facilities": {
+    "jacayl-ha-dong": {
+      "config_status": "PARTIALLY_SPECIFIED",
+      "daytime_rates": [
+        {
+          "days_of_week_iso": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "start": "08:00",
+          "end_exclusive": "18:00",
+          "rates_by_owner_category": {
+            "Suite": 399000,
+            "Standard": 159000,
+            "Deluxe": 279000
+          }
+        },
+        {
+          "days_of_week_iso": [
+            6,
+            7
+          ],
+          "start": "08:00",
+          "end_exclusive": "18:00",
+          "rates_by_owner_category": {
+            "Suite": 449000,
+            "Deluxe": 315000,
+            "Standard": 180000
+          }
+        }
+      ],
+      "after_18": {
+        "days_of_week_iso": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "start_inclusive": "18:00",
+        "until": "24:00",
+        "rate_source": "room.gia.nghi_gio_2h",
+        "note": "Sau 18h sử dụng giá có sẵn theo từng phòng trong JSON; trước 08h hôm sau chưa được chủ cơ sở xác nhận."
+      },
+      "category_mapping": {
+        "Standard": {
+          "dataset_hang": "Standard",
+          "status": "EXACT_MATCH"
+        },
+        "Deluxe": {
+          "dataset_hang": "Deluxe",
+          "status": "EXACT_MATCH"
+        },
+        "Suite": {
+          "dataset_hang": null,
+          "possible_dataset_hang": "Concept",
+          "status": "NEEDS_OWNER_CONFIRMATION",
+          "warning": "Dataset Hà Đông chỉ có Concept (3 phòng), không có Suite. Không tự suy ra Suite = Concept."
+        }
+      },
+      "unresolved": {
+        "before_08": "UNKNOWN",
+        "crosses_18_boundary": "UNKNOWN",
+        "public_holiday_override": "UNKNOWN",
+        "price_at_checkout_vs_checkin": "UNKNOWN",
+        "effective_from": "UNKNOWN"
+      }
+    },
+    "j-village": {
+      "config_status": "PENDING_OWNER_INPUT",
+      "daytime_rates": [],
+      "fallback_rate_source": "room.gia.nghi_gio_2h",
+      "apply_ha_dong_rules": false
+    },
+    "jacayl-tran-khat-chan": {
+      "config_status": "PENDING_OWNER_INPUT",
+      "daytime_rates": [],
+      "fallback_rate_source": "room.gia.nghi_gio_2h",
+      "apply_ha_dong_rules": false
+    }
+  },
+  "pricing_resolution": {
+    "exact_branch_required": true,
+    "exact_stay_type_required": true,
+    "require_day_and_time_for_daytime_rule": true,
+    "unconfirmed_class_mapping": "NEED_OWNER_CONFIRMATION",
+    "cross_window": "NEED_OWNER_CONFIRMATION",
+    "never_claim_final_booking_price": true,
+    "do_not_infer_room_availability": true,
+    "price_source_labels": [
+      "OWNER_TIME_POLICY",
+      "BASE_DATASET_REFERENCE",
+      "UNRESOLVED"
+    ]
+  },
+  "tests_to_update": [
+    "TC-07",
+    "TC-11",
+    "TC-13",
+    "TC-14",
+    "TC-16",
+    "TC-19",
+    "TC-24"
+  ],
+  "human_conversation_policy": {
+    "voice": "NATURAL_VIETNAMESE_FRONT_DESK",
+    "end_customer_message_with": "ạ",
+    "avoid_overly_flowery_academic_language": true,
+    "do_not_proactively_explain_ai_implementation": true,
+    "answer_truthfully_if_asked_about_ai_identity": true,
+    "do_not_claim_human_actions_not_done": true,
+    "handoff_mode_target": "INTERNAL_SILENT_ROUTE_IF_CONNECTED",
+    "never_mark_handoff_done_without_acknowledged_acceptance": true
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.4.2",
+  "config_id": "J_COLLECTION_PRICING_POLICY_V1_4_2",
+  "currency": "VND",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "source_metadata": {
+    "source_type": "OWNER_CONFIRMED_DIRECTIVE",
+    "source_recorded_on": "2026-11-22",
+    "effective_from": null,
+    "status": "ACTIVE_PRODUCTION_POLICY",
+    "base_dataset": "j_collection_dataset.json",
+    "notes": "Chính sách giá V1.4.2: Concept = Suite tại Hà Đông được OWNER_CONFIRMED; Giá 2 giờ đầu tính theo CHECKIN_TIMESTAMP và giữ nguyên khi vượt qua 18h."
+  },
+  "scope": {
+    "stay_type": "nghi_gio",
+    "duration_minutes": 120,
+    "applies_to": "first_two_hours_only",
+    "pricing_basis": "CHECKIN_TIMESTAMP",
+    "cross_window_behavior": "KEEP_CHECKIN_BASE_PRICE",
+    "not_applied_to": [
+      "qua_dem",
+      "ngay_dem",
+      "gio_phat_sinh"
+    ]
+  },
+  "facilities": {
+    "jacayl-ha-dong": {
+      "config_status": "CONFIRMED_WITH_EXCLUSIONS",
+      "daytime_rates": [
+        {
+          "days_of_week_iso": [1, 2, 3, 4, 5],
+          "start": "08:00",
+          "end_exclusive": "18:00",
+          "rates_by_owner_category": {
+            "Suite": 399000,
+            "Standard": 159000,
+            "Deluxe": 279000
+          }
+        },
+        {
+          "days_of_week_iso": [6, 7],
+          "start": "08:00",
+          "end_exclusive": "18:00",
+          "rates_by_owner_category": {
+            "Suite": 449000,
+            "Deluxe": 315000,
+            "Standard": 180000
+          }
+        }
+      ],
+      "after_18": {
+        "days_of_week_iso": [1, 2, 3, 4, 5, 6, 7],
+        "start_inclusive": "18:00",
+        "until": "24:00",
+        "rate_source": "room.gia.nghi_gio_2h",
+        "note": "Sau 18h sử dụng giá có sẵn theo từng phòng trong dataset gốc; trước 08h hôm sau chưa có quy định."
+      },
+      "category_mapping": {
+        "Standard": {
+          "dataset_hang": "Standard",
+          "status": "EXACT_MATCH"
+        },
+        "Deluxe": {
+          "dataset_hang": "Deluxe",
+          "status": "EXACT_MATCH"
+        },
+        "Suite": {
+          "dataset_hang": "Concept",
+          "status": "OWNER_CONFIRMED",
+          "owner_confirmation_note": "Chủ dự án xác nhận: Hạng Concept tại Hà Đông chính thức áp dụng theo biểu giá Suite."
+        }
+      },
+      "confirmed_decisions": {
+        "crosses_18_boundary": "KEEP_CHECKIN_BASE_PRICE",
+        "price_at_checkout_vs_checkin": "CHECKIN_TIMESTAMP",
+        "ha_dong_concept_maps_to_suite": "OWNER_CONFIRMED",
+        "weekend_standard_daytime_price": 180000
+      },
+      "unresolved": {
+        "before_08": "UNRESOLVED_EARLY_MORNING",
+        "public_holiday_override": "UNCONFIRMED_HOLIDAY_POLICY",
+        "effective_from": "PENDING_FORMAL_ANNOUNCEMENT"
+      }
+    },
+    "j-village": {
+      "config_status": "USE_BASE_DATASET_ONLY",
+      "daytime_rates": [],
+      "fallback_rate_source": "room.gia.nghi_gio_2h",
+      "apply_ha_dong_rules": false,
+      "notes": "J Village không có biểu giá giờ mới; 100% sử dụng giá gốc trong dataset."
+    },
+    "jacayl-tran-khat-chan": {
+      "config_status": "USE_BASE_DATASET_ONLY",
+      "daytime_rates": [],
+      "fallback_rate_source": "room.gia.nghi_gio_2h",
+      "apply_ha_dong_rules": false,
+      "notes": "Jacayl Trần Khát Chân không có biểu giá giờ mới; 100% sử dụng giá gốc trong dataset."
+    }
+  },
+  "pricing_resolution": {
+    "exact_branch_required": true,
+    "exact_stay_type_required": true,
+    "require_day_and_time_for_daytime_rule": true,
+    "pricing_basis": "CHECKIN_TIMESTAMP",
+    "cross_window_behavior": "KEEP_CHECKIN_BASE_PRICE",
+    "cross_window": "RESOLVED_KEEP_CHECKIN_BASE_PRICE",
+    "unconfirmed_class_mapping": "RESOLVED_CONCEPT_MAPS_TO_SUITE_FOR_HA_DONG",
+    "never_claim_final_booking_price": true,
+    "do_not_infer_room_availability": true,
+    "price_source_labels": [
+      "OWNER_TIME_POLICY",
+      "BASE_DATASET_REFERENCE",
+      "UNRESOLVED"
+    ]
+  },
+  "human_conversation_policy": {
+    "voice": "NATURAL_VIETNAMESE_FRONT_DESK",
+    "end_customer_message_with": "ạ",
+    "avoid_overly_flowery_academic_language": true,
+    "do_not_proactively_explain_ai_implementation": true,
+    "answer_truthfully_if_asked_about_ai_identity": true,
+    "do_not_claim_human_actions_not_done": true,
+    "handoff_mode_target": "INTERNAL_SILENT_ROUTE_IF_CONNECTED",
+    "never_mark_handoff_done_without_acknowledged_acceptance": true
+  }
+}

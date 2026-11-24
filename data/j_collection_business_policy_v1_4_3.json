@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.4.3",
+  "config_id": "J_COLLECTION_BUSINESS_POLICY_V1_4_3",
+  "currency": "VND",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "source_metadata": {
+    "source_type": "OWNER_CONFIRMED_DIRECTIVE",
+    "source_recorded_on": "2026-11-22",
+    "effective_from": null,
+    "status": "OWNER_CONFIRMED_ACTIVE",
+    "base_dataset": "j_collection_dataset.json",
+    "notes": "Chính sách kinh doanh V1.4.3: Chủ dự án xác nhận trực tiếp: 1) Không có phụ thu ngày lễ/Tết/ngày đặc biệt; 2) Hà Đông trước 08:00 và sau 18:00 áp dụng giá gốc dataset; 3) Không có gói nghỉ giờ 1 tiếng (tối thiểu 2 tiếng); 4) Hỗ trợ nhận phòng qua đêm sớm tối đa 20 phút (từ 21:40); 5) Khách muốn nhận phòng trước 21:40 để ở qua đêm/đến trưa mai áp dụng gói Ngày Đêm; 6) Quá giờ sau 10 phút (từ phút 11) tính thêm 1 giờ tiếp theo."
+  },
+  "scope": {
+    "stay_types": [
+      "nghi_gio",
+      "qua_dem",
+      "ngay_dem"
+    ],
+    "duration_minutes": 120,
+    "minimum_hourly_duration": 2,
+    "one_hour_package_available": false,
+    "pricing_basis": "CHECKIN_TIMESTAMP",
+    "cross_window_behavior": "KEEP_CHECKIN_BASE_PRICE",
+    "not_applied_to": [
+      "gio_phat_sinh"
+    ]
+  },
+  "holiday_policy": {
+    "has_holiday_surcharge": false,
+    "holiday_pricing_rule": "SAME_AS_WEEKDAY_OR_WEEKEND_ACCORDING_TO_DAY_OF_WEEK",
+    "holiday_multiplier": 1.0,
+    "statement": "J Collection không tăng giá riêng vào ngày lễ hoặc ngày đặc biệt. Giá áp dụng theo biểu giá thông thường của cơ sở, ngày và giờ nhận phòng.",
+    "status": "OWNER_CONFIRMED_ACTIVE"
+  },
+  "stay_package_eligibility": {
+    "overnight": {
+      "standard_checkin_start": "22:00",
+      "early_checkin_grace_minutes": 20,
+      "earliest_overnight_checkin": "21:40",
+      "standard_checkout": "12:00",
+      "status": "OWNER_CONFIRMED_ACTIVE"
+    },
+    "day_night": {
+      "standard_checkin_start": "14:00",
+      "standard_checkout": "12:00",
+      "guidance_for_early_overnight_requests": "Khách muốn check-in trước 20:30 và có nhu cầu nghỉ qua đêm/đến trưa mai phải được tư vấn giá ngày đêm. Khách check-in từ 20:30 đến 21:39 muốn nhận ngay cũng áp dụng giá ngày đêm. Có thể gợi ý khách đổi giờ nhận sang 21:40 để áp dụng giá qua đêm.",
+      "status": "OWNER_CONFIRMED_ACTIVE"
+    }
+  },
+  "overtime_grace_policy": {
+    "grace_period_minutes": 10,
+    "charge_from_minute": 11,
+    "official_wording": "Sau 10p bên em tính giờ tiếp theo",
+    "status": "OWNER_CONFIRMED_ACTIVE"
+  },
+  "facilities": {
+    "jacayl-ha-dong": {
+      "config_status": "CONFIRMED_WITH_EXCLUSIONS",
+      "time_windows": {
+        "early_morning": {
+          "start": "00:00",
+          "end_exclusive": "08:00",
+          "rate_source": "room.gia.nghi_gio_2h",
+          "status": "OWNER_CONFIRMED_ACTIVE",
+          "note": "Khung giá ban ngày chỉ áp dụng từ 08:00 đến trước 18:00. Trước 08:00 dùng giá gốc nghỉ giờ trong dataset."
+        },
+        "daytime": {
+          "start": "08:00",
+          "end_exclusive": "18:00",
+          "rate_source": "OWNER_CONFIRMED_DAYTIME_POLICY",
+          "status": "OWNER_CONFIRMED_ACTIVE"
+        },
+        "evening": {
+          "start": "18:00",
+          "end_exclusive": "24:00",
+          "rate_source": "room.gia.nghi_gio_2h",
+          "status": "OWNER_CONFIRMED_ACTIVE",
+          "note": "Sau 18h dùng giá có sẵn theo từng phòng trong dataset gốc."
+        }
+      },
+      "daytime_rates": [
+        {
+          "days_of_week_iso": [1, 2, 3, 4, 5],
+          "start": "08:00",
+          "end_exclusive": "18:00",
+          "rates_by_owner_category": {
+            "Standard": 159000,
+            "Deluxe": 279000,
+            "Suite": 399000
+          }
+        },
+        {
+          "days_of_week_iso": [6, 7],
+          "start": "08:00",
+          "end_exclusive": "18:00",
+          "rates_by_owner_category": {
+            "Standard": 180000,
+            "Deluxe": 315000,
+            "Suite": 449000
+          }
+        }
+      ],
+      "after_18": {
+        "days_of_week_iso": [1, 2, 3, 4, 5, 6, 7],
+        "start_inclusive": "18:00",
+        "until": "24:00",
+        "rate_source": "room.gia.nghi_gio_2h",
+        "note": "Sau 18h sử dụng giá có sẵn theo từng phòng trong dataset gốc."
+      },
+      "category_mapping": {
+        "Standard": {
+          "dataset_hang": "Standard",
+          "status": "EXACT_MATCH"
+        },
+        "Deluxe": {
+          "dataset_hang": "Deluxe",
+          "status": "EXACT_MATCH"
+        },
+        "Suite": {
+          "dataset_hang": "Concept",
+          "status": "OWNER_CONFIRMED",
+          "owner_confirmation_note": "Chủ dự án xác nhận: Hạng Concept tại Hà Đông chính thức áp dụng theo biểu giá Suite."
+        }
+      },
+      "confirmed_decisions": {
+        "crosses_18_boundary": "KEEP_CHECKIN_BASE_PRICE",
+        "price_at_checkout_vs_checkin": "CHECKIN_TIMESTAMP",
+        "ha_dong_concept_maps_to_suite": "OWNER_CONFIRMED",
+        "weekend_standard_daytime_price": 180000,
+        "before_08_pricing_source": "BASE_DATASET_REFERENCE",
+        "holiday_surcharge": "NO_HOLIDAY_SURCHARGE",
+        "minimum_hourly_stay": 2,
+        "overnight_early_checkin_earliest": "21:40",
+        "overtime_grace_minutes": 10
+      },
+      "extra_hour_rates": {
+        "101-long-chim": 100000,
+        "601-50-sac-thai": 200000,
+        "602-playboy": 200000
+      }
+    },
+    "j-village": {
+      "config_status": "USE_BASE_DATASET_ONLY",
+      "daytime_rates": [],
+      "fallback_rate_source": "room.gia.nghi_gio_2h",
+      "apply_ha_dong_rules": false,
+      "notes": "J Village không có biểu giá giờ mới; 100% sử dụng giá gốc trong dataset."
+    },
+    "jacayl-tran-khat-chan": {
+      "config_status": "USE_BASE_DATASET_ONLY",
+      "daytime_rates": [],
+      "fallback_rate_source": "room.gia.nghi_gio_2h",
+      "apply_ha_dong_rules": false,
+      "notes": "Jacayl Trần Khát Chân không có biểu giá giờ mới; 100% sử dụng giá gốc trong dataset."
+    }
+  }
+}

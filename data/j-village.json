@@ -1,0 +1,1414 @@
+{
+  "nguon": "https://www.bookphong.com (trích nguyên văn ngày 06/11/2026)",
+  "ghi_chu_website": [
+    "Giá “Từ” là giá tham khảo. Giá chính xác theo ngày/giờ khi đặt phòng.",
+    "Giá có thể thay đổi theo ngày và khung giờ. Giá chính xác được xác nhận khi đặt phòng."
+  ],
+  "quy_dinh": {
+    "nguon": "Chủ cơ sở cung cấp (website bookphong.com không đăng quy định)",
+    "gio_luu_tru": {
+      "nghi_gio": "Giá áp dụng cho 2 giờ đầu (theo website)",
+      "qua_dem": "Từ 22h đến 12h hôm sau",
+      "ngay_dem": "Từ 14h đến 12h hôm sau"
+    },
+    "phu_thu_gio": "Quá giờ sau 10 phút thì tính thêm 1 giờ.",
+    "gio_phat_sinh_mac_dinh": {
+      "gia_tri": 100000,
+      "ghi_chu": "Mức mặc định do chủ cơ sở đặt. Phòng nào website có ghi mức riêng thì dùng mức của website. Không cần chủ động nhắc đến khi tư vấn."
+    },
+    "do_xe": "Có chỗ đỗ xe.",
+    "giay_to": "Không cần thông báo đến khách hàng.",
+    "huy_phong": "Do nhân viên (người thật) xử lý, chatbot không xử lý.",
+    "quy_dinh_khac": "Các quy định khác do cơ sở phổ biến trực tiếp khi khách đến."
+  },
+  "co_so": {
+    "ma": "j-village",
+    "ten": "J Village",
+    "dia_chi": "64 Triệu Việt Vương",
+    "gioi_thieu": "Nằm trên phố cà phê Triệu Việt Vương, ngay trung tâm Hà Nội. J Village có 20 phòng Minimal Luxury và 4 phòng concept riêng tư.",
+    "so_hang_so_phong": "4 hạng phòng · 24 phòng",
+    "dien_thoai": "0707 646 464",
+    "website": "https://jvillage.vn",
+    "zalo": "https://zalo.me/0707646464",
+    "link": "https://www.bookphong.com/co-so/j-village",
+    "gia_tu_theo_hang": {
+      "Deluxe": 268000,
+      "Superior": 222000,
+      "Concept": 368000,
+      "Suite": 570000
+    },
+    "anh_dai_dien": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/properties/j-village/cover.large.webp"
+  },
+  "nhom_nhu_cau_theo_website": {
+    "bathtub": {
+      "ten": "Phòng có bồn tắm",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=bathtub",
+      "so_phong_website_ghi": 5,
+      "phong": [
+        "crimson-suite"
+      ]
+    },
+    "nice-view": {
+      "ten": "Phòng view đẹp",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=nice-view",
+      "so_phong_website_ghi": 24,
+      "phong": [
+        "301-azure",
+        "401-mosaic",
+        "501-marble",
+        "601-lagoon",
+        "701-contour"
+      ]
+    },
+    "couples": {
+      "ten": "Phòng dành cho cặp đôi",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=couples",
+      "so_phong_website_ghi": 17,
+      "phong": [
+        "playboy",
+        "blackpink",
+        "pink-sakura",
+        "crimson-suite"
+      ]
+    },
+    "stay": {
+      "ten": "Phòng phù hợp lưu trú",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=stay",
+      "so_phong_website_ghi": 49,
+      "phong": [
+        "301-azure",
+        "401-mosaic",
+        "501-marble",
+        "601-lagoon",
+        "701-contour",
+        "202-neon",
+        "801-minimal",
+        "203-ember",
+        "302-sketch",
+        "402-linea",
+        "502-nova",
+        "602-solstice",
+        "702-coral",
+        "802-graff",
+        "303-zebra",
+        "403-petal",
+        "503-zest",
+        "603-sway",
+        "703-limewave",
+        "803-mist"
+      ]
+    }
+  },
+  "phong": [
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/202-neon",
+      "ma_phong": "202-neon",
+      "meta_description": "Phòng 202 — Neon, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Tầng 2 · Superior",
+      "tieu_de_nguyen_van": "NEON202",
+      "cau_gioi_thieu_ngan": "Một nhịp xanh nổi bật giữa không gian trắng thật gọn.",
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 222K | Qua đêm 639K | Ngày đêm 980K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "FLOWFRAMESPACE",
+        "01 / Neon flow | ## Sắc xanh chảy trên tường trắng. Khung đen giữ nhịp. | **Hình khối** Mural xanh lime uốn mềm, phủ trọn phía trên đầu giường. | **Khoảng trắng** Tường sáng và sàn xám để từng đường nét được thở. | **Đường neo** Dải đen bóng cắt ngang, chia không gian thành những nhịp rõ ràng.",
+        "GIƯỜNG / MURAL/ 01",
+        "02 / Mảng màu | ## Trắng để sáng. Đen để neo. Lime để bật. | Ga trắng, đầu giường xám và mural nhiều lớp tạo ra một điểm nhấn đủ rõ — không biến cả căn phòng thành một màu.",
+        "03 / Tương phản & năng lượng | ## Sáng rõ. Đen gọn. Xanh có dòng chảy. | Một căn phòng Superior có cá tính đến từ hình khối, ánh sáng và khoảng riêng — không cần thêm lớp trang trí thừa.",
+        "01 ### XANH ACID | Một điểm nhấn xanh đủ mạnh để đánh thức căn phòng, nhưng vẫn giữ được nền sáng và gọn.",
+        "02 ### KHUNG ĐEN | Dải đen bóng chạy ngang tạo đường chân trời rõ ràng, neo các mảng hình khối vào đúng vị trí.",
+        "03 ### KHOẢNG TRẮNG | Tường trắng, ga trắng và sàn xám mở ra khoảng thở để đường mural được nhìn thật rõ.",
+        "04 ### NHỊP HỮU CƠ | Những đường cong lime chuyển động mềm, khác với mọi thứ vuông vức còn lại trong phòng.",
+        "04 / Khoảng riêng | ## Một căn phòng có dòng chảy. | Góc nhìn mở, ánh sáng sạch và những đường cong hữu cơ giữ Neon 202 luôn mới mẻ mà vẫn thật gọn.",
+        "KHÔNG GIAN / KHUNG/ 02",
+        "CTA: J Village · Superior | ## NEON 202"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__202/cover.large.webp",
+          "alt": "Neon 202 — phòng trắng với giường xám, dải khung đen và tranh tường xanh acid"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__202/01.large.webp",
+          "alt": "Neon 202 — giường trắng và mảng mural xanh lime chạy trên đầu giường"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__202/02.large.webp",
+          "alt": "Neon 202 — góc nhìn bổ sung với giường trắng, gương và mảng xanh hữu cơ"
+        }
+      ],
+      "ten_phong": "202 — Neon",
+      "hang": "Superior",
+      "tang_theo_website": 2,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/203-ember",
+      "ma_phong": "203-ember",
+      "meta_description": "Phòng 203 — Ember, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Superior",
+      "tieu_de_nguyen_van": "EMBER203",
+      "cau_gioi_thieu_ngan": "Một điểm nóng vừa đủ giữa không gian trắng thật gọn.",
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 222K | Qua đêm 639K | Ngày đêm 980K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "TRẮNGĐENEMBER",
+        "01 / Nhiệt độ có kiểm soát | ## Một mảng cam. Một đường đen. Phần còn lại là khoảng trắng. | Sắc cam ember đặt trên nền sáng, tạo một nhịp ấm giữa căn phòng luôn giữ được sự yên. | Hình khối rõ ràng, dải đen chạy ngang và ánh sáng sạch làm mọi thứ nằm đúng vị trí.",
+        "GIƯỜNG / MẢNG CAM/ 01",
+        "02 / Hình khối | ## Trắng để sáng. Đen để neo. Cam để ấm. | Giường trắng, đầu giường xám và mảng tường nhiều lớp giữ cho sắc cam có điểm nhấn, không lấn át khoảng thở.",
+        "03 / Góc nhìn | ## Năng lượng, nhưng vẫn yên. | Một góc phòng mở, vật liệu sáng và dải đen giữ nhịp cho không gian riêng vừa đủ.",
+        "KHÔNG GIAN / KHUNG/ 02",
+        "04 / Tương phản & cân bằng | ## Trắng sáng. Đen rõ. Ấm vừa đủ. | Một căn phòng có năng lượng, nhưng không cần ồn ào để được nhớ đến.",
+        "01 ### SẮC CAM EMBER | Một trường màu duy nhất, đủ ấm để giữ ánh nhìn.",
+        "02 ### KHUNG ĐEN | Dải đen bóng tạo đường neo chắc, rõ và chính xác.",
+        "03 ### KHOẢNG TRẮNG | Tường trắng, chăn trắng và sàn xám nhạt để mọi thứ được thở.",
+        "04 ### ÁNH SÁNG | Sáng, tĩnh và gọn để hình khối giữ nguyên vẻ nhẹ nhàng.",
+        "CTA: J Village · Superior | ## EMBER 203"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__203/cover.large.webp",
+          "alt": "Ember 203 — toàn cảnh phòng với giường trắng, dải đen và mảng tường cam ember"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__203/01.large.webp",
+          "alt": "Ember 203 — giường trắng và mảng cam ember trong khung hình cận"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__203/02.large.webp",
+          "alt": "Ember 203 — góc nhìn bổ sung với khoảng trắng, dải đen và góc lounge"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "203 — Ember",
+      "hang": "Superior",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/301-azure",
+      "ma_phong": "301-azure",
+      "meta_description": "Phòng 301 — Azure, hạng Deluxe tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Third floor · Deluxe",
+      "tieu_de_nguyen_van": "AZURE301",
+      "cau_gioi_thieu_ngan": "A calm room in blue, lifted by one graphic wall and a full field of daylight.",
+      "gia": {
+        "nghi_gio_2h": 268000,
+        "qua_dem": 719000,
+        "ngay_dem": 1120000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 268K | Qua đêm 719K | Ngày đêm 1.120K",
+      "noi_dung_nguyen_van": [
+        "NAV_TITLE: J VILLAGE / AZURE 301",
+        "SECTION 01 / The room | ## One room. Its own weather. | Azure 301 is built around a colour: turquoise joinery, white linen, charcoal stone and the orange pulse of a hand-painted wall. Everything else stays quiet so the room can do the talking.",
+        "SECTION 02 / The wall | ## Orange, graphite, blue. | The mural sits above the bed like a low, bright horizon. Its circles are graphic without making the room feel busy.",
+        "SECTION 03 / A quiet centre | ## White linen. Clear lines. | The bed keeps the composition grounded: soft white bedding against a long charcoal band and the blue of the room.",
+        "SECTION 04 / In the room | ## Designed for slow mornings. | Light, space and a little graphic energy. Azure 301 keeps the practical things close and the visual noise low.",
+        "FEATURES: 01 AZURE: A powder-blue room with a point of view. || 02 THE MURAL: Concentric charcoal rings and orange geometry set the rhythm. || 03 DAYLIGHT: A full-width window softens the room from morning onward. || 04 OPEN FLOOR: Cool grey stone leaves room for the room to breathe.",
+        "CTA_BLOCK: Azure 301 · J Village | ## STAY IN THE BLUE. | A private room with a bright point of view. | Check real dates, current rates and the stay mode that fits your night."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__301/cover.large.webp",
+          "alt": "Azure 301 — the full room with turquoise walls, white bedding, orange mural and a bright window"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__301/01.large.webp",
+          "alt": "Azure 301 — the concentric-circle mural above the bed with twin lounge chairs"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__301/02.large.webp",
+          "alt": "Azure 301 — the centered bed beneath the orange and charcoal mural"
+        }
+      ],
+      "ten_phong": "301 — Azure",
+      "hang": "Deluxe",
+      "tang_theo_website": 3,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/302-sketch",
+      "ma_phong": "302-sketch",
+      "meta_description": "Phòng 302 — Sketch, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Tầng 3 · Superior",
+      "tieu_de_nguyen_van": "SKETCH302",
+      "cau_gioi_thieu_ngan": "Một căn phòng được vẽ bằng đường nét và khoảng trắng.",
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 222K | Qua đêm 639K | Ngày đêm 980K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 — Không gian được vẽ | ## Bức tường là trang giấy. Nét đen là kiến trúc. | Những đường vẽ tay màu đen trải trên nền tường trắng — vừa là hình ảnh, vừa là đường chân trời của căn phòng. | Bề mặt sạch, hình khối gọn, tương phản rõ. Mọi thứ được giữ ở mức vừa đủ để khoảng trắng tự lên tiếng.",
+        "GIƯỜNG / NÉT/ 01",
+        "Trắng của gối. / Xám của vải. / Đen của một nét bút.",
+        "Khoảng trắng | Một mảng tường để thở. Một dải đen để giữ nhịp. Ánh sáng làm phần còn lại.",
+        "KHÔNG GIAN / KHUNG/ 02",
+        "02 — Đường nét & cân bằng | ## Nhịp điệu đơn sắc. | Không cần thêm màu để tạo dấu ấn. Sketch 302 giữ sự cân bằng giữa một đường vẽ tự do và những hình khối rất rõ ràng.",
+        "01 ### NÉT VẼ | Tranh tường vẽ tay trải trên nền trắng, để hình ảnh trở thành một phần của kiến trúc.",
+        "02 ### DẢI ĐEN | Một đường ngang bóng chạy qua đầu giường, giữ nhịp và neo lại toàn bộ không gian.",
+        "03 ### HÌNH KHỐI | Nội thất gọn, bề mặt sáng và đường viền rõ để khoảng trắng có thể tự lên tiếng.",
+        "04 ### ÁNH SÁNG | Ánh sáng đi qua các mảng trắng, làm tương phản đen — trắng trở nên nhẹ và tĩnh.",
+        "CTA: J Village · Superior | ## SKETCH 302 | Một không gian riêng, sáng và gọn — nơi đường nét, ánh sáng và khoảng nghỉ được đặt cạnh nhau."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__302/cover.large.webp",
+          "alt": "Sketch 302 — không gian trắng với đường nét đen, giường trắng và dải đen ngang"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__302/01.large.webp",
+          "alt": "Sketch 302 — giường trắng, đầu giường xám và tranh tường nét đen"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__302/02.large.webp",
+          "alt": "Sketch 302 — góc phòng rộng với dải đen bóng và mảng tường vẽ tay"
+        }
+      ],
+      "ten_phong": "302 — Sketch",
+      "hang": "Superior",
+      "tang_theo_website": 3,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/303-zebra",
+      "ma_phong": "303-zebra",
+      "meta_description": "Phòng 303 — Zebra, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "(website không hiển thị dòng vị trí/tầng; chỉ có \"J Village · Superior\" ở phần cuối)",
+      "tieu_de_nguyen_van": "(không hiển thị tiêu đề lớn; tên trong CTA: Zebra 303)",
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 222K | Qua đêm 639K | Ngày đêm 980K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 — Zebra flow | ## Đường chuyển động trên nền trắng. | Mảng tường đen trắng chạy như một nhịp sóng phía sau giường — đủ mạnh để định hình căn phòng, đủ tiết chế để không gian vẫn thở. | Dải đen bóng cắt ngang tường, giữ mọi thứ trong một khung. Phía dưới là chăn trắng, sàn xám nhạt và ánh sáng rõ.",
+        "Sóng / Khung/ 01",
+        "02 — Visual rhythm | ## Đen là nhịp. Trắng là khoảng lặng. | Căn phòng giữ cá tính ở những đường cong, hình khối và khoảng trắng — không cần thêm một màu nào khác.",
+        "Không gian / Cân bằng/ 02",
+        "03 — Rhythm & contrast",
+        "01 ### TƯƠNG PHẢN | Đen và trắng, không thêm màu để đường chuyển động được nhìn thấy rõ.",
+        "02 ### ĐƯỜNG CONG | Họa tiết sóng chạy ngang tường, tạo nhịp mạnh nhưng vẫn có khoảng thở.",
+        "03 ### HÌNH KHỐI | Khung đen bóng, giường xám và những mặt phẳng sạch giữ căn phòng gọn gàng.",
+        "04 ### ÁNH SÁNG | Ánh sáng sáng, rõ và đều để màu trắng giữ được sự cân bằng thị giác.",
+        "Cân bằng giữa chuyển động và tĩnh lặng — một không gian riêng có nhịp điệu.",
+        "CTA: J Village · Superior | ## Zebra 303 | Một nhịp đen trắng đủ mạnh để căn phòng có cá tính riêng."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__303/cover.large.webp",
+          "alt": "Zebra 303 — toàn cảnh phòng sáng với mảng sóng đen trắng và giường trắng"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__303/01.large.webp",
+          "alt": "Zebra 303 — giường trắng và đường sóng đen trắng phía đầu giường"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__303/02.large.webp",
+          "alt": "Zebra 303 — góc phòng bổ sung với ghế lounge, giường và khoảng trắng"
+        }
+      ],
+      "ten_phong": "303 — Zebra",
+      "hang": "Superior",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/401-mosaic",
+      "ma_phong": "401-mosaic",
+      "meta_description": "Phòng 401 — Mosaic, hạng Deluxe tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Tầng 4",
+      "tieu_de_nguyen_van": "MOSAIC 401",
+      "cau_gioi_thieu_ngan": "Khác biệt ngay từ ánh nhìn đầu tiên.",
+      "gia": {
+        "nghi_gio_2h": 268000,
+        "qua_dem": 719000,
+        "ngay_dem": 1120000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 268K | Qua đêm 719K | Ngày đêm 1.120K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "## Hình khối. Tương phản. Một khoảng riêng đầy cá tính.",
+        "Mosaic 401 gây ấn tượng bằng những mảng hình học đen trắng, sắc đỏ nổi bật và một không gian rộng, sáng, gọn gàng.",
+        "## Đủ mạnh để có dấu ấn. Đủ gọn để dễ chịu.",
+        "## KHÔNG CẦN GIỐNG AI.",
+        "Mosaic system",
+        "## Một chút đỏ thay đổi cả không gian.",
+        "Giữa những gam đen, trắng và xám, sắc đỏ trở thành điểm nhấn vừa đủ để căn phòng không thể bị nhầm lẫn.",
+        "Trong phòng",
+        "## Không gian được tạo nên từ những chi tiết rõ ràng.",
+        "01 Cửa sổ lớn | 02 Hướng phố Triệu Việt Vương | 03 Không gian rộng rãi",
+        "401 MOSAIC",
+        "Một căn phòng. / Một thiết kế. / Một lựa chọn rất riêng.",
+        "## MOSAIC 401",
+        "Chọn một căn phòng / không giống những căn phòng khác.",
+        "401 · Mosaic · J Village"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__401/cover.large.webp",
+          "alt": "Mosaic 401 — toàn cảnh phòng, giường, cửa sổ và mural hình học"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__401/01.large.webp",
+          "alt": "Mosaic 401 — giường và mural đen trắng nhìn chính diện"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__401/02.large.webp",
+          "alt": "Mosaic 401 — góc lounge với mảng tường đỏ và mural"
+        }
+      ],
+      "ten_phong": "401 — Mosaic",
+      "hang": "Deluxe",
+      "tang_theo_website": 4,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/402-linea",
+      "ma_phong": "402-linea",
+      "meta_description": "Phòng 402 — Linea, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Superior · J Village · Tầng 4",
+      "tieu_de_nguyen_van": "(website không hiển thị tiêu đề lớn; tên trong CTA: LINEA 402)",
+      "cau_gioi_thieu_ngan": "Một căn phòng được tạo nên từ nhịp điệu của đường nét.",
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 222K | Qua đêm 639K | Ngày đêm 980K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 — Đường nét & trật tự | ## Tường trắng. Một dải đen ngang. Những lớp đường xám nối tiếp nhau.",
+        "### Đường nét | Bức tranh nhiều lớp xám — trắng là điểm tựa thị giác của căn phòng.",
+        "### Khung ngang | Dải đen bóng giữ mọi thứ trong một nhịp ngang rõ ràng.",
+        "### Khoảng trắng | Ít đồ đạc, nhiều không gian. Cảm giác gọn và yên.",
+        "02 — Nhịp điệu thị giác | ## Mỗi đường là một nhịp. | Giường trắng nằm giữa những lớp đường nét và dải đen bóng — tương phản rõ ràng nhưng không nặng nề.",
+        "03 — Nhịp điệu & cân bằng | ## LINE. ORDER. SPACE.",
+        "01 ### ĐƯỜNG NÉT | Những lớp đường đen trắng tạo điểm tựa thị giác và kéo căn phòng về một nhịp rõ ràng.",
+        "02 ### KHUNG NGANG | Dải đen bóng chạy ngang đầu giường, giữ các mặt phẳng sáng trong cùng một tỷ lệ.",
+        "03 ### KHOẢNG TRẮNG | Tường sáng, ga trắng và sàn xám nhạt để đường nét có đủ khoảng thở.",
+        "04 ### ÁNH SÁNG | Ánh sáng rơi đều trên những bề mặt phẳng, làm tương phản trở nên nhẹ và yên.",
+        "04 — Khoảng riêng | ## Gọn để yên. Sáng để thở. | Mọi vật đúng vị trí của nó: mặt phẳng sáng, đường viền rõ và một khoảng phòng vừa đủ để ánh sáng đi qua.",
+        "CTA: J Village · Superior | ## LINEA 402 | Đường nét · Nhịp điệu · Khoảng trắng"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__402/cover.large.webp",
+          "alt": "Linea 402 — toàn cảnh phòng với giường trắng, dải đen ngang và tường đường nét"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__402/01.large.webp",
+          "alt": "Linea 402 — giường trắng, đầu giường xám và lớp đường nét đen trắng"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__402/02.large.webp",
+          "alt": "Linea 402 — góc nhìn bổ sung cho thấy chiều sâu căn phòng và hệ đường nét"
+        }
+      ],
+      "ten_phong": "402 — Linea",
+      "hang": "Superior",
+      "tang_theo_website": 4,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/403-petal",
+      "ma_phong": "403-petal",
+      "meta_description": "Phòng 403 — Petal, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "403 — Petal",
+      "tien_nghi_nguyen_van": [
+        "Thiết kế Minimal Luxury",
+        "Họa tiết riêng cho từng phòng",
+        "Có cửa sổ"
+      ],
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 222.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 639.000đ | Ngày đêm 980.000đ",
+      "noi_dung_nguyen_van": [],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__403/cover.large.webp",
+          "alt": "403 Petal"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__403/01.large.webp",
+          "alt": "403 Petal 1"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__403/02.large.webp",
+          "alt": "403 Petal 2"
+        }
+      ],
+      "ten_phong": "403 — Petal",
+      "hang": "Superior",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/501-marble",
+      "ma_phong": "501-marble",
+      "meta_description": "Phòng 501 — Marble, hạng Deluxe tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Deluxe",
+      "tieu_de_nguyen_van": "MARBLE501",
+      "cau_gioi_thieu_ngan": "Chậm lại trong một khoảng riêng thật nhẹ — nơi ánh sáng, sắc xám và đường vân giữ nhịp cho căn phòng.",
+      "gia": {
+        "nghi_gio_2h": 268000,
+        "qua_dem": 719000,
+        "ngay_dem": 1120000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 268K | Qua đêm 719K | Ngày đêm 1.120K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 / Một khoảng riêng | ## CHẬM LẠI. | Một căn phòng rành mạch để mắt nhìn được nghỉ. | Marble 501 giữ mọi thứ ở mức vừa đủ: nền đá charcoal, giường trắng, cửa sổ sáng và một mảng tường có dòng chảy riêng.",
+        "02 / Không gian | ## Rộng để thở. Yên để ở. | Ghế lounge, khoảng sàn mở và lớp rèm sáng làm dịu các đường thẳng kiến trúc — để không gian luôn nhẹ dù nhìn từ góc nào.",
+        "03 / Đường vân | ## NHỊP MỀM. | Sắc xám. Ánh sáng. Khoảng trống. | Mảng tường phía sau giường không cần thêm trang trí. Những đường vân đã đủ để căn phòng có một nhịp riêng.",
+        "FEATURES: 01 ĐƯỜNG VÂN: Những đường nét mềm giữ lại dấu ấn riêng mà không làm căn phòng nặng đi. || 02 ÁNH SÁNG: Cửa sổ lớn và lớp rèm mỏng đưa ánh sáng đi thật nhẹ qua không gian. || 03 SẮC XÁM: Từ nền đá đến mảng tường, sắc xám tạo nên một nhịp điềm tĩnh và sạch. || 04 KHOẢNG RIÊNG: Giường trắng, ghế lounge và mặt sàn thoáng để căn phòng có chỗ thở.",
+        "04 / Ở giữa sự yên | ## Giữ lại điều nhẹ nhàng. | Giường trắng nằm giữa các đường nét mềm và dải ngang màu đen — một tâm điểm đủ rõ, phần còn lại nhường chỗ cho sự tĩnh.",
+        "CTA: Marble 501 · J Village | ## CHẬM LẠI THẬT NHẸ. | Một khoảng riêng có nhịp của riêng mình. | Kiểm tra ngày ở, giá hiện tại và lựa chọn lưu trú trong luồng đặt phòng chính thức."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__501/cover.large.webp",
+          "alt": "Marble 501 — góc nhìn rộng với giường trắng, cửa sổ sáng và những đường vân xám phía sau giường"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__501/01.large.webp",
+          "alt": "Marble 501 — góc phòng thoáng với giường, ghế lounge và mảng tường vân xám"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__501/02.large.webp",
+          "alt": "Marble 501 — giường trắng nằm giữa những đường nét mềm và dải ngang màu đen"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "501 — Marble",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/502-nova",
+      "ma_phong": "502-nova",
+      "meta_description": "Phòng 502 — Nova, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": null,
+      "tien_nghi_nguyen_van": [
+        "Thiết kế Minimal Luxury",
+        "Họa tiết riêng cho từng phòng",
+        "Có cửa sổ"
+      ],
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 222.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 639.000đ | Ngày đêm 980.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Superior — Từ 222.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover (meta og:image)",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__502/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__502/01.large.webp",
+          "alt": "502 Nova 1"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__502/02.large.webp",
+          "alt": "502 Nova 2"
+        }
+      ],
+      "ten_phong": "502 — Nova",
+      "hang": "Superior",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/503-zest",
+      "ma_phong": "503-zest",
+      "meta_description": "Phòng 503 — Zest, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Superior",
+      "tieu_de_nguyen_van": "ZEST503",
+      "cau_gioi_thieu_ngan": "Một điểm màu đủ mạnh để căn phòng có nhịp riêng.",
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 222K | Qua đêm 639K | Ngày đêm 980K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "TRẮNGCAMĐEN",
+        "01 / Orange energy | ## Một mảng cam. Một dòng chảy đen trắng. Phần còn lại là khoảng sáng. | Sắc cam đi thẳng vào kiến trúc, tạo năng lượng rõ ràng mà không phủ lên toàn bộ căn phòng. | Hình khối, dải đen và ánh sáng sạch giữ mọi thứ ở đúng nhịp: tươi, gọn và có chủ đích.",
+        "GIƯỜNG / MẢNG CAM/ 01",
+        "02 / Hình khối | ## Trắng để sáng. Đen để neo. Cam để bật. | Giường trắng và đầu giường xám tạo nền yên, để mảng cam và dải đen giữ vai trò điểm nhấn chính.",
+        "03 / Flow & contrast | ## FLOW | Chuyển động trên tường. / Tĩnh lặng trên giường. | Họa tiết dòng chảy làm mềm hình học của căn phòng. Phần còn lại được giữ sạch để ánh sáng, vật liệu và khoảng riêng lên tiếng.",
+        "01 ### MẢNG CAM | Một điểm màu đủ mạnh để căn phòng có nhịp riêng, nhưng vẫn giữ được khoảng thở.",
+        "02 ### KHUNG ĐEN | Dải đen bóng chạy ngang tạo đường neo rõ ràng cho giường và các mặt phẳng sáng.",
+        "03 ### DÒNG CHẢY | Họa tiết đen trắng đưa chuyển động lên tường mà không làm không gian trở nên ồn ào.",
+        "04 ### KHOẢNG TRẮNG | Bề mặt trắng, sàn xám nhạt và ánh sáng sạch giữ tổng thể gọn, tươi và cân bằng.",
+        "04 / Khoảng riêng | ## Một căn phòng có nhịp riêng. | Một góc nhìn khác để thấy độ sâu của không gian: đen trắng dẫn hướng, cam xuất hiện vừa đủ, giường trắng giữ sự nhẹ nhàng.",
+        "CTA: J Village · Superior | ## GIỮ LẠI NHỊP RIÊNG. | Một điểm màu đủ mạnh để căn phòng có nhịp riêng. | Kiểm tra ngày ở, giá hiện tại và lựa chọn lưu trú trong luồng đặt phòng chính thức."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__503/cover.large.webp",
+          "alt": "Zest 503 — toàn cảnh phòng với mảng cam, khung đen bóng và họa tiết dòng chảy đen trắng"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__503/01.large.webp",
+          "alt": "Zest 503 — giường trắng, mảng cam kiến trúc và dải đen ngang phía đầu giường"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__503/02.large.webp",
+          "alt": "Zest 503 — góc nhìn bổ sung với họa tiết đen trắng, giường và khoảng sâu căn phòng"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "503 — Zest",
+      "hang": "Superior",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/601-lagoon",
+      "ma_phong": "601-lagoon",
+      "meta_description": "Phòng 601 — Lagoon, hạng Deluxe tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Tầng 6 · Deluxe",
+      "tieu_de_nguyen_van": "LAGOON601",
+      "cau_gioi_thieu_ngan": "Một nhịp nghỉ theo dòng riêng — xanh, sáng và rộng vừa đủ để mọi đường nét được thở.",
+      "gia": {
+        "nghi_gio_2h": 268000,
+        "qua_dem": 719000,
+        "ngay_dem": 1120000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 268K | Qua đêm 719K | Ngày đêm 1.120K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 / Nhịp chuyển động | ## Không gian cũng có nhịp điệu riêng. | Lagoon 601 đặt sắc xanh dịu cạnh những đường cong đen trắng đầy chuyển động, để căn phòng vừa thoáng vừa có dấu ấn riêng.",
+        "02 / Ánh sáng | ## Rộng để thở. Yên để nghỉ. | Khoảng sàn thoáng, rèm sáng và màu xanh chạy dọc theo tầm mắt — một nhịp nghỉ nhẹ, không cần thêm nhiều chi tiết.",
+        "03 / Màu & đường nét | ## LAGOON | Xanh. Trắng. Đen. / Và một đường cong không đứng yên. | Dải sọc được giữ lại như một nhịp dẫn hướng: đủ mạnh để nhận ra căn phòng, đủ nhẹ để khoảng trống vẫn là nhân vật chính.",
+        "04 / Đường nét riêng | ## Một căn phòng có dòng chảy. | Từ mảng xanh đến những dải sọc uốn cong, Lagoon 601 tạo dấu ấn bằng nhịp điệu và sự thoáng đãng.",
+        "601",
+        "CTA: Lagoon 601 · J Village | ## ĐỂ MỌI THỨ CHẬM LẠI. | Chọn một khoảng riêng có nhịp của riêng mình. | Kiểm tra ngày ở, giá hiện tại và lựa chọn lưu trú trong luồng đặt phòng chính thức."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__601/cover.large.webp",
+          "alt": "Lagoon 601 — không gian mở với giường trắng, ghế lounge và mảng tường xanh cùng dải sọc uốn cong"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__601/01.large.webp",
+          "alt": "Lagoon 601 — ánh sáng qua rèm, giường trắng và mảng tường xanh ở phía cuối phòng"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__601/02.large.webp",
+          "alt": "Lagoon 601 — góc nhìn thẳng vào giường và dải sọc đen trắng trên mảng tường xanh"
+        }
+      ],
+      "ten_phong": "601 — Lagoon",
+      "hang": "Deluxe",
+      "tang_theo_website": 6,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/602-solstice",
+      "ma_phong": "602-solstice",
+      "meta_description": "Phòng 602 — Solstice, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Tầng 6 · Superior",
+      "tieu_de_nguyen_van": "SOLSTICE602",
+      "cau_gioi_thieu_ngan": "Một nhịp màu ấm giữa không gian trắng thật nhẹ.",
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 222K | Qua đêm 639K | Ngày đêm 980K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "ÁNH SÁNGVÒNG TRÒNTƯƠNG PHẢN",
+        "01 / Nhịp mặt trời | ## Hai vòng tròn đỏ cam. Một đường đen ngang. Phần còn lại là khoảng trắng. | Những hình khối đỏ cam đặt trên nền tường trắng, như hai nhịp ấm giữa một căn phòng luôn sáng. | Dải đen bóng chạy ngang làm khung cho không gian — rõ ràng, chính xác, giữ mọi thứ ở đúng vị trí.",
+        "GIƯỜNG / VÒNG MÀU/ 01",
+        "02 / Mảng màu | ## Trắng để sáng. Đen để neo. Cam để ấm. | Giường trắng, đầu giường xám và mảng tường nhiều lớp giữ cho sắc đỏ cam có điểm nhấn, không trở thành nền của cả căn phòng.",
+        "03 / Ánh sáng & cân bằng | ## Trắng sáng. Đen rõ. Ấm vừa đủ. | Một không gian gọn và mở, nơi hình khối, ánh sáng và sắc màu cùng tạo ra nhịp nghỉ riêng.",
+        "01 ### VÒNG TRÒN | Những mảng màu đỏ cam tạo nhịp thị giác rõ ràng trên nền tường trắng.",
+        "02 ### KHUNG ĐEN | Dải đen bóng chạy ngang đầu giường, giữ hình khối và đường chân trời của căn phòng.",
+        "03 ### VẢI TRẮNG | Giường trắng và đầu giường xám làm sắc ấm hiện lên vừa đủ, không lấn át khoảng thở.",
+        "04 ### ÁNH SÁNG | Ánh sáng sáng, sạch và đều để các mảng hình học giữ được vẻ nhẹ, hiện đại.",
+        "04 / Khoảng riêng | ## Một căn phòng có dòng chảy. | Góc lounge, tủ trắng và khoảng sàn sáng mở rộng cảm giác về một không gian riêng vừa đủ.",
+        "KHÔNG GIAN / KHUNG/ 02",
+        "CTA: J Village · Superior | ## SOLSTICE 602"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__602/cover.large.webp",
+          "alt": "Solstice 602 — toàn cảnh phòng trắng với giường xám, dải đen và mảng tường đỏ cam"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__602/01.large.webp",
+          "alt": "Solstice 602 — giường trắng và các vòng màu đỏ cam trên tường"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__602/02.large.webp",
+          "alt": "Solstice 602 — góc nhìn rộng với giường, ghế lounge và khoảng trắng"
+        }
+      ],
+      "ten_phong": "602 — Solstice",
+      "hang": "Superior",
+      "tang_theo_website": 6,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/603-sway",
+      "ma_phong": "603-sway",
+      "meta_description": "Phòng 603 — Sway, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "603 — Sway",
+      "tien_nghi_nguyen_van": [
+        "Thiết kế Minimal Luxury",
+        "Họa tiết riêng cho từng phòng",
+        "Có cửa sổ"
+      ],
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 222.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 639.000đ | Ngày đêm 980.000đ",
+      "noi_dung_nguyen_van": [],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__603/cover.large.webp",
+          "alt": "603 Sway"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__603/01.large.webp",
+          "alt": "603 Sway 1"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__603/02.large.webp",
+          "alt": "603 Sway 2"
+        }
+      ],
+      "ten_phong": "603 — Sway",
+      "hang": "Superior",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/701-contour",
+      "ma_phong": "701-contour",
+      "meta_description": "Phòng 701 — Contour, hạng Deluxe tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Seventh floor · Deluxe",
+      "tieu_de_nguyen_van": "CONTOUR 701",
+      "cau_gioi_thieu_ngan": "A bright room shaped by light, clean contours and the green edge beyond the window.",
+      "gia": {
+        "nghi_gio_2h": 268000,
+        "qua_dem": 719000,
+        "ngay_dem": 1120000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 268K | Qua đêm 719K | Ngày đêm 1.120K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 / Light | ## LET THE MORNING IN. | Contour 701 keeps its palette quiet so daylight can become the main material: soft through the curtains, bright on the floor, calm against the white bed.",
+        "02 / Green edge | ## A little green at the edge of the day. | The room looks outward without asking you to leave it. Two chairs, a small table and the window doing what windows do best.",
+        "03 / Contour | ## Lines that soften the room. | One organic pattern gives the architecture a pulse. It is enough to mark the room without turning it into a theme.",
+        "04 / In the room | ## QUIETLY PRECISE. | Every line has a job: to hold the light, frame the view or leave more space for rest.",
+        "FEATURES: 01 MORNING LIGHT: A wide window opens the room to a softer pace. || 02 GREEN EDGE: A quiet view beyond the glass keeps the interior fresh. || 03 SOFT CONTOURS: A single organic wall gives the clean room its signature. || 04 OPEN FLOOR: Reflective grey stone extends the light through the room.",
+        "CTA: Contour 701 · J Village | ## STAY WITH THE LIGHT. | A clean, bright pause above J Village. | Check real dates, current rates and the stay mode that fits your night."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__701/cover.large.webp",
+          "alt": "Contour 701 — bright contemporary room with white bed, contour wall and reflective grey floor"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__701/01.large.webp",
+          "alt": "Contour 701 — daylight, lounge chairs and a soft grey contour wall"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/deluxe__701/02.large.webp",
+          "alt": "Contour 701 — a quiet room view with the contour wall, mirror and open floor"
+        }
+      ],
+      "ten_phong": "701 — Contour",
+      "hang": "Deluxe",
+      "tang_theo_website": 7,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng view đẹp",
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/702-coral",
+      "ma_phong": "702-coral",
+      "meta_description": "Phòng 702 — Coral, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Tầng 7 · Superior",
+      "tieu_de_nguyen_van": "CORAL702",
+      "cau_gioi_thieu_ngan": "Một khoảng màu vừa đủ để căn phòng có nhịp riêng.",
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 222K | Qua đêm 639K | Ngày đêm 980K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 / Coral flow | ## Sắc coral làm nền. Đường trắng dẫn nhịp. | Từ tường coral ấm đến những đường line-art trắng, mọi thứ trong Coral 702 được giữ ở một nhịp sáng, gọn và có khoảng thở.",
+        "02 / Đường nét | ## Trắng để sáng. Đen để neo. | Giường trắng nằm giữa line-art mềm và dải đen bóng — một tương phản rõ ràng nhưng không nặng nề.",
+        "03 / Line & balance | ## CORAL | Màu. Trắng. Đen. / Và một đường chảy không đứng yên. | Dải ngang giữ lại cảm giác kiến trúc, còn line-art đưa căn phòng về phía mềm hơn. Cân bằng nằm ở giữa hai chuyển động đó.",
+        "FEATURES: 01 SẮC CORAL: Một nền màu ấm, sáng và đủ rõ để căn phòng có bản sắc ngay từ ánh nhìn đầu tiên. || 02 ĐƯỜNG TRẮNG: Line-art uốn chảy qua mảng tường, mềm hóa những hình khối hiện đại. || 03 KHUNG NGANG: Dải đen bóng chạy qua đầu giường, giữ nhịp và tạo điểm neo cho toàn bộ không gian. || 04 KHOẢNG THỞ: Giường trắng, tủ trắng và sàn xám nhạt để sắc coral luôn sáng, sạch và cân bằng.",
+        "04 / Khoảng riêng | ## Một căn phòng có dòng chảy. | Gương, ghế lounge, tủ trắng và khoảng sàn sáng mở rộng cảm giác về một không gian riêng vừa đủ.",
+        "CTA: Coral 702 · J Village · Superior | ## GIỮ LẠI NHỊP RIÊNG. | Một khoảng màu vừa đủ để căn phòng có nhịp riêng. | Kiểm tra ngày ở, giá hiện tại và lựa chọn lưu trú trong luồng đặt phòng chính thức."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__702/cover.large.webp",
+          "alt": "Coral 702 — toàn cảnh phòng với tường coral, line-art trắng, giường trắng, ghế lounge và dải đen ngang"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__702/01.large.webp",
+          "alt": "Coral 702 — giường trắng đối diện tường coral với những đường line-art trắng"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__702/02.large.webp",
+          "alt": "Coral 702 — góc nhìn từ giường về gương, ghế lounge và khoảng sâu của căn phòng"
+        }
+      ],
+      "ten_phong": "702 — Coral",
+      "hang": "Superior",
+      "tang_theo_website": 7,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/703-limewave",
+      "ma_phong": "703-limewave",
+      "meta_description": "Phòng 703 — Limewave, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "703 — Limewave",
+      "tien_nghi_nguyen_van": [
+        "Thiết kế Minimal Luxury",
+        "Họa tiết riêng cho từng phòng",
+        "Có cửa sổ"
+      ],
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 222.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 639.000đ | Ngày đêm 980.000đ",
+      "noi_dung_nguyen_van": [],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__703/cover.large.webp",
+          "alt": "703 Limewave"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__703/01.large.webp",
+          "alt": "703 Limewave 1"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__703/02.large.webp",
+          "alt": "703 Limewave 2"
+        }
+      ],
+      "ten_phong": "703 — Limewave",
+      "hang": "Superior",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/801-minimal",
+      "ma_phong": "801-minimal",
+      "meta_description": "Phòng 801 — Minimal, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Tầng 8 · Superior",
+      "tieu_de_nguyen_van": "MINIMAL801",
+      "cau_gioi_thieu_ngan": "Bớt đi những thứ không cần thiết. Giữ lại ánh sáng, khoảng trống và một nhịp nghỉ vừa đủ.",
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 222K | Qua đêm 639K | Ngày đêm 980K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 / Ít hơn | ## LESS | Một căn phòng rõ ràng để tâm trí được nghỉ. | Minimal 801 không cố gắng gây ấn tượng bằng nhiều lớp trang trí. Ở đây, màu sắc, ánh sáng và hình khối tự làm phần việc của mình.",
+        "02 / Không gian | ## Màu ấm ở phía trên. | Trần vàng là điểm neo thị giác. Phần còn lại giữ nền sáng, xám và yên để căn phòng không bị nặng.",
+        "03 / Đường đen | ## Đường đen giữ nhịp. | Một dải ngang bóng, kéo dài qua đầu giường và nối các mảng tường thành một đường nét duy nhất.",
+        "04 / Ánh sáng | ## ÁNH SÁNG ĐI NGANG. | Buổi tối, ánh sáng hắt dưới dải đầu giường làm căn phòng dịu xuống. Không cần thêm gì nữa.",
+        "Chi tiết phòng | ## Khi bớt đi những thứ không cần thiết, còn lại là trải nghiệm.",
+        "01 / TRẦN VÀNG: Một mặt phẳng ấm áp kéo ánh nhìn lên trên. || 02 / ĐƯỜNG ĐEN: Dải đầu giường bóng giữ nhịp cho toàn bộ căn phòng. || 03 / ÁNH SÁNG: Ánh sáng hắt dịu, vừa đủ để căn phòng chậm lại. || 04 / KHOẢNG TRỐNG: Giường xám, sàn gạch và những bề mặt sạch.",
+        "801 | J Village · Minimal 801 | Ít hơn. / Nhưng vừa đủ.",
+        "CTA: Minimal 801 · J Village | ## ENOUGH. | Một khoảng nghỉ có trật tự. | Xem thời gian lưu trú và giá thực tế của phòng 801. | 801 · J Village"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__801/cover.large.webp",
+          "alt": "Minimal 801 — toàn cảnh căn phòng với trần vàng, giường xám và dải đầu giường đen"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__801/01.large.webp",
+          "alt": "Minimal 801 — góc nhìn rộng về bàn làm việc, cửa sổ và giường"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__801/02.large.webp",
+          "alt": "Minimal 801 — góc phòng với giường trắng, rèm xám và ánh sáng ấm"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__801/03.large.webp",
+          "alt": "Minimal 801 — chi tiết giường và dải đầu giường đen bóng"
+        }
+      ],
+      "ten_phong": "801 — Minimal",
+      "hang": "Superior",
+      "tang_theo_website": 8,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/802-graff",
+      "ma_phong": "802-graff",
+      "meta_description": "Phòng 802 — Graff, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "802 — Graff",
+      "tien_nghi_nguyen_van": [
+        "Thiết kế Minimal Luxury",
+        "Họa tiết riêng cho từng phòng",
+        "Có cửa sổ"
+      ],
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 222.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 639.000đ | Ngày đêm 980.000đ",
+      "noi_dung_nguyen_van": [],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__802/cover.large.webp",
+          "alt": "802 Graff"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__802/01.large.webp",
+          "alt": "802 Graff 1"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__802/02.large.webp",
+          "alt": "802 Graff 2"
+        }
+      ],
+      "ten_phong": "802 — Graff",
+      "hang": "Superior",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/803-mist",
+      "ma_phong": "803-mist",
+      "meta_description": "Phòng 803 — Mist, hạng Superior tại J Village. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "803 — Mist",
+      "tien_nghi_nguyen_van": [
+        "Thiết kế Minimal Luxury",
+        "Họa tiết riêng cho từng phòng",
+        "Có cửa sổ"
+      ],
+      "gia": {
+        "nghi_gio_2h": 222000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 639000,
+        "ngay_dem": 980000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 222.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 639.000đ | Ngày đêm 980.000đ",
+      "noi_dung_nguyen_van": [],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__803/cover.large.webp",
+          "alt": "803 Mist"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__803/01.large.webp",
+          "alt": "803 Mist 1"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/superior__803/02.large.webp",
+          "alt": "803 Mist 2"
+        }
+      ],
+      "ten_phong": "803 — Mist",
+      "hang": "Superior",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/blackpink",
+      "ma_phong": "blackpink",
+      "meta_description": "Phòng J Private Room — Blackpink, hạng Concept tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Tầng 3 · Private room",
+      "tieu_de_nguyen_van": "BLACK PINK",
+      "cau_gioi_thieu_ngan": "Một không gian nơi ánh sáng và những phản chiếu nối tiếp nhau.",
+      "gia": {
+        "nghi_gio_2h": 368000,
+        "qua_dem": 789000,
+        "ngay_dem": 1260000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 368K | Qua đêm 789K | Ngày đêm 1.260K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 | ## ENTER THE MIRROR ROOM | Blackpink được tạo nên từ ánh sáng tím, rèm trắng và những mặt gương nối tiếp nhau. Mỗi góc nhìn mở ra một lớp không gian khác, rộng hơn và sâu hơn bên ngoài căn phòng.",
+        "## ONE ROOM. ENDLESS REFLECTIONS. | Những mảng gương lớn kéo dài tầm nhìn và khiến không gian tiếp tục lặp lại phía sau những lớp rèm.",
+        "02 · The center | ## THE CENTER OF THE NIGHT | Giường tròn nằm giữa ánh sáng hắt dịu và những lớp rèm trắng, trở thành tâm điểm của toàn bộ căn phòng.",
+        "03 · Curtains & light | ## SOFT LAYERS. ELECTRIC LIGHT. | Những lớp rèm mềm tạo cảm giác riêng tư, trong khi ánh sáng tím chạy dọc các mảng tường và gương làm thay đổi hoàn toàn bầu không khí sau khi đêm xuống.",
+        "01 ### THE CURVE | Ghế lounge đen tạo một điểm neo điêu khắc giữa nền sáng mềm.",
+        "02 ### THE GLOW | Ánh tím hồng bao quanh căn phòng và thay đổi cảm giác của từng góc nhìn.",
+        "03 ### THE MIRROR | Những mặt gương lớn kéo dài không gian thành nhiều lớp phản chiếu.",
+        "04 ### THE BED | Giường tròn là tâm điểm riêng tư nằm giữa rèm trắng và ánh sáng dịu.",
+        "Quote: Ánh sáng ở đây không chiếu sáng — nó bao lấy căn phòng.",
+        "Trong phòng | Một không gian riêng cho hai người. | J Village | J Private Room · Blackpink | Giường tròn | Hệ gương lớn tạo hiệu ứng không gian | Ghế tình yêu | COUPLES",
+        "## STAY INSIDE THE GLOW. | J Private Room · Blackpink · J Village"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__blackpink/cover.large.webp",
+          "alt": "Blackpink J Village với giường tròn, rèm trắng và ánh sáng tím hồng"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__blackpink/02.large.webp",
+          "alt": "Toàn cảnh Blackpink J Village qua lớp rèm trắng"
+        },
+        {
+          "nhan": "mirror",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__blackpink/mirror.large.webp",
+          "alt": "Những lớp gương tạo phản chiếu nối tiếp nhau"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__blackpink/01.large.webp",
+          "alt": "Giường tròn hồng giữa ánh sáng tím dịu"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__blackpink/03.large.webp",
+          "alt": "Lớp rèm trắng cạnh dải sáng tím"
+        },
+        {
+          "nhan": "neon",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__blackpink/neon.large.webp",
+          "alt": "Biểu tượng neon tím trong không gian tối"
+        },
+        {
+          "nhan": "lounge-chair",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__blackpink/lounge-chair.large.webp",
+          "alt": "Ghế lounge đen tạo hình cong trong ánh sáng hồng"
+        }
+      ],
+      "ten_phong": "J Private Room — Blackpink",
+      "hang": "Concept",
+      "tang_theo_website": 3,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/crimson-suite",
+      "ma_phong": "crimson-suite",
+      "meta_description": "Phòng J Private Room — Crimson Suite, hạng Suite tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Private Suite · J Village",
+      "tieu_de_nguyen_van": "50 *Shades*",
+      "cau_gioi_thieu_ngan": "A room made for the night to feel different.",
+      "gia": {
+        "nghi_gio_2h": 570000,
+        "qua_dem": 1089000,
+        "ngay_dem": 1960000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 570K | Qua đêm 1.089K | Ngày đêm 1.960K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "Opening statement | ## Không chỉ là một căn phòng. | Crimson Suite mang sắc đỏ chủ đạo, những vùng không gian nối tiếp nhau và các điểm nhấn dành cho hai người: bồn tắm độc lập, sofa nhung và giường canopy đen.",
+        "The bath | ## The center of the room. | Bồn tắm độc lập trở thành điểm nhìn đầu tiên của khu vực trung tâm, nối liền với gương, bàn console và những lớp ánh sáng đỏ của suite.",
+        "Caption: Những vòm cong dẫn mắt từ khu lounge qua khu thay đồ và vào không gian nghỉ — một chuỗi riêng tư được nối bằng ánh sáng đỏ.",
+        "Signature details: 01 ### The Bath | 02 ### The Bed | 03 ### The Light | 04 ### The Space  (mỗi mục có cùng câu: \"Một chi tiết làm nên trải nghiệm riêng tư và khác biệt.\")",
+        "## Tonight can feel different. | Đêm nay có thể khác đi.",
+        "Crimson Suite · J Village"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://www.bookphong.com/media/rooms/j-village/suite__50shades-crimson-suite/cover.large.webp",
+          "alt": "Crimson Suite với những mái vòm đỏ, sofa nhung và giường canopy đen"
+        },
+        {
+          "nhan": "02",
+          "url": "https://www.bookphong.com/media/rooms/j-village/suite__50shades-crimson-suite/02.large.webp",
+          "alt": "Bồn tắm độc lập màu đỏ trong không gian suite Crimson"
+        },
+        {
+          "nhan": "01",
+          "url": "https://www.bookphong.com/media/rooms/j-village/suite__50shades-crimson-suite/01.large.webp",
+          "alt": "Gương lớn, sofa nhung và ghế dài trong ánh sáng đỏ"
+        },
+        {
+          "nhan": "03",
+          "url": "https://www.bookphong.com/media/rooms/j-village/suite__50shades-crimson-suite/03.large.webp",
+          "alt": "Những vòm cong đỏ nối các khu vực trong suite"
+        },
+        {
+          "nhan": "04",
+          "url": "https://www.bookphong.com/media/rooms/j-village/suite__50shades-crimson-suite/04.large.webp",
+          "alt": "Chi tiết khung giường canopy đen"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "J Private Room — Crimson Suite",
+      "hang": "Suite",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng có bồn tắm",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/pink-sakura",
+      "ma_phong": "pink-sakura",
+      "meta_description": "Phòng J Private Room — Pink Sakura, hạng Concept tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · Concept room",
+      "tieu_de_nguyen_van": "PINK SAKURA",
+      "cau_gioi_thieu_ngan": "Một khoảng hồng đủ riêng để mọi thứ chậm lại.",
+      "gia": {
+        "nghi_gio_2h": 368000,
+        "qua_dem": 789000,
+        "ngay_dem": 1260000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 368K | Qua đêm 789K | Ngày đêm 1.260K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 — Sakura sanctuary | ## Ngủ dưới một *tán hoa* không bao giờ tàn. | Vòng trần phát sáng nằm giữa lớp hoa dày và những thanh dọc mảnh. Ánh hồng rơi xuống, thu nhỏ thế giới bên ngoài còn lại một khoảng riêng cho hai người.",
+        "Giường tròn | Trần hoa trang trí | Hệ gương và ánh sáng hồng",
+        "02 — Câu chuyện thị giác",
+        "Lớp rèm · nhịp thanh mảnh",
+        "Bước qua lớp rèm, như bước vào một thế giới khác.",
+        "03 — Glow & reflection | ## Ánh sáng chạm, *gương giữ lại.*",
+        "Vòng tròn: Tâm phòng được giữ lại cho giường tròn và quầng sáng quanh nó.",
+        "Tán hoa: Màu hồng đi từ trần xuống, tạo cảm giác được bao bọc thay vì phô bày.",
+        "Lớp voan: Rèm mỏng và những thanh dọc làm mềm đường nhìn, giữ lại một khoảng riêng.",
+        "CTA: J Village · Concept | ## Pink Sakura | Chậm lại, trong sắc hồng."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__pinksakura/cover.large.webp",
+          "alt": "Pink Sakura J Village — giường tròn dưới tán hoa và vòng sáng hồng"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__pinksakura/01.large.webp",
+          "alt": "Pink Sakura J Village — vòng trần phát sáng nhìn từ bên trong tán hoa"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__pinksakura/03.large.webp",
+          "alt": "Pink Sakura J Village — lớp rèm mỏng và biểu tượng neon ở trung tâm"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__pinksakura/02.large.webp",
+          "alt": "Pink Sakura J Village — tán hoa, thanh dọc và giường tròn"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "J Private Room — Pink Sakura",
+      "hang": "Concept",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "j-village",
+      "co_so_ten": "J Village",
+      "link_phong": "https://www.bookphong.com/phong/playboy",
+      "ma_phong": "playboy",
+      "meta_description": "Phòng J Private Room — Playboy, hạng Concept tại J Village. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "J Village · concept room",
+      "tieu_de_nguyen_van": "PLAYBOY ROOM",
+      "cau_gioi_thieu_ngan": "Một chút táo bạo. Một chút vui. Hoàn toàn riêng tư.",
+      "gia": {
+        "nghi_gio_2h": 368000,
+        "qua_dem": 789000,
+        "ngay_dem": 1260000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 368K | Qua đêm 789K | Ngày đêm 1.260K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "Curtains closed. World off.",
+        "PLAY A LITTLE · PLAY A LITTLE · PLAY A LITTLE",
+        "## PLAY A LITTLE. | Sắc đỏ, ánh neon và những chi tiết lấy cảm hứng từ Playboy tạo nên một căn phòng vừa táo bạo, vừa vui vẻ và đầy riêng tư.",
+        "01 — The bed | ## CURTAINS CLOSED. WORLD OFF. | Khung giường bốn cột với rèm trắng tạo nên một khoảng riêng ngay giữa căn phòng — mềm mại, kín đáo và có chút kịch tính.",
+        "02 — The neon | ## LIGHTS ON. MOOD ON. | Một điểm neon nhỏ nhưng đủ để thay đổi toàn bộ không khí của căn phòng. Ánh tím hồng là chữ ký sau khi thành phố lên đèn.",
+        "03 — Details with attitude | ## DETAILS WITH ATTITUDE.",
+        "01 POSTERS | 02 NEON | 03 CURTAINS | 04 MIRRORS",
+        "## STAY A LITTLE LATER. | Bên ngoài là phố Triệu Việt Vương. Bên trong, mọi thứ chuyển sang một nhịp khác.",
+        "Trong phòng | ## Những chi tiết làm nên trải nghiệm riêng.",
+        "01 Giường khung rèm đặc trưng | 02 Ghế tình yêu | 03 Không gian Playboy với ánh sáng neon | 04 COUPLES",
+        "## PLAYBOY ROOM. | J Village · một không gian riêng tư cho hai người"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__playboy/cover.large.webp",
+          "alt": "Phòng Playboy J Village với giường khung rèm trắng và sắc đỏ"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__playboy/01.large.webp",
+          "alt": "Ghế lounge đỏ và giường khung rèm trong phòng Playboy"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__playboy/02.large.webp",
+          "alt": "Biểu tượng Playboy neon màu tím hồng bên giường"
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-village/concept__playboy/03.large.webp",
+          "alt": "Chi tiết rèm trắng, gương sáng và ghế lounge đỏ"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "J Private Room — Playboy",
+      "hang": "Concept",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng dành cho cặp đôi"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1262 @@
+{
+  "nguon": "https://www.bookphong.com (trích nguyên văn ngày 06/11/2026)",
+  "ghi_chu_website": [
+    "Giá “Từ” là giá tham khảo. Giá chính xác theo ngày/giờ khi đặt phòng.",
+    "Giá có thể thay đổi theo ngày và khung giờ. Giá chính xác được xác nhận khi đặt phòng."
+  ],
+  "quy_dinh": {
+    "nguon": "Chủ cơ sở cung cấp (website bookphong.com không đăng quy định)",
+    "gio_luu_tru": {
+      "nghi_gio": "Giá áp dụng cho 2 giờ đầu (theo website)",
+      "qua_dem": "Từ 22h đến 12h hôm sau",
+      "ngay_dem": "Từ 14h đến 12h hôm sau"
+    },
+    "phu_thu_gio": "Quá giờ sau 10 phút thì tính thêm 1 giờ.",
+    "gio_phat_sinh_mac_dinh": {
+      "gia_tri": 100000,
+      "ghi_chu": "Mức mặc định do chủ cơ sở đặt. Phòng nào website có ghi mức riêng thì dùng mức của website. Không cần chủ động nhắc đến khi tư vấn."
+    },
+    "do_xe": "Có chỗ đỗ xe.",
+    "giay_to": "Không cần thông báo đến khách hàng.",
+    "huy_phong": "Do nhân viên (người thật) xử lý, chatbot không xử lý.",
+    "quy_dinh_khac": "Các quy định khác do cơ sở phổ biến trực tiếp khi khách đến."
+  },
+  "co_so": {
+    "ma": "jacayl-ha-dong",
+    "ten": "Jacayl Hotel Hà Đông",
+    "dia_chi": "Ngã ba Phúc La Phùng Hưng",
+    "gioi_thieu": "23 phòng với 3 hạng phòng gồm Standard, Deluxe và Concept. Bãi đỗ ô tô rộng rãi ngay trước cửa.",
+    "so_hang_so_phong": "3 hạng phòng · 23 phòng",
+    "dien_thoai": "0522 464 646",
+    "website": "https://jacaylhotel.com.vn",
+    "zalo": "https://zalo.me/0522464646",
+    "link": "https://www.bookphong.com/co-so/jacayl-ha-dong",
+    "gia_tu_theo_hang": {
+      "Concept": 399000,
+      "Standard": 159000,
+      "Deluxe": 279000
+    },
+    "anh_dai_dien": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/properties/j-ha-dong/cover.large.webp"
+  },
+  "nhom_nhu_cau_theo_website": {
+    "bathtub": {
+      "ten": "Phòng có bồn tắm",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=bathtub",
+      "so_phong_website_ghi": 5,
+      "phong": [
+        "101-long-chim",
+        "601-50-sac-thai",
+        "602-playboy"
+      ]
+    },
+    "nice-view": {
+      "ten": "Phòng view đẹp",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=nice-view",
+      "so_phong_website_ghi": 24,
+      "phong": []
+    },
+    "couples": {
+      "ten": "Phòng dành cho cặp đôi",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=couples",
+      "so_phong_website_ghi": 17,
+      "phong": [
+        "101-long-chim",
+        "601-50-sac-thai",
+        "602-playboy"
+      ]
+    },
+    "stay": {
+      "ten": "Phòng phù hợp lưu trú",
+      "nguon": "https://www.bookphong.com/phong?nhuCau=stay",
+      "so_phong_website_ghi": 49,
+      "phong": [
+        "201-la-casta",
+        "501-hentai-room",
+        "305-yeu-i",
+        "405-1st-time",
+        "205-red-velvet",
+        "505-koi-room",
+        "302-barbie-bedroom",
+        "402-whisky",
+        "202-grand-canyon",
+        "303-rose-wine",
+        "403-led-neon",
+        "502-absinthe",
+        "203-red-rum",
+        "304-french-kiss",
+        "404-lolipop",
+        "503-small-lounge",
+        "603-lan-kwei-fong",
+        "204-rico-dinner",
+        "504-xala-dream",
+        "604-tequila"
+      ]
+    }
+  },
+  "phong": [
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/101-long-chim",
+      "ma_phong": "101-long-chim",
+      "meta_description": "Phòng 101 — Lồng Chim, hạng Concept tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Jacayl Hà Đông · Concept",
+      "tieu_de_nguyen_van": "LONG CHIM 101",
+      "cau_gioi_thieu_ngan": "Một khoảng riêng như được giấu sau lớp xanh và bóng tối.",
+      "gia": {
+        "nghi_gio_2h": 399000,
+        "qua_dem": 700000,
+        "ngay_dem": 780000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 399K | Qua đêm 700K | Ngày đêm 780K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 ## Lớp xanh sau khung tối. | Một bức tường xanh dày phủ kín không gian. Khung đen giữ ánh sáng thấp và tách căn phòng khỏi bên ngoài. | Những đường cong và mặt gương làm lớp xanh sâu hơn — đủ riêng tư để nhịp nghỉ chậm lại.",
+        "Lớp xanh · ghế cong · ánh sáng phản chiếu",
+        "02 — Lồng & đường cong ## Mọi thứ đều cong lại, khép vào.",
+        "01 ### Khung lồng | Những nan đen tạo một lớp bao bọc, giữ chiếc giường tròn ở trung tâm.",
+        "02 ### Lớp xanh | Bức tường cây dày kéo khu vườn vào trong một không gian riêng tư.",
+        "03 ### Đường cong | Ghế lounge, gương vòm và bồn tắm trắng làm mềm lớp kiến trúc tối.",
+        "04 ### Phản chiếu | Ánh sáng và gương nhân đôi những lớp xanh, bóng tối và khoảng thở.",
+        "03 — Một khoảng riêng ## KHÉP CỬA. THỞ CHẬM. | Long Chim 101 được nhận ra từ cấu trúc: một chiếc giường tròn trong khung đen, một khu vườn sống phía sau, những hình khối trắng và một nhịp nghỉ tách khỏi bên ngoài.",
+        "Jacayl Hotel Hà Đông · Concept · 101 · Lồng Chim"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/concept__101/cover.large.webp",
+          "alt": "Long Chim 101 với giường tròn trong khung đen, tường xanh và ghế lounge sculptural"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/concept__101/01.large.webp",
+          "alt": "Long Chim 101 với bức tường xanh, gương viền sáng và những chiếc ghế cong"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/concept__101/02.large.webp",
+          "alt": "Bồn tắm trắng và gương vòm phản chiếu lớp xanh trong Long Chim 101"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng",
+        "tên trong danh sách: \"101 — Lồng Chim\""
+      ],
+      "ten_phong": "101 — Lồng Chim",
+      "hang": "Concept",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng có bồn tắm",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/201-la-casta",
+      "ma_phong": "201-la-casta",
+      "meta_description": "Phòng 201 — La Casta, hạng Standard tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Jacayl Hotel Hà Đông · Standard",
+      "tieu_de_nguyen_van": "La Catsa201",
+      "cau_gioi_thieu_ngan": "Một căn phòng ấm hơn một chút, nơi những đường cong terracotta giữ cho mọi thứ gần gũi và sáng rõ.",
+      "gia": {
+        "nghi_gio_2h": 159000,
+        "qua_dem": 420000,
+        "ngay_dem": 520000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 159K | Qua đêm 420K | Ngày đêm 520K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "TERRACOTTA · ARCHES · NAVY",
+        "01 / Câu chuyện không gian ## Ấm, nhưng vẫn gọn. | La Catsa dùng một bảng màu có độ sâu để làm nổi bật những điều thiết thực: giường trắng, ánh sáng ấm, hai ghế ngồi và các mảng vòm lặp lại.",
+        "GIƯỜNG / HỆ VÒM / GHẾ LOUNGE / 01",
+        "02 / Nhìn gần hơn ## Những mảng màu để ánh sáng lên tiếng. | Góc chụp thứ hai mở ra phần còn lại của căn phòng: mặt tường có nhịp điệu, tủ TV liền mạch và một khoảng ngồi vừa đủ cho hai người.",
+        "01 ### VÒM TƯỜNG | Nhịp vòm lặp lại trên tường, tạo chiều sâu mà không cần thêm trang trí.",
+        "02 ### TÔNG ĐẤT | Terracotta bao phủ không gian, được cân bằng bởi ga giường trắng và nền sáng.",
+        "03 ### GÓC NGỒI | Hai ghế lounge xanh navy tạo một điểm dừng riêng bên cạnh giường.",
+        "CTA: Jacayl Hotel Hà Đông · Standard | ## GIỮ LẠI MỘT KHOẢNG ẤM. | La Catsa 201, Jacayl Hà Đông. | Kiểm tra ngày ở, giá hiện tại và lựa chọn lưu trú trong luồng đặt phòng chính thức."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__201/cover.large.webp",
+          "alt": "La Catsa 201 — góc rộng với giường trắng, vòm tường terracotta và ghế xanh navy"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__201/01.large.webp",
+          "alt": "La Catsa 201 — góc nhìn từ giường về hệ vòm, ghế lounge và tủ TV"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__201/02.large.webp",
+          "alt": "La Catsa 201 — giường trắng và hai ghế lounge bên những hốc tường phát sáng"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng",
+        "tên trong danh sách/meta: \"La Casta\"; trên trang: \"La Catsa\""
+      ],
+      "ten_phong": "201 — La Casta",
+      "hang": "Standard",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/202-grand-canyon",
+      "ma_phong": "202-grand-canyon",
+      "meta_description": "Phòng 202 — Grand Canyon, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "202 — Grand Canyon",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\"",
+        "HÌNH ẢNH PHÒNG (nguyên văn): \"Bộ ảnh phòng đang được cập nhật.\"  (không có ảnh phụ nào)"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__202/cover.large.webp",
+          "alt": "202 Grand Canyon"
+        }
+      ],
+      "ten_phong": "202 — Grand Canyon",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/203-red-rum",
+      "ma_phong": "203-red-rum",
+      "meta_description": "Phòng 203 — Red Rum, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "203 — Red Rum",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__203/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__203/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__203/02.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__203/03.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "203 — Red Rum",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/204-rico-dinner",
+      "ma_phong": "204-rico-dinner",
+      "meta_description": "Phòng 204 — Rico Dinner, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "204 — Rico Dinner",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__204/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__204/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__204/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "204 — Rico Dinner",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/205-red-velvet",
+      "ma_phong": "205-red-velvet",
+      "meta_description": "Phòng 205 — Red Velvet, hạng Standard tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": null,
+      "tien_nghi_nguyen_van": [
+        "Không gian vừa phải, đầy đủ công năng",
+        "Thiết kế khác nhau giữa các phòng",
+        "Phù hợp nghỉ giờ, qua đêm và ngày đêm"
+      ],
+      "gia": {
+        "nghi_gio_2h": 159000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 420000,
+        "ngay_dem": 520000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 159.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 420.000đ | Ngày đêm 520.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Standard — Từ 159.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover (meta og:image)",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__205/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__205/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__205/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "205 — Red Velvet",
+      "hang": "Standard",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/302-barbie-bedroom",
+      "ma_phong": "302-barbie-bedroom",
+      "meta_description": "Phòng 302 — Barbie Bedroom, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Jacayl Hotel Hà Đông · Deluxe",
+      "tieu_de_nguyen_van": "BARBIEREDROOM302",
+      "cau_gioi_thieu_ngan": "Một sắc hồng đủ mạnh để buổi tối có nhịp riêng.",
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 279K | Qua đêm 560K | Ngày đêm 650K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "HỒNG · TỐI · TRẮNG",
+        "01 / Pink after dark ## Ánh hồng phủ kín. Bóng tối giữ khung. | Barbiered Room 302 để màu sắc dẫn đường: hồng, đỏ sâu và những đường viền tối xuất hiện theo từng lớp. | Ở giữa là chiếc giường trắng — điểm sáng rõ ràng và yên tĩnh giữa một không gian có cá tính.",
+        "KHUNG TỐI / GIƯỜNG TRẮNG / 01",
+        "02 / Hình khối ## Trắng để sáng. Tối để neo. Hồng để bật. | Góc nhìn thứ hai mở ra vách khung, rèm dày và các đường cong mềm — những chi tiết làm căn phòng có chiều sâu.",
+        "03 / Signature ## BARBIE | Một căn phòng có nhịp riêng. | Không cần thêm nhiều lớp trang trí. Ánh sáng, chất liệu và tương phản đã đủ để tạo nên một buổi ở khác biệt.",
+        "01 ### ÁNH HỒNG | Dải sáng chạy dọc trần, nhuộm căn phòng bằng một sắc hồng có chủ ý.",
+        "02 ### KHUNG TỐI | Vách khung đen và màn rèm tạo chiều sâu cho những mảng màu rực rỡ.",
+        "03 ### CHĂN TRẮNG | Chiếc giường trắng giữ lại một khoảng sáng sạch giữa toàn bộ nhịp màu.",
+        "04 ### GÓC NGỒI | Những đường cong mềm của ghế và bàn làm dịu lại các đường thẳng trong phòng.",
+        "CTA: Jacayl Hotel Hà Đông · Deluxe | ## GIỮ LẠI NHỊP RIÊNG. | Barbiered Room 302 — một điểm hồng đủ mạnh để buổi tối có nhịp riêng. | Kiểm tra ngày ở, giá hiện tại và lựa chọn lưu trú trong luồng đặt phòng chính thức."
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__302/cover.large.webp",
+          "alt": "Barbiered Room 302 — góc rộng với giường trắng, rèm hồng và khung kính tối"
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__302/01.large.webp",
+          "alt": "Barbiered Room 302 — góc nhìn qua giường về vách khung tối và ánh hồng"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng",
+        "tên trong danh sách: \"302 — Barbie Bedroom\"; trên trang: \"Barbiered Room\""
+      ],
+      "ten_phong": "302 — Barbie Bedroom",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/303-rose-wine",
+      "ma_phong": "303-rose-wine",
+      "meta_description": "Phòng 303 — Rose Wine, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "303 — Rose Wine",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__303/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__303/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__303/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "303 — Rose Wine",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/304-french-kiss",
+      "ma_phong": "304-french-kiss",
+      "meta_description": "Phòng 304 — French Kiss, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "304 — French Kiss",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__304/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__304/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__304/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "304 — French Kiss",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/305-yeu-i",
+      "ma_phong": "305-yeu-i",
+      "meta_description": "Phòng 305 — Yêu I, hạng Standard tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Jacayl Hotel Hà Đông · Standard",
+      "tieu_de_nguyen_van": "YÊU I",
+      "cau_gioi_thieu_ngan": "Một khoảng nghỉ đỏ sâu, nơi ánh sáng, gương và những đường rèm giữ cho căn phòng một nhịp riêng.",
+      "gia": {
+        "nghi_gio_2h": 159000,
+        "qua_dem": 420000,
+        "ngay_dem": 520000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 159K | Qua đêm 420K | Ngày đêm 520K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "ĐỎ SÂU · GƯƠNG · ÁNH SÁNG",
+        "01 / Một nhịp đỏ ## Đậm, nhưng tĩnh. | Yêu I được nhận ra ngay từ mảng đỏ bao quanh: đủ cá tính để tạo không khí, đủ gọn để chiếc giường trắng trở thành điểm tựa.",
+        "GIƯỜNG / DẤU J / RÈM ĐỎ / 01",
+        "02 / Nhìn gần hơn ## Ánh sáng giữ nhịp, gương mở rộng.",
+        "01 ### MÀU ĐỎ | Một nền màu sâu và liền mạch, để ánh sáng trắng dẫn mắt về trung tâm căn phòng.",
+        "02 ### TRẦN GƯƠNG | Các ô gương kéo nhịp của trần xuống không gian, tạo chiều sâu cho những góc nhìn rộng.",
+        "03 ### DẤU J | Biểu tượng phát sáng giữ lại một điểm nhận diện riêng, vừa rõ vừa đủ kín đáo.",
+        "03 / Một căn phòng có dấu riêng ## ĐỦ ĐỎ. ĐỦ YÊN. | Ba góc nhìn, một bảng màu và một điểm sáng ở trung tâm. Yêu I giữ câu chuyện ở mức vừa đủ để phần còn lại thuộc về thời gian của bạn.",
+        "CTA: Jacayl Hotel Hà Đông · Standard | ## GIỮ LẠI MỘT NHỊP RIÊNG. | Chọn thời gian phù hợp cho căn phòng này. | Kiểm tra ngày ở, giá hiện tại và lựa chọn lưu trú trong luồng đặt phòng chính thức."
+      ],
+      "anh": [
+        {
+          "nhan": "cover (meta og:image)",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__305/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__305/01.large.webp",
+          "alt": "Yêu I 305 — giường trắng đặt giữa mảng tường đỏ và dấu J phát sáng"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__305/02.large.webp",
+          "alt": "Yêu I 305 — góc nhìn từ giường về bàn trang điểm, tủ và cửa phòng"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng"
+      ],
+      "ten_phong": "305 — Yêu I",
+      "hang": "Standard",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/402-whisky",
+      "ma_phong": "402-whisky",
+      "meta_description": "Phòng 402 — Whisky, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "402 — Whisky",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\"",
+        "Phòng cùng hạng Deluxe (trên trang, không đủ 14): 302 Barbie Bedroom; 202 Grand Canyon; 303 Rose Wine; 403 Led Neon; 502 Absinthe; 203 Red Rum"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__402/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__402/01.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "402 — Whisky",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/403-led-neon",
+      "ma_phong": "403-led-neon",
+      "meta_description": "Phòng 403 — Led Neon, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "403 — Led Neon",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__403/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__403/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__403/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "403 — Led Neon",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/404-lolipop",
+      "ma_phong": "404-lolipop",
+      "meta_description": "Phòng 404 — Lolipop, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "404 — Lolipop",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__404/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__404/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__404/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "404 — Lolipop",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/405-1st-time",
+      "ma_phong": "405-1st-time",
+      "meta_description": "Phòng 405 — 1st Time, hạng Standard tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "405 — 1st Time",
+      "tien_nghi_nguyen_van": [
+        "Không gian vừa phải, đầy đủ công năng",
+        "Thiết kế khác nhau giữa các phòng",
+        "Phù hợp nghỉ giờ, qua đêm và ngày đêm"
+      ],
+      "gia": {
+        "nghi_gio_2h": 159000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 420000,
+        "ngay_dem": 520000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 159.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 420.000đ | Ngày đêm 520.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Standard — Từ 159.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\"",
+        "Phòng cùng hạng Standard: 201 La Casta; 501 Hentai Room; 305 Yêu I; 205 Red Velvet; 505 Koi Room"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__405/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__405/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__405/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "405 — 1st Time",
+      "hang": "Standard",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/501-hentai-room",
+      "ma_phong": "501-hentai-room",
+      "meta_description": "Phòng 501 — Hentai Room, hạng Standard tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "501 — Hentai Room",
+      "tien_nghi_nguyen_van": [
+        "Không gian vừa phải, đầy đủ công năng",
+        "Thiết kế khác nhau giữa các phòng",
+        "Phù hợp nghỉ giờ, qua đêm và ngày đêm"
+      ],
+      "gia": {
+        "nghi_gio_2h": 159000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 420000,
+        "ngay_dem": 520000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 159.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 420.000đ | Ngày đêm 520.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Standard — Từ 159.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\"",
+        "Phòng cùng hạng Standard: 201 La Casta; 305 Yêu I; 405 1st Time; 205 Red Velvet; 505 Koi Room"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__501/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__501/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__501/02.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__501/03.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "501 — Hentai Room",
+      "hang": "Standard",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/502-absinthe",
+      "ma_phong": "502-absinthe",
+      "meta_description": "Phòng 502 — Absinthe, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "502 — Absinthe",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__502/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__502/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__502/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "502 — Absinthe",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/503-small-lounge",
+      "ma_phong": "503-small-lounge",
+      "meta_description": "Phòng 503 — Small Lounge, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "503 — Small Lounge",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__503/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__503/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__503/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "503 — Small Lounge",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/504-xala-dream",
+      "ma_phong": "504-xala-dream",
+      "meta_description": "Phòng 504 — Xala Dream, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "504 — Xala Dream",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__504/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__504/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__504/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "504 — Xala Dream",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/505-koi-room",
+      "ma_phong": "505-koi-room",
+      "meta_description": "Phòng 505 — Koi Room, hạng Standard tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "dong_vi_tri_nguyen_van": "Jacayl Hà Đông · Standard",
+      "tieu_de_nguyen_van": "KOI 505",
+      "cau_gioi_thieu_ngan": "Một khoảng yên vừa đủ để mọi thứ trở về đúng nhịp.",
+      "gia": {
+        "nghi_gio_2h": 159000,
+        "qua_dem": 420000,
+        "ngay_dem": 520000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "mặc định do chủ cơ sở"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ (2 giờ đầu) 159K | Qua đêm 420K | Ngày đêm 520K",
+      "noi_dung_nguyen_van": [
+        "TEXT_BLOCKS:",
+        "01 — Gọn yên ## Ánh sáng tròn, lặng như mặt nước. | Một vòng sáng ấm toả ra từ bức tường đá. Bên dưới, chiếc giường trắng nằm cân đối giữa rèm sẫm và những đường gỗ tự nhiên — mọi thứ vừa đủ, không thừa.",
+        "ĐÁ · VẢI TRẮNG · VÒNG SÁNG",
+        "Nhịp chậm bắt đầu từ một đường cong.",
+        "02 — Đá & ánh sáng ## Chất liệu giữ lại sự tĩnh.",
+        "### Đá ấm | Bề mặt xám mềm giữ lại chiều sâu cho ánh sáng nghiêng.",
+        "### Vòng sáng | Một tâm tròn dẫn nhịp nhìn về phía chiếc giường trắng.",
+        "### Gỗ tự nhiên | Những đường nét mộc cân bằng lại nền đá và rèm sẫm.",
+        "### Ánh sáng ấm | Lớp sáng thấp tạo một khoảng riêng vừa đủ để chậm lại.",
+        "03 — Một khoảng riêng ## ĐỦ YÊN. ĐỦ SÂU. | Koi Room 505 được nhận ra từ vòng tròn, nền đá, ánh đèn thấp và một bố cục cân bằng để mỗi lần trở về đều có thể chậm lại.",
+        "CTA: Koi Room 505 · Jacayl Hotel Hà Đông · Standard"
+      ],
+      "anh": [
+        {
+          "nhan": "cover (meta og:image)",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__505/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__505/01.large.webp",
+          "alt": "Koi Room 505 với bố cục giường đối xứng dưới vòng sáng"
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/standard__505/02.large.webp",
+          "alt": "Koi Room 505 nhìn chéo qua giường, rèm sẫm và ánh đèn ấm"
+        }
+      ],
+      "ghi_chu_trich_xuat": [
+        "website KHÔNG ghi tầng",
+        "tên trong danh sách: \"505 — Koi Room\""
+      ],
+      "ten_phong": "505 — Koi Room",
+      "hang": "Standard",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/601-50-sac-thai",
+      "ma_phong": "601-50-sac-thai",
+      "meta_description": "Phòng 50 — Sắc Thái, hạng Concept tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": null,
+      "tien_nghi_nguyen_van": [
+        "Không gian concept với gam đỏ chủ đạo",
+        "Bồn tắm lớn",
+        "Ghế tình yêu",
+        "Không gian phòng rộng rãi",
+        "Bồn tắm",
+        "Ghế tình yêu"
+      ],
+      "gia": {
+        "nghi_gio_2h": 399000,
+        "gio_phat_sinh": 200000,
+        "qua_dem": 700000,
+        "ngay_dem": 780000,
+        "gio_phat_sinh_ap_dung": 200000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 399.000đ/ 2 giờ đầu | Phát sinh 200.000đ/ giờ | Qua đêm 700.000đ | Ngày đêm 780.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Concept — Từ 399.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\"",
+        "Phòng cùng hạng Concept: 101 Lồng Chim; 602 Playboy"
+      ],
+      "anh": [
+        {
+          "nhan": "cover (meta og:image)",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/concept__601/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/concept__601/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/concept__601/02.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/concept__601/03.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "50 — Sắc Thái",
+      "hang": "Concept",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng có bồn tắm",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/602-playboy",
+      "ma_phong": "602-playboy",
+      "meta_description": "Phòng 602 — Playboy, hạng Concept tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "602 — Playboy",
+      "tien_nghi_nguyen_van": [
+        "Concept Playboy với sắc hồng đặc trưng",
+        "Bồn tắm lớn",
+        "Ghế tình yêu",
+        "Không gian phòng rộng rãi",
+        "Bồn tắm",
+        "Ghế tình yêu"
+      ],
+      "gia": {
+        "nghi_gio_2h": 399000,
+        "gio_phat_sinh": 200000,
+        "qua_dem": 700000,
+        "ngay_dem": 780000,
+        "gio_phat_sinh_ap_dung": 200000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 399.000đ/ 2 giờ đầu | Phát sinh 200.000đ/ giờ | Qua đêm 700.000đ | Ngày đêm 780.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Concept — Từ 399.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\"",
+        "Phòng cùng hạng Concept: 101 Lồng Chim; 50 Sắc Thái"
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/concept__602/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/concept__602/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/concept__602/02.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "03",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/concept__602/03.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "602 — Playboy",
+      "hang": "Concept",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng có bồn tắm",
+        "Phòng dành cho cặp đôi"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/603-lan-kwei-fong",
+      "ma_phong": "603-lan-kwei-fong",
+      "meta_description": "Phòng 603 — Lan Kwei Fong, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "603 — Lan Kwei Fong",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__603/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__603/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__603/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "603 — Lan Kwei Fong",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    },
+    {
+      "co_so_ma": "jacayl-ha-dong",
+      "co_so_ten": "Jacayl Hotel Hà Đông",
+      "link_phong": "https://www.bookphong.com/phong/604-tequila",
+      "ma_phong": "604-tequila",
+      "meta_description": "Phòng 604 — Tequila, hạng Deluxe tại Jacayl Hotel Hà Đông. Xem hình ảnh và bảng giá.",
+      "tieu_de_nguyen_van": "604 — Tequila",
+      "tien_nghi_nguyen_van": [
+        "14 phòng với thiết kế khác nhau",
+        "Phong cách mini concept",
+        "Không gian mang cá tính riêng"
+      ],
+      "gia": {
+        "nghi_gio_2h": 279000,
+        "gio_phat_sinh": 100000,
+        "qua_dem": 560000,
+        "ngay_dem": 650000,
+        "gio_phat_sinh_ap_dung": 100000,
+        "nguon_gio_phat_sinh": "website"
+      },
+      "gia_hien_thi_nguyen_van": "Nghỉ giờ 279.000đ/ 2 giờ đầu | Phát sinh 100.000đ/ giờ | Qua đêm 560.000đ | Ngày đêm 650.000đ",
+      "noi_dung_nguyen_van": [
+        "Hạng Deluxe — Từ 279.000đ — \"Kiểm tra phòng trống và nhận giá chính xác.\""
+      ],
+      "anh": [
+        {
+          "nhan": "cover",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__604/cover.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "01",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__604/01.large.webp",
+          "alt": null
+        },
+        {
+          "nhan": "02",
+          "url": "https://pub-a4f6c96b880a43f8a62e2085ac1159b8.r2.dev/sites/jcollection-booking/rooms/j-ha-dong/deluxe__604/02.large.webp",
+          "alt": null
+        }
+      ],
+      "ten_phong": "604 — Tequila",
+      "hang": "Deluxe",
+      "tang_theo_website": null,
+      "nhom_nhu_cau_theo_website": [
+        "Phòng phù hợp lưu trú"
+      ]
+    }
+  ]
+}

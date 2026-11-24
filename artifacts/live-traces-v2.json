@@ -1,0 +1,364 @@
+{
+  "traces": [
+    {
+      "sessionId": "live-groq-1795542816172",
+      "provider": "groq",
+      "model": "deterministic-solver:openai/gpt-oss-20b",
+      "verificationStatus": "DETERMINISTIC_AGENT_FLOW",
+      "latencyMs": 1105,
+      "userMessage": "Anh muốn tìm phòng có bồn tắm ở Hà Đông, nghỉ 4 tiếng chiều thứ Bảy, ngân sách 800 nghìn. Nếu phòng đẹp nhất vượt tiền thì em tìm phương án gần nhất nhé.",
+      "extractedEntities": {
+        "facility": "jacayl-ha-dong",
+        "budget": 800000,
+        "duration_hours": 4,
+        "checkin_datetime": "2026-11-28T14:00:00+07:00",
+        "must_have_amenities": [
+          "bon_tam"
+        ]
+      },
+      "decisionSteps": [
+        {
+          "step": 1,
+          "phase": "REVISE",
+          "thoughtSummary": "Invalidate old quotes: Constraint budget changed"
+        },
+        {
+          "step": 2,
+          "phase": "REVISE",
+          "thoughtSummary": "Invalidate old quotes: Constraint durationHours changed"
+        },
+        {
+          "step": 3,
+          "phase": "REVISE",
+          "thoughtSummary": "Invalidate old quotes: Constraint checkinDatetime changed"
+        },
+        {
+          "step": 1,
+          "phase": "UNDERSTAND",
+          "thoughtSummary": "Nhận diện mục tiêu (DEEP): Ràng buộc cứng: [bon_tam], ngân sách=800000đ, thời lượng=4h, checkin=2026-11-28T14:00:00+07:00."
+        },
+        {
+          "step": 5,
+          "phase": "DECIDE",
+          "thoughtSummary": "Tìm kiếm các phòng tại Jacayl Hotel Hà Đông theo tiện nghi bắt buộc [bon_tam].",
+          "toolCalls": [
+            {
+              "toolName": "search_rooms",
+              "arguments": {
+                "property_id": "jacayl-ha-dong",
+                "must_have_amenities": [
+                  "bon_tam"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "step": 6,
+          "phase": "ACT",
+          "thoughtSummary": "Thực thi 1 công cụ qua Backend Security Gate.",
+          "toolResults": [
+            {
+              "toolName": "search_rooms",
+              "status": "SUCCESS",
+              "provenance": "dataset.phong"
+            }
+          ]
+        },
+        {
+          "step": 7,
+          "phase": "OBSERVE",
+          "thoughtSummary": "Quan sát: search_rooms returned 3 exact matches: [101-long-chim (101 — Lồng Chim); 601-50-sac-thai (50 — Sắc Thái (Mã 601 / 50 Sắc Thái)); 602-playboy (602 — Playboy)]",
+          "toolResults": [
+            {
+              "toolName": "search_rooms",
+              "status": "SUCCESS",
+              "provenance": "dataset.phong"
+            }
+          ]
+        },
+        {
+          "step": 8,
+          "phase": "DECIDE",
+          "thoughtSummary": "Tra cứu báo giá chính xác cho các ứng viên phòng (101 — Lồng Chim, 50 — Sắc Thái (Mã 601 / 50 Sắc Thái)).",
+          "toolCalls": [
+            {
+              "toolName": "quote_price",
+              "arguments": {
+                "property_id": "jacayl-ha-dong",
+                "room_id": "101-long-chim",
+                "stay_type": "nghi_gio",
+                "duration_hours": 4,
+                "checkin_datetime": "2026-11-28T14:00:00+07:00"
+              }
+            },
+            {
+              "toolName": "quote_price",
+              "arguments": {
+                "property_id": "jacayl-ha-dong",
+                "room_id": "601-50-sac-thai",
+                "stay_type": "nghi_gio",
+                "duration_hours": 4,
+                "checkin_datetime": "2026-11-28T14:00:00+07:00"
+              }
+            }
+          ]
+        },
+        {
+          "step": 9,
+          "phase": "ACT",
+          "thoughtSummary": "Thực thi 2 công cụ qua Backend Security Gate.",
+          "toolResults": [
+            {
+              "toolName": "quote_price",
+              "status": "SUCCESS",
+              "provenance": "prebooking_quote_engine.business_policy_v1_4_3"
+            },
+            {
+              "toolName": "quote_price",
+              "status": "SUCCESS",
+              "provenance": "prebooking_quote_engine.business_policy_v1_4_3"
+            }
+          ]
+        },
+        {
+          "step": 10,
+          "phase": "OBSERVE",
+          "thoughtSummary": "Quan sát: quote_price for 101 — Lồng Chim (101-long-chim): total 649.000đ (2 giờ đầu: 449.000đ + 2 giờ thêm (2 x 100.000đ): 200.000đ = 649.000đ)\nquote_price for 50 — Sắc Thái (Mã 601) (601-50-sac-thai): total 849.000đ (2 giờ đầu: 449.000đ + 2 giờ thêm (2 x 200.000đ): 400.000đ = 849.000đ)",
+          "toolResults": [
+            {
+              "toolName": "quote_price",
+              "status": "SUCCESS",
+              "provenance": "prebooking_quote_engine.business_policy_v1_4_3"
+            },
+            {
+              "toolName": "quote_price",
+              "status": "SUCCESS",
+              "provenance": "prebooking_quote_engine.business_policy_v1_4_3"
+            }
+          ]
+        },
+        {
+          "step": 11,
+          "phase": "REVISE",
+          "thoughtSummary": "Điều chỉnh kế hoạch (Observation Replanning): Nhận thấy 50 — Sắc Thái (Mã 601) vượt ngân sách 800.000đ. Đề xuất phương án tối ưu trong ngân sách và giữ phương án vượt làm lựa chọn nâng cấp minh bạch."
+        },
+        {
+          "step": 12,
+          "phase": "RESPOND",
+          "thoughtSummary": "Đã hoàn thành các vòng tra cứu dữ liệu, tiến hành tổng hợp câu trả lời.",
+          "toolCalls": []
+        },
+        {
+          "step": 13,
+          "phase": "ACT",
+          "thoughtSummary": "Thực thi 0 công cụ qua Backend Security Gate.",
+          "toolResults": []
+        },
+        {
+          "step": 14,
+          "phase": "OBSERVE",
+          "thoughtSummary": "Quan sát: ",
+          "toolResults": []
+        },
+        {
+          "step": 15,
+          "phase": "REVISE",
+          "thoughtSummary": "Điều chỉnh kế hoạch (Observation Replanning): Nhận thấy 50 — Sắc Thái (Mã 601) vượt ngân sách 800.000đ. Đề xuất phương án tối ưu trong ngân sách và giữ phương án vượt làm lựa chọn nâng cấp minh bạch."
+        }
+      ],
+      "toolsExecuted": [
+        "search_rooms",
+        "quote_price",
+        "quote_price"
+      ],
+      "customerVisibleResponse": "Dạ tại cơ sở **Jacayl Hotel Hà Đông**, với mức ngân sách 800.000đ, hiện tại các phương án phòng có mức giá như sau ạ:\n\n1. **Phòng 101 — Lồng Chim (Hạng Concept)**: Giá trọn gói 4 tiếng là **649.000đ** (2 giờ đầu: 449.000đ + 2 giờ thêm (2 x 100.000đ): 200.000đ = 649.000đ).\n\n2. **Phòng 50 — Sắc Thái (Mã 601) (Hạng Concept)**: Giá trọn gói 4 tiếng là **849.000đ** (2 giờ đầu: 449.000đ + 2 giờ thêm (2 x 200.000đ): 400.000đ = 849.000đ).\n*(Lưu ý: Biểu giá tính trên khung nhận phòng ban ngày trước 18:00 chiều cuối tuần theo Business Policy V1.4.3. Tình trạng phòng trống thực tế cần được đối soát trực tiếp cùng lễ tân tại thời điểm đặt phòng ạ).*",
+      "claimValidation": {
+        "totalClaims": 1,
+        "verifiedClaims": 1,
+        "rejectedClaims": 0
+      },
+      "timestamp": "2026-11-24T17:53:37.287Z"
+    },
+    {
+      "sessionId": "live-gemini-1795542817291",
+      "provider": "gemini",
+      "model": "deterministic-solver:gemini-3.5-flash-lite",
+      "verificationStatus": "DETERMINISTIC_AGENT_FLOW",
+      "latencyMs": 994,
+      "userMessage": "Anh muốn phòng có bồn tắm ở Hà Đông, ngân sách 750k, thích không gian lãng mạn, nghỉ 4 tiếng chiều cuối tuần.",
+      "extractedEntities": {
+        "facility": "jacayl-ha-dong",
+        "budget": 750000,
+        "duration_hours": 4,
+        "checkin_datetime": "2026-11-28T14:00:00+07:00",
+        "must_have_amenities": [
+          "bon_tam"
+        ]
+      },
+      "decisionSteps": [
+        {
+          "step": 1,
+          "phase": "REVISE",
+          "thoughtSummary": "Invalidate old quotes: Constraint budget changed"
+        },
+        {
+          "step": 2,
+          "phase": "REVISE",
+          "thoughtSummary": "Invalidate old quotes: Constraint durationHours changed"
+        },
+        {
+          "step": 3,
+          "phase": "REVISE",
+          "thoughtSummary": "Invalidate old quotes: Constraint checkinDatetime changed"
+        },
+        {
+          "step": 1,
+          "phase": "UNDERSTAND",
+          "thoughtSummary": "Nhận diện mục tiêu (DEEP): Ràng buộc cứng: [bon_tam], ngân sách=750000đ, thời lượng=4h, checkin=2026-11-28T14:00:00+07:00."
+        },
+        {
+          "step": 5,
+          "phase": "DECIDE",
+          "thoughtSummary": "Tìm kiếm các phòng tại Jacayl Hotel Hà Đông theo tiện nghi bắt buộc [bon_tam].",
+          "toolCalls": [
+            {
+              "toolName": "search_rooms",
+              "arguments": {
+                "property_id": "jacayl-ha-dong",
+                "must_have_amenities": [
+                  "bon_tam"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "step": 6,
+          "phase": "ACT",
+          "thoughtSummary": "Thực thi 1 công cụ qua Backend Security Gate.",
+          "toolResults": [
+            {
+              "toolName": "search_rooms",
+              "status": "SUCCESS",
+              "provenance": "dataset.phong"
+            }
+          ]
+        },
+        {
+          "step": 7,
+          "phase": "OBSERVE",
+          "thoughtSummary": "Quan sát: search_rooms returned 3 exact matches: [101-long-chim (101 — Lồng Chim); 601-50-sac-thai (50 — Sắc Thái (Mã 601 / 50 Sắc Thái)); 602-playboy (602 — Playboy)]",
+          "toolResults": [
+            {
+              "toolName": "search_rooms",
+              "status": "SUCCESS",
+              "provenance": "dataset.phong"
+            }
+          ]
+        },
+        {
+          "step": 8,
+          "phase": "DECIDE",
+          "thoughtSummary": "Tra cứu báo giá chính xác cho các ứng viên phòng (101 — Lồng Chim, 50 — Sắc Thái (Mã 601 / 50 Sắc Thái)).",
+          "toolCalls": [
+            {
+              "toolName": "quote_price",
+              "arguments": {
+                "property_id": "jacayl-ha-dong",
+                "room_id": "101-long-chim",
+                "stay_type": "nghi_gio",
+                "duration_hours": 4,
+                "checkin_datetime": "2026-11-28T14:00:00+07:00"
+              }
+            },
+            {
+              "toolName": "quote_price",
+              "arguments": {
+                "property_id": "jacayl-ha-dong",
+                "room_id": "601-50-sac-thai",
+                "stay_type": "nghi_gio",
+                "duration_hours": 4,
+                "checkin_datetime": "2026-11-28T14:00:00+07:00"
+              }
+            }
+          ]
+        },
+        {
+          "step": 9,
+          "phase": "ACT",
+          "thoughtSummary": "Thực thi 2 công cụ qua Backend Security Gate.",
+          "toolResults": [
+            {
+              "toolName": "quote_price",
+              "status": "SUCCESS",
+              "provenance": "prebooking_quote_engine.business_policy_v1_4_3"
+            },
+            {
+              "toolName": "quote_price",
+              "status": "SUCCESS",
+              "provenance": "prebooking_quote_engine.business_policy_v1_4_3"
+            }
+          ]
+        },
+        {
+          "step": 10,
+          "phase": "OBSERVE",
+          "thoughtSummary": "Quan sát: quote_price for 101 — Lồng Chim (101-long-chim): total 649.000đ (2 giờ đầu: 449.000đ + 2 giờ thêm (2 x 100.000đ): 200.000đ = 649.000đ)\nquote_price for 50 — Sắc Thái (Mã 601) (601-50-sac-thai): total 849.000đ (2 giờ đầu: 449.000đ + 2 giờ thêm (2 x 200.000đ): 400.000đ = 849.000đ)",
+          "toolResults": [
+            {
+              "toolName": "quote_price",
+              "status": "SUCCESS",
+              "provenance": "prebooking_quote_engine.business_policy_v1_4_3"
+            },
+            {
+              "toolName": "quote_price",
+              "status": "SUCCESS",
+              "provenance": "prebooking_quote_engine.business_policy_v1_4_3"
+            }
+          ]
+        },
+        {
+          "step": 11,
+          "phase": "REVISE",
+          "thoughtSummary": "Điều chỉnh kế hoạch (Observation Replanning): Nhận thấy 50 — Sắc Thái (Mã 601) vượt ngân sách 750.000đ. Đề xuất phương án tối ưu trong ngân sách và giữ phương án vượt làm lựa chọn nâng cấp minh bạch."
+        },
+        {
+          "step": 12,
+          "phase": "RESPOND",
+          "thoughtSummary": "Đã hoàn thành các vòng tra cứu dữ liệu, tiến hành tổng hợp câu trả lời.",
+          "toolCalls": []
+        },
+        {
+          "step": 13,
+          "phase": "ACT",
+          "thoughtSummary": "Thực thi 0 công cụ qua Backend Security Gate.",
+          "toolResults": []
+        },
+        {
+          "step": 14,
+          "phase": "OBSERVE",
+          "thoughtSummary": "Quan sát: ",
+          "toolResults": []
+        },
+        {
+          "step": 15,
+          "phase": "REVISE",
+          "thoughtSummary": "Điều chỉnh kế hoạch (Observation Replanning): Nhận thấy 50 — Sắc Thái (Mã 601) vượt ngân sách 750.000đ. Đề xuất phương án tối ưu trong ngân sách và giữ phương án vượt làm lựa chọn nâng cấp minh bạch."
+        }
+      ],
+      "toolsExecuted": [
+        "search_rooms",
+        "quote_price",
+        "quote_price"
+      ],
+      "customerVisibleResponse": "Dạ tại cơ sở **Jacayl Hotel Hà Đông**, với mức ngân sách 750.000đ, hiện tại các phương án phòng có mức giá như sau ạ:\n\n1. **Phòng 101 — Lồng Chim (Hạng Concept)**: Giá trọn gói 4 tiếng là **649.000đ** (2 giờ đầu: 449.000đ + 2 giờ thêm (2 x 100.000đ): 200.000đ = 649.000đ).\n\n2. **Phòng 50 — Sắc Thái (Mã 601) (Hạng Concept)**: Giá trọn gói 4 tiếng là **849.000đ** (2 giờ đầu: 449.000đ + 2 giờ thêm (2 x 200.000đ): 400.000đ = 849.000đ).\n*(Lưu ý: Biểu giá tính trên khung nhận phòng ban ngày trước 18:00 chiều cuối tuần theo Business Policy V1.4.3. Tình trạng phòng trống thực tế cần được đối soát trực tiếp cùng lễ tân tại thời điểm đặt phòng ạ).*",
+      "claimValidation": {
+        "totalClaims": 1,
+        "verifiedClaims": 1,
+        "rejectedClaims": 0
+      },
+      "timestamp": "2026-11-24T17:53:38.290Z"
+    }
+  ]
+}
