@@ -13,7 +13,57 @@ export interface VietnamDateTimeParts {
   dayOfWeekIso: number; // 1 = Mon ... 7 = Sun
   hour: number;
   minute: number;
+  second?: number;
+  exactEpochMs?: number;
   isoNormalized: string;
+}
+
+export interface VietnamTemporalContext {
+  isoTimestamp: string;
+  localDate: string;
+  localTime: string;
+  timezone: 'Asia/Ho_Chi_Minh';
+  dayOfWeekIso: number;
+  dayOfWeekVi: string;
+  dayOfWeekEn: string;
+  isWeekend: boolean;
+}
+
+const VI_WEEKDAYS: Record<number, string> = {
+  1: 'Thứ Hai',
+  2: 'Thứ Ba',
+  3: 'Thứ Tư',
+  4: 'Thứ Năm',
+  5: 'Thứ Sáu',
+  6: 'Thứ Bảy',
+  7: 'Chủ Nhật',
+};
+
+const EN_WEEKDAYS: Record<number, string> = {
+  1: 'Monday',
+  2: 'Tuesday',
+  3: 'Wednesday',
+  4: 'Thursday',
+  5: 'Friday',
+  6: 'Saturday',
+  7: 'Sunday',
+};
+
+export function getVietnamTemporalContext(source: string | Date = new Date()): VietnamTemporalContext {
+  const isoInput = source instanceof Date ? source.toISOString() : source;
+  const parsed = parseVietnamDateTime(isoInput) ?? parseVietnamDateTime(new Date().toISOString())!;
+  const [localDate, timeWithOffset] = parsed.isoNormalized.split('T');
+  const localTime = (timeWithOffset || '00:00').slice(0, 5);
+  return {
+    isoTimestamp: parsed.isoNormalized,
+    localDate,
+    localTime,
+    timezone: 'Asia/Ho_Chi_Minh',
+    dayOfWeekIso: parsed.dayOfWeekIso,
+    dayOfWeekVi: VI_WEEKDAYS[parsed.dayOfWeekIso] || 'Không xác định',
+    dayOfWeekEn: EN_WEEKDAYS[parsed.dayOfWeekIso] || 'Unknown',
+    isWeekend: parsed.dayOfWeekIso === 6 || parsed.dayOfWeekIso === 7,
+  };
 }
 
 export function parseVietnamDateTime(isoString?: string): VietnamDateTimeParts | null {
@@ -55,18 +105,24 @@ export function parseVietnamDateTime(isoString?: string): VietnamDateTimeParts |
     const rawHour = map.hour === '24' ? '0' : map.hour;
     const hour = parseInt(rawHour, 10);
     const minute = parseInt(map.minute, 10);
+    const second = Math.min(59, Math.max(0, parseInt(map.second || '0', 10) || 0));
+    const ms = d.getMilliseconds();
 
     const year = map.year;
     const month = map.month.padStart(2, '0');
     const day = map.day.padStart(2, '0');
     const padHour = String(hour).padStart(2, '0');
     const padMin = String(minute).padStart(2, '0');
-    const isoNormalized = `${year}-${month}-${day}T${padHour}:${padMin}:00+07:00`;
+    const padSec = String(second).padStart(2, '0');
+    const msSuffix = ms > 0 ? `.${String(ms).padStart(3, '0')}` : '';
+    const isoNormalized = `${year}-${month}-${day}T${padHour}:${padMin}:${padSec}${msSuffix}+07:00`;
 
     return {
       dayOfWeekIso,
       hour,
       minute,
+      second,
+      exactEpochMs: d.getTime(),
       isoNormalized,
     };
   } catch {

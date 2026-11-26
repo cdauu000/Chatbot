@@ -33,7 +33,7 @@ export async function runDashboardDemo(): Promise<{
   const orchestrator = new ConversationOrchestrator(dataset, { llmAdapter: llmGateway });
 
   // 3. Initialize SQLite Persistent Store
-  const dbPath = join(dataDir, 'staff_dashboard.db');
+  const dbPath = process.env.STAFF_DB_PATH || join(dataDir, 'staff_dashboard.db');
   console.log(`📁 Khởi tạo Persistent SQLite Database: ${dbPath}`);
   const store = new SqliteStore({ dbPath });
   const authManager = new AuthManager(store);

@@ -1,0 +1,131 @@
+{
+  "evaluated_at": "2026-11-25T08:42:02.158Z",
+  "free_only_mode": true,
+  "concurrent_properties": 3,
+  "concurrent_sessions": 3,
+  "total_turns_completed": 6,
+  "metrics": {
+    "concurrent_sessions": 3,
+    "centralized_queue_serialized_calls": 17,
+    "queue_delay_ms_total": 84203,
+    "avg_queue_delay_ms": 4953.1,
+    "max_concurrent_waiters_gemini": 3,
+    "max_concurrent_waiters_groq": 0,
+    "p50_latency_ms": 23274,
+    "p95_latency_ms": 31237,
+    "api_calls_total": 17,
+    "api_calls_per_turn": 2.83,
+    "tokens_consumed_total": 26444,
+    "rate_limit_429_count": 0,
+    "provider_failover_turns_to_secondary": 0,
+    "degraded_mode_turns": 0,
+    "message_ordering_violations": 0,
+    "human_takeover_concurrency": {
+      "in_flight_ai_discarded": true,
+      "state_after_race": "HUMAN_ACTIVE",
+      "post_takeover_ai_suppressed": true
+    }
+  },
+  "free_tier_capacity_note": "All 3 properties run against single Free-Tier provider buckets (~15 RPM Gemini + ~8,000 TPM Groq). Centralized per-provider serialization prevents concurrent bursts from colliding simultaneously, keeping concurrent pilot load (3 facilities) stable.",
+  "per_turn_logs": [
+    {
+      "conversationId": "pilot-hd-1795596051069",
+      "propertyId": "jacayl-ha-dong",
+      "turn": 1,
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "status": "LIVE_LLM_DECISION_VERIFIED",
+      "isFallback": false,
+      "latencyMs": 13604,
+      "tokensTotal": 4844
+    },
+    {
+      "conversationId": "pilot-tkc-1795596051069",
+      "propertyId": "jacayl-tran-khat-chan",
+      "turn": 1,
+      "provider": "gemini",
+      "model": "gemini-3.1-flash-lite",
+      "status": "LIVE_LLM_DECISION_VERIFIED",
+      "isFallback": false,
+      "latencyMs": 17793,
+      "tokensTotal": 3717
+    },
+    {
+      "conversationId": "pilot-jv-1795596051069",
+      "propertyId": "j-village",
+      "turn": 1,
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "status": "LIVE_LLM_DECISION_VERIFIED",
+      "isFallback": false,
+      "latencyMs": 24019,
+      "tokensTotal": 3775
+    },
+    {
+      "conversationId": "pilot-hd-1795596051069",
+      "propertyId": "jacayl-ha-dong",
+      "turn": 2,
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "status": "LIVE_LLM_DECISION_VERIFIED",
+      "isFallback": false,
+      "latencyMs": 23350,
+      "tokensTotal": 4215
+    },
+    {
+      "conversationId": "pilot-jv-1795596051069",
+      "propertyId": "j-village",
+      "turn": 2,
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "status": "LIVE_LLM_DECISION_VERIFIED",
+      "isFallback": false,
+      "latencyMs": 23274,
+      "tokensTotal": 3791
+    },
+    {
+      "conversationId": "pilot-tkc-1795596051069",
+      "propertyId": "jacayl-tran-khat-chan",
+      "turn": 2,
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "status": "LIVE_LLM_DECISION_VERIFIED",
+      "isFallback": false,
+      "latencyMs": 31237,
+      "tokensTotal": 6102
+    }
+  ],
+  "gateway_reliability": {
+    "groq": {
+      "calls": 0,
+      "successes": 0,
+      "http429": 0,
+      "http503": 0,
+      "otherErrors": 0,
+      "promptTokens": 0,
+      "completionTokens": 0,
+      "totalLatencyMs": 0,
+      "queueWaitEvents": 0,
+      "totalQueueDelayMs": 0,
+      "maxConcurrentWaiters": 0
+    },
+    "gemini": {
+      "calls": 17,
+      "successes": 17,
+      "http429": 0,
+      "http503": 0,
+      "otherErrors": 0,
+      "promptTokens": 30882,
+      "completionTokens": 3961,
+      "totalLatencyMs": 71072,
+      "queueWaitEvents": 12,
+      "totalQueueDelayMs": 84200,
+      "maxConcurrentSeen": 0,
+      "maxConcurrentWaiters": 3
+    },
+    "coordinator": {
+      "serializedCalls": 17,
+      "totalQueueDelayMs": 84203
+    }
+  }
+}

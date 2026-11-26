@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "policy_version": "1.4.6",
+  "extends_policy_version": "1.4.5",
+  "addendum_id": "J_COLLECTION_OWNER_POLICY_ADDENDUM_V1_4_6",
+  "base_policy_id": "J_COLLECTION_BUSINESS_POLICY_V1_4_3",
+  "currency": "VND",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "source_metadata": {
+    "source_type": "OWNER_DIRECT_INSTRUCTION",
+    "source_recorded_on": "2026-11-25",
+    "effective_from": "2026-11-25",
+    "status": "OWNER_CONFIRMED_ACTIVE",
+    "notes": "Chủ dự án xác nhận chính thức: Ân hạn 10 phút được áp dụng cho TỪNG MỐC GIỜ PHÁT SINH (EVERY_EXTRA_HOUR_BOUNDARY) đối với gói qua đêm và ngày đêm sau 12:00 trưa trên cả 3 cơ sở (12:00–12:10 = 0h; 12:11–13:10 = 1h; 13:11–14:10 = 2h; 14:11–15:10 = 3h...). Bảo toàn toàn bộ chính sách bữa sáng FALSE từ V1.4.5, giá phòng gốc và kiến trúc V3.0 FINAL."
+  },
+  "scope": "ALL_PROPERTIES",
+  "change_history": [
+    {
+      "version": "1.4.6",
+      "recorded_on": "2026-11-25",
+      "source_type": "OWNER_DIRECT_INSTRUCTION",
+      "summary": "Áp dụng ân hạn 10 phút lặp lại cho từng mốc giờ phát sinh (EVERY_EXTRA_HOUR_BOUNDARY): ceil(max(0, lateMinutes - 10) / 60). Bảo toàn chính sách bữa sáng FALSE của V1.4.5 và mọi mốc giá/giờ nền V1.4.3."
+    },
+    {
+      "version": "1.4.5",
+      "recorded_on": "2026-11-25",
+      "source_type": "OWNER_DIRECT_INSTRUCTION",
+      "summary": "Chuyển bữa sáng sang FALSE trên cả 3 cơ sở; chuẩn hóa tính phí trả phòng muộn sau 12:00 theo đơn giá phát sinh từng phòng."
+    },
+    {
+      "version": "1.4.4-addendum-1",
+      "recorded_on": "2026-11-25",
+      "source_type": "OWNER_DIRECT_INSTRUCTION",
+      "summary": "[Superseded by 1.4.5 -> 1.4.6] Giá phòng không bao gồm bữa sáng; dịch vụ riêng trước đó ở trạng thái UNKNOWN."
+    }
+  ],
+  "late_checkout": {
+    "applies_to": [
+      "qua_dem",
+      "ngay_dem"
+    ],
+    "standard_checkout_time": "12:00",
+    "grace_period_minutes": 10,
+    "grace_period_mode": "EVERY_EXTRA_HOUR_BOUNDARY",
+    "charge_from_minute": 11,
+    "billing_method": "EXISTING_ROOM_EXTRA_HOUR_RATE",
+    "rounding_method": "CEIL_AFTER_RECURRING_GRACE",
+    "rounding_rule": "CEIL_AFTER_RECURRING_GRACE",
+    "default_extra_hour_rate_vnd": 100000,
+    "room_specific_rate_priority": true,
+    "exceptions": [],
+    "official_statement": "Đối với gói qua đêm (22:00–12:00, ân hạn sớm từ 21:40) và gói ngày đêm (14:00–12:00), ân hạn 10 phút được áp dụng cho từng mốc giờ phát sinh: trả phòng trong khung 12:00–12:10 miễn phí (0h); 12:11–13:10 tính 1 giờ; 13:11–14:10 tính 2 giờ; 14:11–15:10 tính 3 giờ. Đơn giá theo mức giờ phát sinh chính thức của từng phòng (mặc định 100.000đ/giờ; riêng phòng 601 và 602 tại Hà Đông là 200.000đ/giờ; giữ nguyên tách biệt giữa 3 cơ sở)."
+  }
+}

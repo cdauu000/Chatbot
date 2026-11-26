@@ -89,7 +89,7 @@ export class PreBookingQuoteEngine {
     );
 
     const roomName = room ? room.ten_phong : request.ma_phong;
-    const quote = calculateQuote(resolution, roomName, durationHours);
+    const quote = calculateQuote(resolution, roomName, durationHours, request.checkout_datetime);
     AutomatedPricingOracle.assertValidQuote(quote, this.dataset);
     return quote;
   }

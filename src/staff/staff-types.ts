@@ -1,4 +1,5 @@
 import { CoSoMa } from '../domain/types.js';
+import { RoomPresentationBlock, RoomPresentationImage } from '../agent/agent-contracts.js';
 
 export type PropertyId = CoSoMa; // 'j-village' | 'jacayl-tran-khat-chan' | 'jacayl-ha-dong'
 
@@ -57,11 +58,16 @@ export type MessageSenderType = 'customer' | 'ai' | 'staff' | 'system';
 
 export interface MessageMetadata {
   telemetry?: {
+    engine?: string;
+    traceId?: string;
     provider: string;
     model: string;
+    verificationStatus?: string;
+    effectivePolicyVersion?: string;
     latencyMs: number;
     tokensTotal: number;
     isFallback: boolean;
+    fallbackReason?: string;
   };
   escalation?: {
     needed: boolean;
@@ -70,7 +76,8 @@ export interface MessageMetadata {
   };
   evidenceReferences?: string[];
   clientMessageId?: string;
-  images?: Array<{ url: string; alt?: string | null; roomName: string; caption?: string }>;
+  images?: RoomPresentationImage[];
+  roomPresentations?: RoomPresentationBlock[];
 }
 
 export interface Message {

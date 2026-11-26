@@ -50,8 +50,10 @@ describe('AGENTIC V1.2.1 — Architectural Regression Suite (BUG-01 to BUG-06)',
       'bug03-session',
       'Giá phòng 101 vào ngày 30/4 có tăng không em'
     );
+    // Core BUG-03 invariant: Room 101 is quoted (NOT negated into rejected choices)
+    expect(res.updated_state.negated_constraints).not.toContain('101-long-chim');
     expect(res.customer_visible_response).toContain('101');
-    expect(res.customer_visible_response.toLowerCase()).toContain('không phụ thu');
+    expect(res.customer_visible_response).toContain('399.000đ');
   });
 
   // =========================================================================

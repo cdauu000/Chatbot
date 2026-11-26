@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "policy_version": "1.4.5",
+  "extends_policy_version": "1.4.4",
+  "addendum_id": "J_COLLECTION_OWNER_POLICY_ADDENDUM_V1_4_5",
+  "base_policy_id": "J_COLLECTION_BUSINESS_POLICY_V1_4_3",
+  "currency": "VND",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "source_metadata": {
+    "source_type": "OWNER_DIRECT_INSTRUCTION",
+    "source_recorded_on": "2026-11-25",
+    "effective_from": "2026-11-25",
+    "status": "OWNER_CONFIRMED_ACTIVE",
+    "notes": "Chủ dự án xác nhận chính thức: (1) J Collection không phục vụ bữa sáng và không bán suất sáng riêng tại cả 3 cơ sở; (2) Khách trả phòng sau 12:00 đối với gói qua đêm và ngày đêm áp dụng ân hạn 10 phút (đến 12:10 miễn phí), từ phút 11 trở đi tính giờ phát sinh theo đơn giá riêng của từng phòng (mặc định 100.000đ/giờ, 601 & 602 Hà Đông 200.000đ/giờ). Không thay đổi biểu giá gốc hay canonical room dataset."
+  },
+  "scope": "ALL_PROPERTIES",
+  "change_history": [
+    {
+      "version": "1.4.5",
+      "recorded_on": "2026-11-25",
+      "source_type": "OWNER_DIRECT_INSTRUCTION",
+      "summary": "Chuyển chính sách dịch vụ bữa sáng từ UNKNOWN sang FALSE (không bao gồm trong giá phòng và không phục vụ bữa sáng tại cả 3 cơ sở); chính thức hóa quy tắc tính giờ trả phòng muộn sau 12:00 cho gói qua đêm và ngày đêm với ân hạn 10 phút theo đơn giá phát sinh từng phòng."
+    },
+    {
+      "version": "1.4.4-addendum-1",
+      "recorded_on": "2026-11-25",
+      "source_type": "OWNER_DIRECT_INSTRUCTION",
+      "summary": "[Superseded by 1.4.5] Xác nhận giá phòng không bao gồm bữa sáng; dịch vụ riêng trước đó ở trạng thái UNKNOWN."
+    },
+    {
+      "version": "1.4.3",
+      "recorded_on": "2026-11-22",
+      "source_type": "OWNER_CONFIRMED_DIRECTIVE",
+      "summary": "Chính sách nền: không phụ thu lễ, tối thiểu 2h nghỉ giờ, qua đêm 22:00 (ân hạn 21:40)–12:00, ngày đêm 14:00–12:00, quá giờ sau 10 phút tính giờ tiếp theo."
+    }
+  ],
+  "breakfast": {
+    "included_in_room_rate": false,
+    "service_available": false,
+    "separate_service_availability": "FALSE",
+    "scope": "ALL_PROPERTIES",
+    "properties": [
+      "jacayl-ha-dong",
+      "jacayl-tran-khat-chan",
+      "j-village"
+    ],
+    "applies_to": [
+      "nghi_gio",
+      "qua_dem",
+      "ngay_dem"
+    ],
+    "applies_to_all_categories": true,
+    "room_rates_modified": false,
+    "external_food_rules_confirmed": false,
+    "official_statement": "Giá phòng tại cả ba cơ sở J Collection (Jacayl Hà Đông, Jacayl Trần Khát Chân, J Village) áp dụng cho mọi hạng phòng và mọi gói nghỉ đều không bao gồm bữa sáng. Khách sạn không phục vụ bữa sáng và không cung cấp dịch vụ bán suất sáng riêng tại cơ sở. Thông tin này đã được Chủ dự án xác nhận chính thức (không cần hướng dẫn khách liên hệ lễ tân để xác minh lại việc có phục vụ bữa sáng hay không; không tự suy diễn thêm quy định mang đồ ăn từ ngoài vào)."
+  },
+  "late_checkout": {
+    "applies_to": [
+      "qua_dem",
+      "ngay_dem"
+    ],
+    "standard_checkout_time": "12:00",
+    "grace_period_minutes": 10,
+    "charge_from_minute": 11,
+    "billing_method": "EXISTING_ROOM_EXTRA_HOUR_RATE",
+    "rounding_rule": "CEIL_PER_STARTED_HOUR_AFTER_GRACE",
+    "default_extra_hour_rate_vnd": 100000,
+    "room_specific_rate_priority": true,
+    "exceptions": [],
+    "official_statement": "Đối với gói qua đêm (nhận từ 22:00, ân hạn sớm 21:40) và gói ngày đêm (nhận từ 14:00), giờ trả phòng tiêu chuẩn là 12:00 trưa hôm sau. Khách trả phòng trong vòng 10 phút sau 12:00 (đến 12:10) không tính thêm phí. Từ phút thứ 11 (12:11 trở đi) tính giờ phát sinh làm tròn lên từng giờ theo mức giá phát sinh riêng của từng phòng (mặc định 100.000đ/giờ; phòng 601 và 602 tại Hà Đông áp dụng mức 200.000đ/giờ; bảo toàn định danh cơ sở + mã phòng)."
+  }
+}

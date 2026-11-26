@@ -1,4 +1,4 @@
-import { DatabaseSync } from 'node:sqlite';
+import { backup, DatabaseSync } from 'node:sqlite';
 import { randomUUID } from 'node:crypto';
 import {
   PropertyId,
@@ -51,6 +51,14 @@ export class SqliteStore {
 
   public getRawDb(): DatabaseSync {
     return this.db;
+  }
+
+  /**
+   * Creates a consistent point-in-time SQLite snapshot using the C-level Online Backup API.
+   * Safe under WAL mode even while reads/transactions are open (avoids torn raw file copies).
+   */
+  public async createOnlineBackup(destinationPath: string): Promise<number> {
+    return backup(this.db, destinationPath);
   }
 
   public transaction<T>(callback: () => T): T {

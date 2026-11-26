@@ -3,6 +3,7 @@ import { PreBookingQuoteResult } from '../pricing/quote-types.js';
 import { RoomSearchResult } from '../search/search-types.js';
 import { ConversationPlan } from './planning/conversation-plan.js';
 import { GroundedAnswerData } from './grounding/grounded-data.js';
+import { GroundingStatus } from '../agent/agent-contracts.js';
 
 export type IntentType =
   | 'SEARCH_ROOM'
@@ -151,12 +152,25 @@ export interface WorkingMemory {
   }>;
 }
 
+export interface DetailedClaimCheck {
+  claim_type: 'PRICE' | 'ROOM' | 'POLICY' | 'URL' | 'HOTLINE' | 'AMENITY' | 'BOOKING' | 'MEDIA' | 'TEMPORAL';
+  raw_text: string;
+  normalized_value?: string | number;
+  status: GroundingStatus;
+  reason: string;
+  matched_evidence_id?: string;
+}
+
 export interface ClaimValidationSummary {
   total_claims: number;
   verified_claims: string[];
   disclaimed_claims: string[];
   rejected_claims: string[];
   evidence_citations: string[];
+  grounding_status?: GroundingStatus;
+  missing_evidence_claims?: string[];
+  contradicted_claims?: string[];
+  claim_checks?: DetailedClaimCheck[];
 }
 
 export interface HumanEscalationPackage {
@@ -173,6 +187,8 @@ export interface HumanEscalationPackage {
   contact_channel?: string;
 }
 
+import { RoomPresentationBlock, RoomPresentationImage } from '../agent/agent-contracts.js';
+
 export interface ConversationTurnResult {
   session_id: string;
   turn_index: number;
@@ -185,7 +201,8 @@ export interface ConversationTurnResult {
   tool_results: {
     search_result?: RoomSearchResult;
     quote_results?: PreBookingQuoteResult[];
-    delivered_images?: Array<{ url: string; alt?: string | null; roomName: string; caption?: string }>;
+    delivered_images?: RoomPresentationImage[];
+    room_presentations?: RoomPresentationBlock[];
     facts_result?: any;
     policy_results?: Array<{ topic: string; answer: string; source: string; status: string }>;
   };
@@ -202,7 +219,8 @@ export interface ConversationTurnResult {
   customer_visible_response: string;
   plan?: ConversationPlan;
   grounded_data?: GroundedAnswerData;
-  images?: Array<{ url: string; alt?: string | null; roomName: string; caption?: string }>;
+  images?: RoomPresentationImage[];
+  room_presentations?: RoomPresentationBlock[];
   claim_validation?: ClaimValidationSummary;
   human_escalation?: HumanEscalationPackage;
   decision_trace?: any;

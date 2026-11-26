@@ -1,0 +1,847 @@
+{
+  "audited_at": "2026-11-26T11:40:08.288Z",
+  "source_artifact": "artifacts/eval-integrity/gate2-critical-replay.json",
+  "source_git_commit": "1365f33",
+  "historical_summary": {
+    "total_cases": 9,
+    "completed_cases": 8,
+    "blocked_cases": 1,
+    "total_turns": 17,
+    "live_verified_turns": 14,
+    "blocked_turns": 1,
+    "first_attempt_clean_turns": 13,
+    "first_attempt_clean_rate_pct": 76.5,
+    "grounding_repairs": 4,
+    "grounding_blocks": 2,
+    "rejected_claims_on_final_output": 0,
+    "raw_think_leaks": 0
+  },
+  "turn_metric_reconciliation": {
+    "total_turns": 17,
+    "blocked_turns": 1,
+    "evaluated_live_turns": 16,
+    "first_attempt_clean_turns": 13,
+    "repaired_turns_accepted": 1,
+    "grounding_repairs_total_attempts": 4,
+    "grounding_blocks": 2
+  },
+  "post_audit_8axis_summary": {
+    "evaluated_at": "2026-11-26T11:40:08.288Z",
+    "total_scenarios": 9,
+    "total_turns": 17,
+    "by_execution_status": {
+      "LIVE_COMPLETED": 6,
+      "BLOCKED": 1,
+      "DEGRADED": 2,
+      "FAILED_FALLBACK": 0
+    },
+    "historical_businessPassed_true": 7,
+    "strict_quality_passed_true": 2,
+    "by_terminal_outcome": {
+      "CONFIRMED_PASS": 2,
+      "CONFIRMED_FAIL": 6,
+      "PENDING_HUMAN_REVIEW": 0,
+      "BLOCKED": 1
+    },
+    "false_pass_count": 4,
+    "human_review_queue_count": 0,
+    "reconciliation_check_overlap_count": 0,
+    "breakdown_by_commit": {
+      "pre_dc11876": {
+        "total": 9,
+        "live_completed": 6,
+        "confirmed_pass": 2,
+        "confirmed_fail": 6,
+        "pending_human_review": 0,
+        "quality_passed": 2,
+        "false_pass": 4
+      },
+      "commit_dc11876": {
+        "total": 0,
+        "live_completed": 0,
+        "confirmed_pass": 0,
+        "confirmed_fail": 0,
+        "pending_human_review": 0,
+        "blocked": 0,
+        "quality_passed": 0,
+        "false_pass": 0
+      }
+    }
+  },
+  "reclassified_or_flagged_cases": [
+    {
+      "scenarioId": "REPLAY-SCENARIO-033",
+      "propertyId": "jacayl-ha-dong",
+      "historicalPassedFlag": false,
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "isFalsePass": false,
+      "findings": []
+    },
+    {
+      "scenarioId": "REPLAY-SCENARIO-035",
+      "propertyId": "jacayl-ha-dong",
+      "historicalPassedFlag": false,
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "isFalsePass": false,
+      "findings": []
+    },
+    {
+      "scenarioId": "REPLAY-SCENARIO-039",
+      "propertyId": "jacayl-ha-dong",
+      "historicalPassedFlag": true,
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "isFalsePass": true,
+      "findings": [
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept.",
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept."
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-SCENARIO-041",
+      "propertyId": "jacayl-ha-dong",
+      "historicalPassedFlag": true,
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "isFalsePass": true,
+      "findings": [
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-QUOTE-REUSE-RETRACT",
+      "propertyId": "jacayl-ha-dong",
+      "historicalPassedFlag": true,
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "isFalsePass": true,
+      "findings": [
+        "T1: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-la-casta has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-MEDIA-CACHE",
+      "propertyId": "j-village",
+      "historicalPassedFlag": true,
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "isFalsePass": true,
+      "findings": [
+        "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 202-neon has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-GROQ-QWEN-PARITY",
+      "propertyId": "jacayl-ha-dong",
+      "historicalPassedFlag": true,
+      "terminal_outcome": "BLOCKED",
+      "isFalsePass": false,
+      "findings": [
+        "Turn 1 BLOCKED by API"
+      ]
+    }
+  ],
+  "evaluatedRecords": [
+    {
+      "scenarioId": "REPLAY-SCENARIO-033",
+      "propertyId": "jacayl-ha-dong",
+      "split": "owner_regression_gate2",
+      "category": "critical_replay",
+      "gitCommit": "1365f33",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": false,
+      "execution_status": "DEGRADED",
+      "grounding_status": "VERIFIED",
+      "business_accuracy": "ACCURATE",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "semantic_quality": "PASS",
+      "media_delivery_status": "NOT_REQUESTED",
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "quality_passed": false,
+      "isFalsePass": false,
+      "needsHumanReview": false,
+      "humanReviewReasons": [],
+      "findings": [],
+      "operational_metrics": {
+        "turnCount": 2,
+        "totalLatencyMs": 28771,
+        "avgLatencyMs": 14386,
+        "totalTokens": 28180,
+        "hasProviderFailover": true,
+        "providerModels": [
+          "gemini:gemini-3.5-flash-lite",
+          "gemini:gemini-3.5-flash-lite"
+        ]
+      },
+      "turns": [
+        {
+          "scenarioId": "REPLAY-SCENARIO-033",
+          "turnIndex": 1,
+          "propertyId": "jacayl-ha-dong",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "DEGRADED_DETERMINISTIC_MODE",
+          "toolsExecuted": [
+            "search_rooms",
+            "quote_price"
+          ],
+          "execution_status": "DEGRADED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 16919,
+          "totalTokens": 15789,
+          "findings": [],
+          "needsHumanReview": false
+        },
+        {
+          "scenarioId": "REPLAY-SCENARIO-033",
+          "turnIndex": 2,
+          "propertyId": "jacayl-ha-dong",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "quote_price",
+            "quote_price"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 11852,
+          "totalTokens": 12391,
+          "findings": [],
+          "needsHumanReview": false
+        }
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-SCENARIO-035",
+      "propertyId": "jacayl-ha-dong",
+      "split": "owner_regression_gate2",
+      "category": "critical_replay",
+      "gitCommit": "1365f33",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": false,
+      "execution_status": "DEGRADED",
+      "grounding_status": "VERIFIED",
+      "business_accuracy": "ACCURATE",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "semantic_quality": "PASS",
+      "media_delivery_status": "NOT_REQUESTED",
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "quality_passed": false,
+      "isFalsePass": false,
+      "needsHumanReview": false,
+      "humanReviewReasons": [],
+      "findings": [],
+      "operational_metrics": {
+        "turnCount": 2,
+        "totalLatencyMs": 16267,
+        "avgLatencyMs": 8134,
+        "totalTokens": 22385,
+        "hasProviderFailover": true,
+        "providerModels": [
+          "gemini:gemini-3.5-flash-lite",
+          "gemini:gemini-3.5-flash-lite"
+        ]
+      },
+      "turns": [
+        {
+          "scenarioId": "REPLAY-SCENARIO-035",
+          "turnIndex": 1,
+          "propertyId": "jacayl-ha-dong",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "DEGRADED_DETERMINISTIC_MODE",
+          "toolsExecuted": [
+            "search_rooms",
+            "quote_price",
+            "quote_price",
+            "quote_price"
+          ],
+          "execution_status": "DEGRADED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 13124,
+          "totalTokens": 15331,
+          "findings": [],
+          "needsHumanReview": false
+        },
+        {
+          "scenarioId": "REPLAY-SCENARIO-035",
+          "turnIndex": 2,
+          "propertyId": "jacayl-ha-dong",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "get_policies"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 3143,
+          "totalTokens": 7054,
+          "findings": [],
+          "needsHumanReview": false
+        }
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-SCENARIO-039",
+      "propertyId": "jacayl-ha-dong",
+      "split": "owner_regression_gate2",
+      "category": "critical_replay",
+      "gitCommit": "1365f33",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "semantic_quality": "PASS",
+      "media_delivery_status": "NOT_REQUESTED",
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "quality_passed": false,
+      "isFalsePass": true,
+      "needsHumanReview": false,
+      "humanReviewReasons": [],
+      "findings": [
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept.",
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept."
+      ],
+      "operational_metrics": {
+        "turnCount": 2,
+        "totalLatencyMs": 17884,
+        "avgLatencyMs": 8942,
+        "totalTokens": 19871,
+        "hasProviderFailover": false,
+        "providerModels": [
+          "gemini:gemini-3.5-flash-lite",
+          "gemini:gemini-3.5-flash-lite"
+        ]
+      },
+      "turns": [
+        {
+          "scenarioId": "REPLAY-SCENARIO-039",
+          "turnIndex": 1,
+          "propertyId": "jacayl-ha-dong",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "search_rooms",
+            "quote_price",
+            "quote_price",
+            "quote_price"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "CONTRADICTED",
+          "business_accuracy": "CONTRADICTED",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 7504,
+          "totalTokens": 11907,
+          "findings": [
+            "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept.",
+            "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept."
+          ],
+          "needsHumanReview": false
+        },
+        {
+          "scenarioId": "REPLAY-SCENARIO-039",
+          "turnIndex": 2,
+          "propertyId": "jacayl-ha-dong",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "get_policies"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 10380,
+          "totalTokens": 7964,
+          "findings": [],
+          "needsHumanReview": false
+        }
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-SCENARIO-041",
+      "propertyId": "jacayl-ha-dong",
+      "split": "owner_regression_gate2",
+      "category": "critical_replay",
+      "gitCommit": "1365f33",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "semantic_quality": "PASS",
+      "media_delivery_status": "NOT_REQUESTED",
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "quality_passed": false,
+      "isFalsePass": true,
+      "needsHumanReview": false,
+      "humanReviewReasons": [],
+      "findings": [
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
+      ],
+      "operational_metrics": {
+        "turnCount": 2,
+        "totalLatencyMs": 21283,
+        "avgLatencyMs": 10642,
+        "totalTokens": 19793,
+        "hasProviderFailover": false,
+        "providerModels": [
+          "gemini:gemini-3.5-flash-lite",
+          "gemini:gemini-3.5-flash-lite"
+        ]
+      },
+      "turns": [
+        {
+          "scenarioId": "REPLAY-SCENARIO-041",
+          "turnIndex": 1,
+          "propertyId": "jacayl-ha-dong",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "search_rooms",
+            "quote_price",
+            "quote_price",
+            "quote_price"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "CONTRADICTED",
+          "business_accuracy": "CONTRADICTED",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 11877,
+          "totalTokens": 11640,
+          "findings": [
+            "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
+            "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
+          ],
+          "needsHumanReview": false
+        },
+        {
+          "scenarioId": "REPLAY-SCENARIO-041",
+          "turnIndex": 2,
+          "propertyId": "jacayl-ha-dong",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "search_rooms"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 9406,
+          "totalTokens": 8153,
+          "findings": [],
+          "needsHumanReview": false
+        }
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-QUOTE-REUSE-RETRACT",
+      "propertyId": "jacayl-ha-dong",
+      "split": "owner_regression_gate2",
+      "category": "critical_replay",
+      "gitCommit": "1365f33",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "semantic_quality": "PASS",
+      "media_delivery_status": "NOT_REQUESTED",
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "quality_passed": false,
+      "isFalsePass": true,
+      "needsHumanReview": false,
+      "humanReviewReasons": [],
+      "findings": [
+        "T1: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-la-casta has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
+      ],
+      "operational_metrics": {
+        "turnCount": 2,
+        "totalLatencyMs": 19562,
+        "avgLatencyMs": 9781,
+        "totalTokens": 11944,
+        "hasProviderFailover": false,
+        "providerModels": [
+          "gemini:gemini-3.5-flash-lite",
+          "gemini:gemini-3.5-flash-lite"
+        ]
+      },
+      "turns": [
+        {
+          "scenarioId": "REPLAY-QUOTE-REUSE-RETRACT",
+          "turnIndex": 1,
+          "propertyId": "jacayl-ha-dong",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "get_room_facts",
+            "quote_price"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "CONTRADICTED",
+          "business_accuracy": "CONTRADICTED",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 7165,
+          "totalTokens": 5798,
+          "findings": [
+            "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-la-casta has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
+          ],
+          "needsHumanReview": false
+        },
+        {
+          "scenarioId": "REPLAY-QUOTE-REUSE-RETRACT",
+          "turnIndex": 2,
+          "propertyId": "jacayl-ha-dong",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "quote_price"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 12397,
+          "totalTokens": 6146,
+          "findings": [],
+          "needsHumanReview": false
+        }
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-PKG-SWITCH",
+      "propertyId": "jacayl-tran-khat-chan",
+      "split": "owner_regression_gate2",
+      "category": "critical_replay",
+      "gitCommit": "1365f33",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "VERIFIED",
+      "business_accuracy": "ACCURATE",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "semantic_quality": "PASS",
+      "media_delivery_status": "NOT_REQUESTED",
+      "terminal_outcome": "CONFIRMED_PASS",
+      "quality_passed": true,
+      "isFalsePass": false,
+      "needsHumanReview": false,
+      "humanReviewReasons": [],
+      "findings": [],
+      "operational_metrics": {
+        "turnCount": 2,
+        "totalLatencyMs": 24515,
+        "avgLatencyMs": 12258,
+        "totalTokens": 12616,
+        "hasProviderFailover": false,
+        "providerModels": [
+          "gemini:gemini-3.5-flash-lite",
+          "gemini:gemini-3.5-flash-lite"
+        ]
+      },
+      "turns": [
+        {
+          "scenarioId": "REPLAY-PKG-SWITCH",
+          "turnIndex": 1,
+          "propertyId": "jacayl-tran-khat-chan",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "search_rooms",
+            "quote_price"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 4629,
+          "totalTokens": 6662,
+          "findings": [],
+          "needsHumanReview": false
+        },
+        {
+          "scenarioId": "REPLAY-PKG-SWITCH",
+          "turnIndex": 2,
+          "propertyId": "jacayl-tran-khat-chan",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "quote_price"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 19886,
+          "totalTokens": 5954,
+          "findings": [],
+          "needsHumanReview": false
+        }
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-MEDIA-CACHE",
+      "propertyId": "j-village",
+      "split": "owner_regression_gate2",
+      "category": "critical_replay",
+      "gitCommit": "1365f33",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "semantic_quality": "PASS",
+      "media_delivery_status": "DELIVERED",
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "quality_passed": false,
+      "isFalsePass": true,
+      "needsHumanReview": false,
+      "humanReviewReasons": [],
+      "findings": [
+        "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 202-neon has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
+      ],
+      "operational_metrics": {
+        "turnCount": 3,
+        "totalLatencyMs": 15800,
+        "avgLatencyMs": 5267,
+        "totalTokens": 13857,
+        "hasProviderFailover": false,
+        "providerModels": [
+          "gemini:gemini-3.5-flash-lite",
+          "gemini:gemini-3.5-flash-lite",
+          "gemini:gemini-3.5-flash-lite"
+        ]
+      },
+      "turns": [
+        {
+          "scenarioId": "REPLAY-MEDIA-CACHE",
+          "turnIndex": 1,
+          "propertyId": "j-village",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "get_room_media"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "DELIVERED",
+          "latencyMs": 6034,
+          "totalTokens": 5413,
+          "findings": [],
+          "needsHumanReview": false
+        },
+        {
+          "scenarioId": "REPLAY-MEDIA-CACHE",
+          "turnIndex": 2,
+          "propertyId": "j-village",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "get_room_facts"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "CONTRADICTED",
+          "business_accuracy": "CONTRADICTED",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 7583,
+          "totalTokens": 5613,
+          "findings": [
+            "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 202-neon has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
+          ],
+          "needsHumanReview": false
+        },
+        {
+          "scenarioId": "REPLAY-MEDIA-CACHE",
+          "turnIndex": 3,
+          "propertyId": "j-village",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "DELIVERED",
+          "latencyMs": 2183,
+          "totalTokens": 2831,
+          "findings": [],
+          "needsHumanReview": false
+        }
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-BUDGET-NO-QUOTE",
+      "propertyId": "jacayl-tran-khat-chan",
+      "split": "owner_regression_gate2",
+      "category": "critical_replay",
+      "gitCommit": "1365f33",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "VERIFIED",
+      "business_accuracy": "ACCURATE",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "semantic_quality": "PASS",
+      "media_delivery_status": "NOT_REQUESTED",
+      "terminal_outcome": "CONFIRMED_PASS",
+      "quality_passed": true,
+      "isFalsePass": false,
+      "needsHumanReview": false,
+      "humanReviewReasons": [],
+      "findings": [],
+      "operational_metrics": {
+        "turnCount": 1,
+        "totalLatencyMs": 3728,
+        "avgLatencyMs": 3728,
+        "totalTokens": 6524,
+        "hasProviderFailover": false,
+        "providerModels": [
+          "gemini:gemini-3.5-flash-lite"
+        ]
+      },
+      "turns": [
+        {
+          "scenarioId": "REPLAY-BUDGET-NO-QUOTE",
+          "turnIndex": 1,
+          "propertyId": "jacayl-tran-khat-chan",
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "toolsExecuted": [
+            "search_rooms"
+          ],
+          "execution_status": "LIVE_COMPLETED",
+          "grounding_status": "VERIFIED",
+          "business_accuracy": "ACCURATE",
+          "goal_completion": "COMPLETE",
+          "context_understanding": "ALIGNED",
+          "semantic_quality": "PASS",
+          "media_delivery_status": "NOT_REQUESTED",
+          "latencyMs": 3728,
+          "totalTokens": 6524,
+          "findings": [],
+          "needsHumanReview": false
+        }
+      ]
+    },
+    {
+      "scenarioId": "REPLAY-GROQ-QWEN-PARITY",
+      "propertyId": "jacayl-ha-dong",
+      "split": "owner_regression_gate2",
+      "category": "critical_replay",
+      "gitCommit": "1365f33",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "BLOCKED",
+      "grounding_status": "INSUFFICIENT_EVIDENCE",
+      "business_accuracy": "NOT_EVALUATED",
+      "goal_completion": "NOT_EVALUATED",
+      "context_understanding": "NOT_EVALUATED",
+      "semantic_quality": "NOT_EVALUATED",
+      "media_delivery_status": "NOT_EVALUATED",
+      "terminal_outcome": "BLOCKED",
+      "quality_passed": false,
+      "isFalsePass": false,
+      "needsHumanReview": false,
+      "humanReviewReasons": [],
+      "findings": [
+        "Turn 1 BLOCKED by API"
+      ],
+      "operational_metrics": {
+        "turnCount": 1,
+        "totalLatencyMs": 2700,
+        "avgLatencyMs": 2700,
+        "totalTokens": 0,
+        "hasProviderFailover": false,
+        "providerModels": [
+          "BLOCKED"
+        ]
+      },
+      "turns": [
+        {
+          "scenarioId": "REPLAY-GROQ-QWEN-PARITY",
+          "turnIndex": 1,
+          "propertyId": "jacayl-ha-dong",
+          "providerModel": "BLOCKED",
+          "verificationStatus": "BLOCKED",
+          "toolsExecuted": [],
+          "execution_status": "BLOCKED",
+          "grounding_status": "INSUFFICIENT_EVIDENCE",
+          "business_accuracy": "NOT_EVALUATED",
+          "goal_completion": "NOT_EVALUATED",
+          "context_understanding": "NOT_EVALUATED",
+          "semantic_quality": "NOT_EVALUATED",
+          "media_delivery_status": "NOT_EVALUATED",
+          "latencyMs": 2700,
+          "totalTokens": 0,
+          "findings": [
+            "Turn blocked by upstream Free API: BLOCKED: LIVE_LLM_UNAVAILABLE: groq:429(24s)"
+          ],
+          "needsHumanReview": false
+        }
+      ]
+    }
+  ]
+}

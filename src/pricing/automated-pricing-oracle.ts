@@ -2,7 +2,7 @@ import { NormalizedDataset } from '../domain/normalized-schema.js';
 import { CoSoMa } from '../domain/types.js';
 import { CheckinPricingResolver } from './checkin-pricing-resolver.js';
 import { PreBookingQuoteEngine } from './prebooking-quote-engine.js';
-import { PreBookingQuoteRequest, PreBookingQuoteResult } from './quote-types.js';
+import { PreBookingQuoteRequest, PreBookingQuoteResult, calculateLateCheckoutExtension } from './quote-types.js';
 import { isRoomNotForSale } from '../domain/room-business-registry.js';
 import { FacilityCategoryMapper } from './category-mapper.js';
 
@@ -68,7 +68,8 @@ export class AutomatedPricingOracle {
     ma_phong: string,
     stay_type: 'nghi_gio' | 'qua_dem' | 'ngay_dem' = 'nghi_gio',
     checkin_datetime?: string,
-    duration_hours: number = 2
+    duration_hours: number = 2,
+    checkout_datetime?: string
   ): OracleExpectedPrice {
     // 1. Room Business Registry check
     if (isRoomNotForSale(co_so_ma, ma_phong)) {
@@ -122,9 +123,43 @@ export class AutomatedPricingOracle {
 
     const extra_hour_rate = room.gia_goc_dataset.gio_phat_sinh_ap_dung;
 
-    // 3. Package stays: qua_dem & ngay_dem
+    // 3. Package stays: qua_dem & ngay_dem (with V1.4.5 late checkout extension when checkout_datetime is supplied)
     if (stay_type === 'qua_dem') {
       const basePrice = room.gia_goc_dataset.qua_dem;
+      if (checkout_datetime) {
+        const late = calculateLateCheckoutExtension({
+          stay_type: 'qua_dem',
+          checkin_datetime,
+          checkout_datetime,
+          extra_hour_rate,
+        });
+        if (!late.is_valid) {
+          return {
+            co_so_ma,
+            ma_phong,
+            stay_type,
+            checkin_datetime,
+            duration_hours: 1,
+            expected_status: 'INVALID_DATETIME',
+            expected_base_2h: undefined,
+            expected_extra_rate: extra_hour_rate,
+            expected_total: undefined,
+            reason: late.error_reason,
+          };
+        }
+        return {
+          co_so_ma,
+          ma_phong,
+          stay_type,
+          checkin_datetime,
+          duration_hours: 1,
+          expected_status: 'RESOLVED_BASE_DATASET',
+          expected_base_2h: basePrice,
+          expected_extra_rate: extra_hour_rate,
+          expected_total: basePrice + late.extra_hour_subtotal,
+          reason: 'Nghỉ qua đêm theo giá gốc dataset + phụ thu quá giờ (V1.4.5).',
+        };
+      }
       return {
         co_so_ma,
         ma_phong,
@@ -141,6 +176,40 @@ export class AutomatedPricingOracle {
 
     if (stay_type === 'ngay_dem') {
       const basePrice = room.gia_goc_dataset.ngay_dem;
+      if (checkout_datetime) {
+        const late = calculateLateCheckoutExtension({
+          stay_type: 'ngay_dem',
+          checkin_datetime,
+          checkout_datetime,
+          extra_hour_rate,
+        });
+        if (!late.is_valid) {
+          return {
+            co_so_ma,
+            ma_phong,
+            stay_type,
+            checkin_datetime,
+            duration_hours: 1,
+            expected_status: 'INVALID_DATETIME',
+            expected_base_2h: undefined,
+            expected_extra_rate: extra_hour_rate,
+            expected_total: undefined,
+            reason: late.error_reason,
+          };
+        }
+        return {
+          co_so_ma,
+          ma_phong,
+          stay_type,
+          checkin_datetime,
+          duration_hours: 1,
+          expected_status: 'RESOLVED_BASE_DATASET',
+          expected_base_2h: basePrice,
+          expected_extra_rate: extra_hour_rate,
+          expected_total: basePrice + late.extra_hour_subtotal,
+          reason: 'Nghỉ ngày đêm theo giá gốc dataset + phụ thu quá giờ (V1.4.5).',
+        };
+      }
       return {
         co_so_ma,
         ma_phong,
@@ -316,7 +385,8 @@ export class AutomatedPricingOracle {
       quote.ma_phong,
       quote.stay_type as any,
       quote.checkin_applied,
-      quote.duration_hours
+      quote.duration_hours,
+      quote.confirmed_checkout
     );
 
     if (quote.pricing_status !== expected.expected_status) {

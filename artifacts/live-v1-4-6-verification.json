@@ -1,0 +1,482 @@
+{
+  "verified_at": "2026-11-25T14:50:24.966Z",
+  "strict_live_only": true,
+  "free_only_mode": true,
+  "policy_metadata": {
+    "basePolicyId": "J_COLLECTION_BUSINESS_POLICY_V1_4_3",
+    "basePolicyVersion": "1.4.3",
+    "effectivePolicyVersion": "1.4.6",
+    "activeAddendumId": "J_COLLECTION_OWNER_POLICY_ADDENDUM_V1_4_6",
+    "activeAddendumFilename": "j_collection_business_policy_addendum_v1_4_6.json",
+    "supersededVersions": [
+      "1.4.5",
+      "1.4.4-addendum-1"
+    ]
+  },
+  "dashboard_telemetry": {
+    "activeMode": "auto",
+    "freeOnlyMode": true,
+    "groq": {
+      "name": "Groq Free Tier",
+      "configured": true,
+      "model": "qwen/qwen3.8-27b",
+      "isRateLimited": false,
+      "rateLimitCooloffSecRemaining": 0
+    },
+    "gemini": {
+      "name": "Google Gemini Free Tier",
+      "configured": true,
+      "model": "gemini-3.5-flash-lite",
+      "isRateLimited": false,
+      "rateLimitCooloffSecRemaining": 0
+    },
+    "mock": {
+      "name": "Deterministic Mock Engine",
+      "configured": true,
+      "model": "internal-deterministic-rulebase",
+      "isRateLimited": false,
+      "rateLimitCooloffSecRemaining": 0
+    },
+    "engine": "agentic",
+    "buildVersion": "3.0.0-llm-native-final",
+    "effectivePolicyVersion": "1.4.6",
+    "basePolicyVersion": "1.4.3",
+    "activeAddendumId": "J_COLLECTION_OWNER_POLICY_ADDENDUM_V1_4_6",
+    "recommendedRouting": "Primary: gemini-3.5-flash-lite -> Secondary: groq:qwen/qwen3.8-27b -> Fallback: gemini-3.1-flash-lite",
+    "reliabilityMetrics": {
+      "groq": {
+        "calls": 0,
+        "successes": 0,
+        "http429": 0,
+        "http503": 0,
+        "otherErrors": 0,
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalLatencyMs": 0,
+        "queueWaitEvents": 0,
+        "totalQueueDelayMs": 0,
+        "maxConcurrentWaiters": 0
+      },
+      "gemini": {
+        "calls": 0,
+        "successes": 0,
+        "http429": 0,
+        "http503": 0,
+        "otherErrors": 0,
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalLatencyMs": 0,
+        "queueWaitEvents": 0,
+        "totalQueueDelayMs": 0,
+        "maxConcurrentSeen": 0,
+        "maxConcurrentWaiters": 0
+      },
+      "coordinator": {
+        "serializedCalls": 0,
+        "totalQueueDelayMs": 0
+      }
+    }
+  },
+  "gateway_reliability": {
+    "groq": {
+      "calls": 9,
+      "successes": 8,
+      "http429": 1,
+      "http503": 0,
+      "otherErrors": 0,
+      "promptTokens": 23902,
+      "completionTokens": 2997,
+      "totalLatencyMs": 11071,
+      "queueWaitEvents": 0,
+      "totalQueueDelayMs": 0,
+      "maxConcurrentWaiters": 1
+    },
+    "gemini": {
+      "calls": 15,
+      "successes": 5,
+      "http429": 0,
+      "http503": 7,
+      "otherErrors": 3,
+      "promptTokens": 14455,
+      "completionTokens": 1754,
+      "totalLatencyMs": 25498,
+      "queueWaitEvents": 0,
+      "totalQueueDelayMs": 0,
+      "maxConcurrentSeen": 0,
+      "maxConcurrentWaiters": 1
+    },
+    "coordinator": {
+      "serializedCalls": 24,
+      "totalQueueDelayMs": 1
+    }
+  },
+  "transcripts": [
+    {
+      "scenario": "V146_MT1_405_2200_TO_1305",
+      "conversationId": "v146_hd_405_multiturn",
+      "propertyId": "jacayl-ha-dong",
+      "referenceClockUsed": "2026-11-25T20:30:00+07:00",
+      "userMessage": "Anh ghé phòng 405 tầm 10 giờ đêm nay, trưa mai khoảng 1 giờ 5 phút chiều mới trả phòng thì hết bao nhiêu?",
+      "aiResponse": "Dạ, phòng 405 — 1st Time (Standard) nhận phòng lúc 22:00 và trả phòng lúc 13:05 hôm sau tổng chi phí là 520.000đ (bao gồm gói qua đêm 420.000đ và 1 giờ phát sinh sau 12:00 là 100.000đ ạ).\n\nBáo giá này áp dụng theo biểu phí niêm yết. Anh vui lòng liên hệ lễ tân qua số 0522 464 646 để kiểm tra tình trạng phòng trống thực tế và giữ phòng nhé!",
+      "telemetry": {
+        "engine": "agentic",
+        "traceId": "tr_v146_hd_405_multiturn_t1_mww8m69g",
+        "provider": "gemini",
+        "model": "gemini-3.5-flash-lite",
+        "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+        "effectivePolicyVersion": "1.4.6",
+        "latencyMs": 13955,
+        "tokensTotal": 7417,
+        "isFallback": false
+      },
+      "toolCalls": [
+        {
+          "toolName": "search_rooms",
+          "arguments": {
+            "property_id": "jacayl-ha-dong"
+          }
+        },
+        {
+          "toolName": "quote_price",
+          "arguments": {
+            "property_id": "jacayl-ha-dong",
+            "room_id": "405",
+            "stay_type": "qua_dem",
+            "stay_intent": "overnight_until_next_day",
+            "duration_hours": 15,
+            "checkin_datetime": "2026-11-25T22:00:00+07:00",
+            "checkout_datetime": "2026-11-26T13:05:00+07:00",
+            "checkin_confidence": "INFERRED"
+          }
+        }
+      ],
+      "quoteResults": [
+        {
+          "room_id": "405-1st-time",
+          "stay_type": "qua_dem",
+          "confirmed_checkin": "2026-11-25T22:00:00+07:00",
+          "confirmed_checkout": "2026-11-26T13:05:00+07:00",
+          "standard_checkout": "2026-11-26T12:00:00+07:00",
+          "grace_period_minutes": 10,
+          "grace_period_mode": "EVERY_EXTRA_HOUR_BOUNDARY",
+          "actual_late_checkout_minutes": 65,
+          "billable_extra_hours": 1,
+          "base_package_price_vnd": 420000,
+          "extra_hour_rate_vnd": 100000,
+          "extra_hour_subtotal_vnd": 100000,
+          "total_price_vnd": 520000,
+          "effective_policy_version": "1.4.6"
+        },
+        {
+          "room_id": "405-1st-time",
+          "stay_type": "qua_dem",
+          "confirmed_checkin": "2026-11-25T22:00:00+07:00",
+          "confirmed_checkout": "2026-11-26T13:05:00+07:00",
+          "standard_checkout": "2026-11-26T12:00:00+07:00",
+          "grace_period_minutes": 10,
+          "grace_period_mode": "EVERY_EXTRA_HOUR_BOUNDARY",
+          "actual_late_checkout_minutes": 65,
+          "billable_extra_hours": 1,
+          "base_package_price_vnd": 420000,
+          "extra_hour_rate_vnd": 100000,
+          "extra_hour_subtotal_vnd": 100000,
+          "total_price_vnd": 520000,
+          "effective_policy_version": "1.4.6"
+        }
+      ]
+    },
+    {
+      "scenario": "V146_MT2_405_1310_VS_1311",
+      "conversationId": "v146_hd_405_multiturn",
+      "propertyId": "jacayl-ha-dong",
+      "referenceClockUsed": "2026-11-25T20:31:00+07:00",
+      "userMessage": "Nếu anh cố ra trước 1h10 chiều mai với lại lỡ sang 1h11 thì tiền khác nhau thế nào em?",
+      "aiResponse": "Dạ, theo quy định 10 phút ân hạn cho mỗi mốc giờ phát sinh sau 12:00:\n\n• Trả phòng lúc **13:10** → vẫn nằm trong khung 1 giờ phát sinh (12:11–13:10) → tính **1 giờ** = 100.000đ → tổng **520.000đ**.\n• Trả phòng lúc **13:11** → vượt sang khung 2 giờ phát sinh (13:11–14:10) → tính **2 giờ** = 200.000đ → tổng **620.000đ**.\n\nVậy chỉ chênh nhau đúng 1 phút mà tiền tăng thêm 100.000đ ạ. Anh lưu ý để ra trước 13:10 là tiết kiệm nhất nhé!",
+      "telemetry": {
+        "engine": "agentic",
+        "traceId": "tr_v146_hd_405_multiturn_t2_mww8ml7r",
+        "provider": "groq",
+        "model": "qwen/qwen3.8-27b",
+        "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+        "effectivePolicyVersion": "1.4.6",
+        "latencyMs": 12372,
+        "tokensTotal": 6644,
+        "isFallback": false
+      },
+      "toolCalls": [
+        {
+          "toolName": "quote_price",
+          "arguments": {
+            "property_id": "jacayl-ha-dong",
+            "room_id": "405-1st-time",
+            "stay_type": "qua_dem",
+            "stay_intent": "overnight_until_next_day",
+            "duration_hours": 0,
+            "checkin_datetime": "2026-11-25T22:00:00+07:00",
+            "checkout_datetime": "2026-11-26T13:10:00+07:00",
+            "checkin_confidence": "INFERRED"
+          }
+        },
+        {
+          "toolName": "quote_price",
+          "arguments": {
+            "property_id": "jacayl-ha-dong",
+            "room_id": "405-1st-time",
+            "stay_type": "qua_dem",
+            "stay_intent": "overnight_until_next_day",
+            "duration_hours": 0,
+            "checkin_datetime": "2026-11-25T22:00:00+07:00",
+            "checkout_datetime": "2026-11-26T13:11:00+07:00",
+            "checkin_confidence": "INFERRED"
+          }
+        }
+      ],
+      "quoteResults": []
+    },
+    {
+      "scenario": "V146_HD_COMPARE_405_VS_601_AT_1405",
+      "conversationId": "v146_hd_compare_rates",
+      "propertyId": "jacayl-ha-dong",
+      "referenceClockUsed": "2026-11-25T20:35:00+07:00",
+      "userMessage": "So sánh giúp anh tổng tiền phòng 405 và căn 50 Sắc Thái nếu 22h tối nay nhận phòng và 2h05 chiều mai trả nhé.",
+      "aiResponse": "Dạ, tổng tiền cho lịch nhận phòng 22h tối nay và trả phòng 14h05 chiều mai như sau:\n\n• Phòng 405 (1st Time): Tổng 620.000đ\n  (Gói qua đêm 420.000đ + 2 giờ phát sinh sau 12h trưa: 200.000đ)\n\n• Phòng 601 (50 Sắc Thái): Tổng 1.100.000đ\n  (Gói qua đêm 700.000đ + 2 giờ phát sinh sau 12h trưa: 400.000đ)\n\nLưu ý: Báo giá trên tính theo biểu phí niêm yết. Để xác nhận phòng trống và giữ chỗ chính xác, anh vui lòng liên hệ lễ tân qua số 0522 464 646 ạ.",
+      "telemetry": {
+        "engine": "agentic",
+        "traceId": "tr_v146_hd_compare_rates_t1_mww8nal4",
+        "provider": "groq",
+        "model": "qwen/qwen3.8-27b",
+        "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+        "effectivePolicyVersion": "1.4.6",
+        "latencyMs": 25862,
+        "tokensTotal": 6339,
+        "isFallback": false
+      },
+      "toolCalls": [
+        {
+          "toolName": "quote_price",
+          "arguments": {
+            "property_id": "jacayl-ha-dong",
+            "room_ids": [
+              "405-1st-time",
+              "601-50-sac-thai"
+            ],
+            "stay_type": "qua_dem",
+            "stay_intent": "overnight_until_next_day",
+            "duration_hours": 16,
+            "checkin_datetime": "2026-11-25T22:00:00+07:00",
+            "checkout_datetime": "2026-11-26T14:05:00+07:00",
+            "checkin_confidence": "CONFIRMED"
+          }
+        }
+      ],
+      "quoteResults": [
+        {
+          "room_id": "405-1st-time",
+          "stay_type": "qua_dem",
+          "confirmed_checkin": "2026-11-25T22:00:00+07:00",
+          "confirmed_checkout": "2026-11-26T14:05:00+07:00",
+          "standard_checkout": "2026-11-26T12:00:00+07:00",
+          "grace_period_minutes": 10,
+          "grace_period_mode": "EVERY_EXTRA_HOUR_BOUNDARY",
+          "actual_late_checkout_minutes": 125,
+          "billable_extra_hours": 2,
+          "base_package_price_vnd": 420000,
+          "extra_hour_rate_vnd": 100000,
+          "extra_hour_subtotal_vnd": 200000,
+          "total_price_vnd": 620000,
+          "effective_policy_version": "1.4.6"
+        },
+        {
+          "room_id": "601-50-sac-thai",
+          "stay_type": "qua_dem",
+          "confirmed_checkin": "2026-11-25T22:00:00+07:00",
+          "confirmed_checkout": "2026-11-26T14:05:00+07:00",
+          "standard_checkout": "2026-11-26T12:00:00+07:00",
+          "grace_period_minutes": 10,
+          "grace_period_mode": "EVERY_EXTRA_HOUR_BOUNDARY",
+          "actual_late_checkout_minutes": 125,
+          "billable_extra_hours": 2,
+          "base_package_price_vnd": 700000,
+          "extra_hour_rate_vnd": 200000,
+          "extra_hour_subtotal_vnd": 400000,
+          "total_price_vnd": 1100000,
+          "effective_policy_version": "1.4.6"
+        },
+        {
+          "room_id": "405-1st-time",
+          "stay_type": "qua_dem",
+          "confirmed_checkin": "2026-11-25T22:00:00+07:00",
+          "confirmed_checkout": "2026-11-26T14:05:00+07:00",
+          "standard_checkout": "2026-11-26T12:00:00+07:00",
+          "grace_period_minutes": 10,
+          "grace_period_mode": "EVERY_EXTRA_HOUR_BOUNDARY",
+          "actual_late_checkout_minutes": 125,
+          "billable_extra_hours": 2,
+          "base_package_price_vnd": 420000,
+          "extra_hour_rate_vnd": 100000,
+          "extra_hour_subtotal_vnd": 200000,
+          "total_price_vnd": 620000,
+          "effective_policy_version": "1.4.6"
+        },
+        {
+          "room_id": "601-50-sac-thai",
+          "stay_type": "qua_dem",
+          "confirmed_checkin": "2026-11-25T22:00:00+07:00",
+          "confirmed_checkout": "2026-11-26T14:05:00+07:00",
+          "standard_checkout": "2026-11-26T12:00:00+07:00",
+          "grace_period_minutes": 10,
+          "grace_period_mode": "EVERY_EXTRA_HOUR_BOUNDARY",
+          "actual_late_checkout_minutes": 125,
+          "billable_extra_hours": 2,
+          "base_package_price_vnd": 700000,
+          "extra_hour_rate_vnd": 200000,
+          "extra_hour_subtotal_vnd": 400000,
+          "total_price_vnd": 1100000,
+          "effective_policy_version": "1.4.6"
+        }
+      ]
+    },
+    {
+      "scenario": "V146_TKC_601_1410_AND_BREAKFAST",
+      "conversationId": "v146_tkc_601",
+      "propertyId": "jacayl-tran-khat-chan",
+      "referenceClockUsed": "2026-11-25T20:40:00+07:00",
+      "userMessage": "Phòng 601 bên Trần Khát Chân vào lúc 22h tối nay, chiều mai 14h10 trả thì tổng cộng bao nhiêu và có ăn sáng không?",
+      "aiResponse": "Dạ, tổng chi phí cho phòng 601 — Golden Inox từ 22:00 tối nay đến 14:10 chiều mai là 1.300.000đ ạ.\n\nChi tiết: Gói qua đêm 1.100.000đ + 2 giờ phát sinh sau 12:00 (200.000đ).\n\nVề bữa sáng, bên em không phục vụ bữa sáng ạ. Bạn vui lòng lưu ý thông tin này nhé.",
+      "telemetry": {
+        "engine": "agentic",
+        "traceId": "tr_v146_tkc_601_t2_mww8pg5n",
+        "provider": "groq",
+        "model": "qwen/qwen3.8-27b",
+        "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+        "effectivePolicyVersion": "1.4.6",
+        "latencyMs": 25943,
+        "tokensTotal": 6001,
+        "isFallback": false
+      },
+      "toolCalls": [
+        {
+          "toolName": "quote_price",
+          "arguments": {
+            "property_id": "jacayl-tran-khat-chan",
+            "room_id": "601-golden-inox",
+            "stay_type": "qua_dem",
+            "stay_intent": "overnight_until_next_day",
+            "duration_hours": 16,
+            "checkin_datetime": "2026-11-25T22:00:00+07:00",
+            "checkout_datetime": "2026-11-26T14:10:00+07:00",
+            "checkin_confidence": "CONFIRMED"
+          }
+        }
+      ],
+      "quoteResults": [
+        {
+          "room_id": "601-golden-inox",
+          "stay_type": "qua_dem",
+          "confirmed_checkin": "2026-11-25T22:00:00+07:00",
+          "confirmed_checkout": "2026-11-26T14:10:00+07:00",
+          "standard_checkout": "2026-11-26T12:00:00+07:00",
+          "grace_period_minutes": 10,
+          "grace_period_mode": "EVERY_EXTRA_HOUR_BOUNDARY",
+          "actual_late_checkout_minutes": 130,
+          "billable_extra_hours": 2,
+          "base_package_price_vnd": 1100000,
+          "extra_hour_rate_vnd": 100000,
+          "extra_hour_subtotal_vnd": 200000,
+          "total_price_vnd": 1300000,
+          "effective_policy_version": "1.4.6"
+        },
+        {
+          "room_id": "601-golden-inox",
+          "stay_type": "qua_dem",
+          "confirmed_checkin": "2026-11-25T22:00:00+07:00",
+          "confirmed_checkout": "2026-11-26T14:10:00+07:00",
+          "standard_checkout": "2026-11-26T12:00:00+07:00",
+          "grace_period_minutes": 10,
+          "grace_period_mode": "EVERY_EXTRA_HOUR_BOUNDARY",
+          "actual_late_checkout_minutes": 130,
+          "billable_extra_hours": 2,
+          "base_package_price_vnd": 1100000,
+          "extra_hour_rate_vnd": 100000,
+          "extra_hour_subtotal_vnd": 200000,
+          "total_price_vnd": 1300000,
+          "effective_policy_version": "1.4.6"
+        }
+      ]
+    },
+    {
+      "scenario": "V146_JV_601_1410",
+      "conversationId": "v146_jv_601",
+      "propertyId": "j-village",
+      "referenceClockUsed": "2026-11-25T20:45:00+07:00",
+      "userMessage": "Phòng 601 bên J Village tối nay 22h nhận phòng, trưa mai 2 giờ 10 chiều trả phòng hết tổng cộng mấy tiền?",
+      "aiResponse": "Dạ, tổng chi phí cho phòng 601 — Lagoon từ 22:00 tối nay đến 14:10 chiều mai là 919.000đ ạ.\n\nChi tiết như sau:\n- Gói qua đêm (22:00 - 12:00): 719.000đ\n- Trả phòng muộn 2 giờ (12:00 - 14:10): 200.000đ (100.000đ/giờ)\n\nLưu ý: Báo giá này dựa trên biểu phí niêm yết, chưa xác nhận phòng trống hay khả năng kéo dài giờ trả phòng thực tế. Anh/chị vui lòng liên hệ lễ tân (0707 646 464) để kiểm tra tình trạng phòng và xác nhận giờ trả phòng muộn ạ.",
+      "telemetry": {
+        "engine": "agentic",
+        "traceId": "tr_v146_jv_601_t1_mww8q9mt",
+        "provider": "groq",
+        "model": "qwen/qwen3.8-27b",
+        "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+        "effectivePolicyVersion": "1.4.6",
+        "latencyMs": 31191,
+        "tokensTotal": 10832,
+        "isFallback": false
+      },
+      "toolCalls": [
+        {
+          "toolName": "search_rooms",
+          "arguments": {
+            "property_id": "j-village"
+          }
+        },
+        {
+          "toolName": "quote_price",
+          "arguments": {
+            "property_id": "j-village",
+            "room_id": "601-lagoon",
+            "stay_type": "qua_dem",
+            "stay_intent": "overnight_until_next_day",
+            "duration_hours": 16,
+            "checkin_datetime": "2026-11-25T22:00:00+07:00",
+            "checkout_datetime": "2026-11-26T14:10:00+07:00",
+            "checkin_confidence": "CONFIRMED"
+          }
+        }
+      ],
+      "quoteResults": [
+        {
+          "room_id": "601-lagoon",
+          "stay_type": "qua_dem",
+          "confirmed_checkin": "2026-11-25T22:00:00+07:00",
+          "confirmed_checkout": "2026-11-26T14:10:00+07:00",
+          "standard_checkout": "2026-11-26T12:00:00+07:00",
+          "grace_period_minutes": 10,
+          "grace_period_mode": "EVERY_EXTRA_HOUR_BOUNDARY",
+          "actual_late_checkout_minutes": 130,
+          "billable_extra_hours": 2,
+          "base_package_price_vnd": 719000,
+          "extra_hour_rate_vnd": 100000,
+          "extra_hour_subtotal_vnd": 200000,
+          "total_price_vnd": 919000,
+          "effective_policy_version": "1.4.6"
+        },
+        {
+          "room_id": "601-lagoon",
+          "stay_type": "qua_dem",
+          "confirmed_checkin": "2026-11-25T22:00:00+07:00",
+          "confirmed_checkout": "2026-11-26T14:10:00+07:00",
+          "standard_checkout": "2026-11-26T12:00:00+07:00",
+          "grace_period_minutes": 10,
+          "grace_period_mode": "EVERY_EXTRA_HOUR_BOUNDARY",
+          "actual_late_checkout_minutes": 130,
+          "billable_extra_hours": 2,
+          "base_package_price_vnd": 719000,
+          "extra_hour_rate_vnd": 100000,
+          "extra_hour_subtotal_vnd": 200000,
+          "total_price_vnd": 919000,
+          "effective_policy_version": "1.4.6"
+        }
+      ]
+    }
+  ]
+}

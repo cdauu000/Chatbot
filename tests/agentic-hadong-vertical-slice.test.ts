@@ -92,7 +92,8 @@ describe('J Collection — Agentic AI Vertical Slice (jacayl-ha-dong)', () => {
   it('Fast Path: answers pure parking inquiry directly without search', async () => {
     const result = await agent.processTurn('fast-parking-session', 'Bên em có chỗ đỗ ô tô không?');
 
-    expect(result.customer_visible_response).toContain('chỗ đỗ ô tô');
+    // Reconciled V1.4.3 oracle: canonical ground truth confirms "có chỗ đỗ xe", not specific vehicle types
+    expect(result.customer_visible_response.toLowerCase()).toContain('có chỗ đỗ xe');
     expect(result.decision_trace.executionMode).toBe('FAST');
     expect(result.internal_trace.tools_executed).toContain('get_policies');
     expect(result.internal_trace.tools_executed).not.toContain('search_rooms');

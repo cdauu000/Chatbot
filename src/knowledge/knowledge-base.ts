@@ -1,6 +1,7 @@
 import { NormalizedDataset } from '../domain/normalized-schema.js';
 import { CoSoMa } from '../domain/types.js';
 import { KnowledgeItem, KnowledgeTopic, VerificationStatus } from './knowledge-types.js';
+import { loadOwnerPolicyAddendums } from '../data-loader/pricing-policy-loader.js';
 
 export class KnowledgeBase {
   private items: Map<string, KnowledgeItem> = new Map();
@@ -405,6 +406,44 @@ export class KnowledgeBase {
       normalized_value: { status: 'NOT_FOR_SALE' },
       guidance_for_assistant: 'Phòng 401 tại cơ sở Jacayl Hà Đông tồn tại thực tế nhưng không sử dụng để kinh doanh. Khi khách hỏi, giải thích minh bạch và gợi ý các phòng khác trong danh mục thương mại.',
     });
+
+    // 7. Owner Policy Addendums (Breakfast V1.4.5 FALSE + Late Checkout V1.4.6 Recurring Grace)
+    const addendum = loadOwnerPolicyAddendums();
+    const effectiveAddendumVersion =
+      addendum?.policy_version || addendum?.change_history?.[0]?.version || addendum?.schema_version || '1.4.6';
+    const breakfastVersion = addendum?.breakfast?.service_available === false ? '1.4.5' : effectiveAddendumVersion;
+    if (addendum?.breakfast) {
+      this.addItem({
+        id: 'POLICY_BREAKFAST',
+        topic: 'OPERATIONAL_BOUNDARY',
+        scope: 'GLOBAL',
+        key: 'bua_sang',
+        source_reference: `J_COLLECTION_OWNER_POLICY_ADDENDUM_V1_4_5#breakfast (${addendum.source_metadata.source_type})`,
+        verification_status: 'CONFIRMED',
+        version: breakfastVersion,
+        original_value: addendum.breakfast.official_statement,
+        normalized_value: addendum.breakfast,
+        guidance_for_assistant: addendum.breakfast.official_statement,
+      });
+    }
+    if (addendum?.late_checkout) {
+      this.addItem({
+        id: 'POLICY_LATE_CHECKOUT_PRICING',
+        topic: 'PRICING_POLICY',
+        scope: 'GLOBAL',
+        key: 'tra_phong_muon_sau_12h',
+        source_reference: `${addendum.addendum_id}#late_checkout (${addendum.source_metadata.source_type})`,
+        verification_status: 'CONFIRMED',
+        version: effectiveAddendumVersion,
+        original_value:
+          addendum.late_checkout.official_statement ||
+          'Ân hạn 10 phút áp dụng cho từng mốc giờ phát sinh sau 12:00 (12:00–12:10 = 0h; 12:11–13:10 = 1h; 13:11–14:10 = 2h...), tính theo đơn giá phát sinh riêng của từng phòng.',
+        normalized_value: addendum.late_checkout,
+        guidance_for_assistant:
+          addendum.late_checkout.official_statement ||
+          'Ân hạn 10 phút được áp dụng cho từng mốc giờ phát sinh sau 12:00 (trễ đến 12:10 = 0h; 12:11–13:10 = 1h; 13:11–14:10 = 2h...) theo đơn giá riêng của từng phòng.',
+      });
+    }
   }
 
   public getAll(): KnowledgeItem[] {

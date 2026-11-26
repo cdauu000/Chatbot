@@ -15,6 +15,12 @@ export interface ProviderTelemetry {
   error?: string;
   retries_attempted: number;
   is_fallback?: boolean;
+  rate_limits?: {
+    limit_requests?: string | null;
+    limit_tokens?: string | null;
+    remaining_requests?: string | null;
+    remaining_tokens?: string | null;
+  };
 }
 
 export interface ProviderCallResult {

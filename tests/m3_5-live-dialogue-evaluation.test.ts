@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { loadRawDataset } from '../src/data-loader/raw-loader.js';
 import { transformRawDatasetToDomain } from '../src/domain/transformer.js';
 import { ConversationOrchestrator } from '../src/conversation/orchestrator.js';
@@ -17,6 +17,15 @@ describe('Milestone 3.5 — Live Multi-Turn Vietnamese Dialogue Evaluation Suite
   // All 13 Owner Invariants Verified End-to-End
   // =========================================================================
   describe('Provider: Deterministic Mock Engine (100% Deterministic Rulebase)', () => {
+    let prevEngine: string | undefined;
+    beforeAll(() => {
+      prevEngine = process.env.CONVERSATION_ENGINE;
+      process.env.CONVERSATION_ENGINE = 'legacy';
+    });
+    afterAll(() => {
+      if (prevEngine === undefined) delete process.env.CONVERSATION_ENGINE;
+      else process.env.CONVERSATION_ENGINE = prevEngine;
+    });
     const orchestrator = new ConversationOrchestrator(dataset, {
       llmAdapter: new MockLLMAdapter(FIXED_CLOCK),
     });

@@ -5,7 +5,7 @@ import { AdvisoryComposer } from '../advisory-composer.js';
 import { MockLLMAdapter } from './mock-llm-adapter.js';
 import { GroqProviderAdapter, GroqProviderConfig } from './groq-provider.js';
 import { GeminiProviderAdapter, GeminiProviderConfig } from './gemini-provider.js';
-import { LLMProvider, ProviderTelemetry, RateLimitError } from './provider-types.js';
+import { LLMProvider, ProviderTelemetry, RateLimitError, ProviderUnavailableError } from './provider-types.js';
 import { PIIRedactionLayer, DataClassificationGate } from '../privacy/pii-redaction.js';
 
 export const LLMStructuredOutputSchema = z.object({
@@ -124,11 +124,20 @@ export interface ProviderHealthStatus {
 
 export class FreeLLMGateway implements LLMAdapter {
   public readonly name = 'FreeMultiProviderLLMGateway';
+  private static sharedRateLimitUntil: Record<'groq' | 'gemini', number> = { groq: 0, gemini: 0 };
+  private static sharedProviderTail: Record<'groq' | 'gemini', Promise<void>> = {
+    groq: Promise.resolve(),
+    gemini: Promise.resolve(),
+  };
+  private static sharedActiveWaiters: Record<'groq' | 'gemini', number> = { groq: 0, gemini: 0 };
+
   private mode: GatewayRoutingMode;
   private freeOnlyMode: boolean;
+  private useSharedCoordinator: boolean;
 
   private groqAdapter: GroqProviderAdapter;
   private geminiAdapter: GeminiProviderAdapter;
+  private geminiFallbackAdapter: GeminiProviderAdapter;
   private mockAdapter: MockLLMAdapter;
   private composer: AdvisoryComposer;
   private piiLayer: PIIRedactionLayer;
@@ -141,13 +150,24 @@ export class FreeLLMGateway implements LLMAdapter {
   // Last telemetry data
   private lastTelemetry: ProviderTelemetry | null = null;
   private lastFallbackReason: string | null = null;
+  private reliabilityMetrics = {
+    groq: { calls: 0, successes: 0, http429: 0, http503: 0, otherErrors: 0, promptTokens: 0, completionTokens: 0, totalLatencyMs: 0, queueWaitEvents: 0, totalQueueDelayMs: 0, maxConcurrentWaiters: 0 },
+    gemini: { calls: 0, successes: 0, http429: 0, http503: 0, otherErrors: 0, promptTokens: 0, completionTokens: 0, totalLatencyMs: 0, queueWaitEvents: 0, totalQueueDelayMs: 0, maxConcurrentSeen: 0, maxConcurrentWaiters: 0 },
+    coordinator: { serializedCalls: 0, totalQueueDelayMs: 0 },
+  };
 
   constructor(config?: FreeLLMGatewayConfig) {
     this.mode = config?.mode ?? (process.env.LLM_PROVIDER as GatewayRoutingMode) ?? 'auto';
     this.freeOnlyMode = config?.freeOnlyMode ?? (process.env.FREE_ONLY_MODE !== 'false');
+    // Coordinate quotas centrally across shared .env adapters across properties, keeping injected test mocks isolated
+    this.useSharedCoordinator = !config?.groqAdapter && !config?.geminiAdapter;
 
     this.groqAdapter = config?.groqAdapter ?? new GroqProviderAdapter(config?.groqConfig);
     this.geminiAdapter = config?.geminiAdapter ?? new GeminiProviderAdapter(config?.geminiConfig);
+    this.geminiFallbackAdapter = new GeminiProviderAdapter({
+      ...config?.geminiConfig,
+      model: 'gemini-3.1-flash-lite',
+    });
     this.mockAdapter = config?.mockAdapter ?? new MockLLMAdapter(config?.referenceClock);
     this.composer = new AdvisoryComposer();
     this.piiLayer = new PIIRedactionLayer();
@@ -176,6 +196,10 @@ export class FreeLLMGateway implements LLMAdapter {
 
   public getLastFallbackReason(): string | null {
     return this.lastFallbackReason;
+  }
+
+  public getReliabilityMetrics() {
+    return JSON.parse(JSON.stringify(this.reliabilityMetrics));
   }
 
   public getProviderStatus(): {
@@ -467,70 +491,195 @@ JSON Schema:
 
   /**
    * Direct Chat Completion for Agentic Multi-Step Reasoning.
-   * Auto routes Groq Free -> Gemini Free -> Mock Fallback.
+   * V3.0 FINAL Default Auto Order (FREE_ONLY_MODE=true):
+   *   Primary: Gemini 3.5 Flash-Lite -> Secondary: Groq Qwen 3.8 27B -> Additional Fallback: Gemini 3.1 Flash-Lite -> Mock (unless strict).
+   * Shared in-process queue/cooldown coordinates concurrent property sessions on shared free-tier provider quotas.
    */
   public async callChatCompletion(
     messages: Array<{ role: string; content: string }>,
     options?: any
   ): Promise<{ raw_content: string; telemetry: any }> {
-    // 1. If explicit groq mode
+    const allowMockFallback = options?.allowMockFallback !== false;
+    const excludeProviders: string[] = Array.isArray(options?.excludeProviders) ? options.excludeProviders : [];
+    const errors: string[] = [];
+
+    const getRateLimitUntil = (prov: 'groq' | 'gemini') => {
+      const local = prov === 'groq' ? this.groqRateLimitUntil : this.geminiRateLimitUntil;
+      return this.useSharedCoordinator ? Math.max(local, FreeLLMGateway.sharedRateLimitUntil[prov]) : local;
+    };
+
+    const setRateLimitUntil = (prov: 'groq' | 'gemini', untilMs: number) => {
+      if (prov === 'groq') this.groqRateLimitUntil = Math.max(this.groqRateLimitUntil, untilMs);
+      else this.geminiRateLimitUntil = Math.max(this.geminiRateLimitUntil, untilMs);
+      if (this.useSharedCoordinator) {
+        FreeLLMGateway.sharedRateLimitUntil[prov] = Math.max(FreeLLMGateway.sharedRateLimitUntil[prov], untilMs);
+      }
+    };
+
+    const runWithCentralQuotaQueue = async <T>(prov: 'groq' | 'gemini', fn: () => Promise<T>): Promise<{ result: T; queueDelayMs: number }> => {
+      if (!this.useSharedCoordinator) {
+        const res = await fn();
+        return { result: res, queueDelayMs: 0 };
+      }
+      const enqueueAt = Date.now();
+      FreeLLMGateway.sharedActiveWaiters[prov] += 1;
+      const waiters = FreeLLMGateway.sharedActiveWaiters[prov];
+      const m = this.reliabilityMetrics[prov];
+      if (waiters > m.maxConcurrentWaiters) m.maxConcurrentWaiters = waiters;
+
+      const prevTail = FreeLLMGateway.sharedProviderTail[prov];
+      let releaseCurrent!: () => void;
+      FreeLLMGateway.sharedProviderTail[prov] = new Promise<void>((resolve) => {
+        releaseCurrent = resolve;
+      });
+
+      await prevTail;
+      const queueDelayMs = Date.now() - enqueueAt;
+      if (queueDelayMs > 5) {
+        m.queueWaitEvents += 1;
+        m.totalQueueDelayMs += queueDelayMs;
+      }
+      this.reliabilityMetrics.coordinator.serializedCalls += 1;
+      this.reliabilityMetrics.coordinator.totalQueueDelayMs += queueDelayMs;
+      try {
+        const result = await fn();
+        return { result, queueDelayMs };
+      } finally {
+        FreeLLMGateway.sharedActiveWaiters[prov] = Math.max(0, FreeLLMGateway.sharedActiveWaiters[prov] - 1);
+        releaseCurrent();
+      }
+    };
+
+    let geminiKeyRateLimitedThisTurn = false;
+
+    const tryGroq = async () => {
+      if (excludeProviders.includes('groq')) return null;
+      if (!this.groqAdapter.isConfigured()) {
+        errors.push('groq:not_configured');
+        return null;
+      }
+      const limitUntil = getRateLimitUntil('groq');
+      if (Date.now() < limitUntil) {
+        const rem = Math.ceil((limitUntil - Date.now()) / 1000);
+        errors.push(`groq:rate_limited(${rem}s)`);
+        return null;
+      }
+      this.reliabilityMetrics.groq.calls += 1;
+      try {
+        const { result: r, queueDelayMs } = await runWithCentralQuotaQueue('groq', () =>
+          this.groqAdapter.callChatCompletion(messages, options)
+        );
+        this.reliabilityMetrics.groq.successes += 1;
+        this.reliabilityMetrics.groq.promptTokens += r.telemetry?.prompt_tokens ?? 0;
+        this.reliabilityMetrics.groq.completionTokens += r.telemetry?.completion_tokens ?? 0;
+        this.reliabilityMetrics.groq.totalLatencyMs += r.telemetry?.latency_ms ?? 0;
+        return { ...r, telemetry: { ...r.telemetry, queue_delay_ms: queueDelayMs } };
+      } catch (err: any) {
+        if (err instanceof RateLimitError) {
+          this.reliabilityMetrics.groq.http429 += 1;
+          setRateLimitUntil('groq', Date.now() + err.retryAfterSeconds * 1000);
+          errors.push(`groq:429(${err.retryAfterSeconds}s)`);
+        } else {
+          if (String(err.message).includes('HTTP 503')) this.reliabilityMetrics.groq.http503 += 1;
+          else this.reliabilityMetrics.groq.otherErrors += 1;
+          errors.push(`groq:${err.message}`);
+        }
+        return null;
+      }
+    };
+
+    const tryGeminiAdapter = async (adapter: GeminiProviderAdapter, label: string, isAdditionalFallback: boolean) => {
+      if (excludeProviders.includes('gemini')) return null;
+      if (!adapter.isConfigured()) {
+        if (!isAdditionalFallback) errors.push('gemini:not_configured');
+        return null;
+      }
+      if (isAdditionalFallback && geminiKeyRateLimitedThisTurn) {
+        // Same-key quota is shared across Gemini models; do not mask shared 429 quota exhaustion
+        return null;
+      }
+      const limitUntil = getRateLimitUntil('gemini');
+      if (Date.now() < limitUntil) {
+        if (!isAdditionalFallback) {
+          const rem = Math.ceil((limitUntil - Date.now()) / 1000);
+          errors.push(`gemini:rate_limited(${rem}s)`);
+        }
+        return null;
+      }
+      this.reliabilityMetrics.gemini.calls += 1;
+      try {
+        const { result: r, queueDelayMs } = await runWithCentralQuotaQueue('gemini', () =>
+          adapter.callChatCompletion(messages, options)
+        );
+        this.reliabilityMetrics.gemini.successes += 1;
+        this.reliabilityMetrics.gemini.promptTokens += r.telemetry?.prompt_tokens ?? 0;
+        this.reliabilityMetrics.gemini.completionTokens += r.telemetry?.completion_tokens ?? 0;
+        this.reliabilityMetrics.gemini.totalLatencyMs += r.telemetry?.latency_ms ?? 0;
+        return {
+          ...r,
+          telemetry: { ...r.telemetry, queue_delay_ms: queueDelayMs, is_fallback: r.telemetry?.is_fallback || isAdditionalFallback },
+        };
+      } catch (err: any) {
+        if (err instanceof RateLimitError) {
+          geminiKeyRateLimitedThisTurn = true;
+          this.reliabilityMetrics.gemini.http429 += 1;
+          setRateLimitUntil('gemini', Date.now() + err.retryAfterSeconds * 1000);
+          errors.push(`${label}:429(${err.retryAfterSeconds}s)`);
+        } else {
+          if (String(err.message).includes('HTTP 503')) this.reliabilityMetrics.gemini.http503 += 1;
+          else this.reliabilityMetrics.gemini.otherErrors += 1;
+          errors.push(`${label}:${err.message}`);
+        }
+        return null;
+      }
+    };
+
+    const tryGeminiPrimary = () => tryGeminiAdapter(this.geminiAdapter, 'gemini', false);
+    const tryGeminiFallback = () =>
+      this.geminiAdapter.modelName === 'gemini-3.1-flash-lite'
+        ? Promise.resolve(null)
+        : tryGeminiAdapter(this.geminiFallbackAdapter, 'gemini-fallback', true);
+
     if (this.mode === 'groq') {
-      if (this.groqAdapter.isConfigured() && Date.now() >= this.groqRateLimitUntil) {
-        try {
-          return await this.groqAdapter.callChatCompletion(messages, options);
-        } catch (err: any) {
-          if (err instanceof RateLimitError) {
-            this.groqRateLimitUntil = Date.now() + err.retryAfterSeconds * 1000;
-          }
-        }
+      const res = await tryGroq();
+      if (res) return res;
+    } else if (this.mode === 'gemini') {
+      const res = await tryGeminiPrimary();
+      if (res) return res;
+      const fb = await tryGeminiFallback();
+      if (fb) return fb;
+    } else if (this.mode === 'mock') {
+      if (!allowMockFallback) {
+        throw new ProviderUnavailableError('mock', 'Gateway is configured in mock mode while strict live execution was requested.');
       }
       return this.mockAdapter.callChatCompletion(messages, options);
-    }
-
-    // 2. If explicit gemini mode
-    if (this.mode === 'gemini') {
-      if (this.geminiAdapter.isConfigured() && Date.now() >= this.geminiRateLimitUntil) {
-        try {
-          return await this.geminiAdapter.callChatCompletion(messages, options);
-        } catch (err: any) {
-          if (err instanceof RateLimitError) {
-            this.geminiRateLimitUntil = Date.now() + err.retryAfterSeconds * 1000;
-          }
-        }
-      }
-      return this.mockAdapter.callChatCompletion(messages, options);
-    }
-
-    // 3. If explicit mock mode
-    if (this.mode === 'mock') {
-      return this.mockAdapter.callChatCompletion(messages, options);
-    }
-
-    // 4. In 'auto' mode: try Groq -> then Gemini -> then Mock
-    if (this.groqAdapter.isConfigured() && Date.now() >= this.groqRateLimitUntil) {
-      try {
-        return await this.groqAdapter.callChatCompletion(messages, options);
-      } catch (err: any) {
-        if (err instanceof RateLimitError) {
-          this.groqRateLimitUntil = Date.now() + err.retryAfterSeconds * 1000;
-        } else {
-          this.groqRateLimitUntil = Date.now() + 60000;
-        }
+    } else {
+      // V3.0 FINAL Auto Order: Primary Gemini 3.5 -> Secondary Groq Qwen 3.8 27B -> Fallback Gemini 3.1
+      const order =
+        options?.preferredProvider === 'groq'
+          ? [tryGroq, tryGeminiPrimary, tryGeminiFallback]
+          : [tryGeminiPrimary, tryGroq, tryGeminiFallback];
+      for (const runner of order) {
+        const res = await runner();
+        if (res) return res;
       }
     }
 
-    if (this.geminiAdapter.isConfigured() && Date.now() >= this.geminiRateLimitUntil) {
-      try {
-        return await this.geminiAdapter.callChatCompletion(messages, options);
-      } catch (err: any) {
-        if (err instanceof RateLimitError) {
-          this.geminiRateLimitUntil = Date.now() + err.retryAfterSeconds * 1000;
-        } else {
-          this.geminiRateLimitUntil = Date.now() + 60000;
-        }
-      }
+    const reason = errors.join('; ') || 'No configured live LLM providers succeeded';
+    this.lastFallbackReason = reason;
+
+    if (!allowMockFallback) {
+      throw new ProviderUnavailableError('auto', `LIVE_LLM_UNAVAILABLE: ${reason}`);
     }
 
-    return this.mockAdapter.callChatCompletion(messages, options);
+    const mockRes = await this.mockAdapter.callChatCompletion(messages, options);
+    return {
+      ...mockRes,
+      telemetry: {
+        ...mockRes.telemetry,
+        error: reason,
+        is_fallback: true,
+      },
+    };
   }
 }

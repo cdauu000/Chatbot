@@ -1,0 +1,314 @@
+{
+  "generated_at": "2026-11-26T11:40:08.275Z",
+  "total_false_pass": 17,
+  "cases": [
+    {
+      "scenarioId": "SCENARIO-005",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-009",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept.",
+        "T1: ARITHMETIC_TOTAL_MISMATCH: Standard 4h stated as 259.000đ instead of 359.000đ.",
+        "T1: ARITHMETIC_TOTAL_MISMATCH: Deluxe 4h stated as 379.000đ instead of 479.000đ."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-015",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-018",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T2: REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:any rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 700 đ (700đ) contradicts verified Concept:any rates in active evidence.",
+        "T2: CANONICAL_RATE_MISMATCH: Amount 560 đ (560đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
+        "T2: CANONICAL_RATE_MISMATCH: Amount 700 đ (700đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-023",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-027",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "INCOMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI only returned 2h base + vague surcharge note.",
+        "T2: POLICY_RULE_VIOLATION: Claimed 18:00/20:00 arrival transitioning to overnight uses hourly + overnight instead of ngay_dem (14:00-21:39 rule)."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-031",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Category Concept has multiple 4h rates [599000, 649000, 799000, 849000] across rooms; stating sole rate 599.000đ omits sibling room tier.",
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Category Concept has multiple 4h rates [599000, 649000, 799000, 849000] across rooms; stating sole rate 649.000đ omits sibling room tier."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-033",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
+        "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 450.000đ (450.000đ) contradicts verified Standard:any rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 590.000đ (590.000đ) contradicts verified Deluxe:any rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 750.000đ (750.000đ) contradicts verified Concept:any rates in active evidence.",
+        "T2: CANONICAL_RATE_MISMATCH: Amount 450.000đ (450.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
+        "T2: CANONICAL_RATE_MISMATCH: Amount 590.000đ (590.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
+        "T2: CANONICAL_RATE_MISMATCH: Amount 750.000đ (750.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-035",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "TEMPORAL_LEAK",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T1: REJECTED_UNCONFIRMED_REFERENCE_CLOCK_ASSERTION: Response locked unconfirmed reference clock (14:00) as guest arrival time without user specifying 14:00.",
+        "T1: REJECTED_UNCONFIRMED_REFERENCE_CLOCK_ASSERTION: Response locked unconfirmed reference clock (14:00) as guest arrival time without user specifying 14:00."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-037",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "VERIFIED",
+      "business_accuracy": "ACCURATE",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "TEMPORAL_LEAK",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T1: TEMPORAL_FIXTURE_BIAS: Locked generic Ha Dong inquiry onto weekend daytime rate (Saturday fixture) without mentioning weekday/evening rate."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-039",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "VERIFIED",
+      "business_accuracy": "ACCURATE",
+      "goal_completion": "INCOMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI only returned 2h base + vague surcharge note."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-041",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T1: REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-120",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "MISSING_ATTACHMENT",
+      "findings": [
+        "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
+        "T2: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
+        "T2: VERBOSE_RESPONSE: Length=1422 chars (>1400).",
+        "T3: MISSING_MEDIA_ATTACHMENT: Response pasted 3 raw room image URL(s) in prose without structured deliveredMedia attachment.",
+        "T3: MISSING_MEDIA_ATTACHMENT: Guest requested room photos, yet deliveredMedia is empty.",
+        "T3: RAW_IMAGE_URL_WITHOUT_ATTACHMENT: Response pasted raw .webp gallery links into prose."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-140",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "MISSING_ATTACHMENT",
+      "findings": [
+        "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
+        "T2: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
+        "T3: MISSING_MEDIA_ATTACHMENT: Response pasted 1 raw room image URL(s) in prose without structured deliveredMedia attachment.",
+        "T3: MISSING_MEDIA_ATTACHMENT: Guest requested room photos, yet deliveredMedia is empty.",
+        "T3: RAW_IMAGE_URL_WITHOUT_ATTACHMENT: Response pasted raw .webp gallery links into prose."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-150",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "MISSING_ATTACHMENT",
+      "findings": [
+        "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
+        "T2: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
+        "T3: MISSING_MEDIA_ATTACHMENT: Response pasted 3 raw room image URL(s) in prose without structured deliveredMedia attachment.",
+        "T3: MISSING_MEDIA_ATTACHMENT: Guest requested room photos, yet deliveredMedia is empty.",
+        "T3: RAW_IMAGE_URL_WITHOUT_ATTACHMENT: Response pasted raw .webp gallery links into prose."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-330",
+      "propertyId": "jacayl-tran-khat-chan",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-sapphire has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
+        "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 301-ivory has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
+        "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 401-blush has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
+        "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 501-onyx has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-350",
+      "propertyId": "jacayl-tran-khat-chan",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-sapphire has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
+        "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 301-ivory has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
+        "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 401-blush has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
+        "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 501-onyx has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
+      ]
+    }
+  ]
+}

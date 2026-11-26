@@ -35,7 +35,9 @@ import { JCollectionAgent } from '../agent/jcollection-agent.js';
 
 export interface ProcessTurnOptions {
   referenceClock?: string;
+  messageTimestamp?: string;
   boundPropertyId?: CoSoMa;
+  strictLiveOnly?: boolean;
 }
 
 export interface OrchestratorOptions {
@@ -165,6 +167,7 @@ export class ConversationOrchestrator {
     const canonicalDataFetched: string[] = [];
 
     let referenceClock: string | undefined;
+    let messageTimestamp: string | undefined;
     let boundPropertyId: CoSoMa | undefined;
 
     if (typeof optionsOrClock === 'string') {
@@ -172,6 +175,7 @@ export class ConversationOrchestrator {
       if (propertyId) boundPropertyId = propertyId;
     } else if (optionsOrClock && typeof optionsOrClock === 'object') {
       referenceClock = optionsOrClock.referenceClock;
+      messageTimestamp = optionsOrClock.messageTimestamp;
       boundPropertyId = optionsOrClock.boundPropertyId ?? propertyId;
     } else if (propertyId) {
       boundPropertyId = propertyId;
@@ -213,7 +217,13 @@ export class ConversationOrchestrator {
       if (!memory.active_facility) {
         this.memoryManager.updateSlots(sessionId, { active_facility: targetProperty });
       }
-      return agent.processTurn(sessionId, userMessage, { referenceClock });
+      return agent.processTurn(sessionId, userMessage, {
+        referenceClock,
+        messageTimestamp,
+        strictLiveOnly:
+          (typeof optionsOrClock === 'object' ? optionsOrClock?.strictLiveOnly : undefined) ??
+          (process.env.STRICT_LIVE_ONLY === 'true'),
+      });
     }
 
     // 2. Parse intent and entities
@@ -451,7 +461,14 @@ export class ConversationOrchestrator {
     } else if (intent === 'BROWSE_ROOMS_BY_CATEGORY') {
       chosenAction = 'SHOW_ROOMS_BY_CATEGORY';
       rulesTriggered.push('RULE_BROWSE_ROOMS_BY_CATEGORY');
-    } else if (intent === 'ASK_CATEGORY_PRICE' || plan.primaryGoal === 'CALCULATE_PRICE') {
+    } else if (
+      (intent === 'ASK_CATEGORY_PRICE' || plan.primaryGoal === 'CALCULATE_PRICE') &&
+      !matchedRoomForDetail &&
+      !entities.checkin_time &&
+      !entities.duration_hours &&
+      !(entities.must_have_amenities && entities.must_have_amenities.length > 0) &&
+      memory.stay_type !== 'qua_dem'
+    ) {
       chosenAction = 'QUOTE_CATEGORY_PRICE';
       rulesTriggered.push('RULE_QUOTE_CATEGORY_PRICE');
       toolsExecuted.push('QUOTE_CATEGORY', 'CALCULATE_PRICE_QUOTE');

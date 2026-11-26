@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "addendum_id": "J_COLLECTION_OWNER_POLICY_ADDENDUM_V1_4_4_BREAKFAST",
+  "base_policy_id": "J_COLLECTION_BUSINESS_POLICY_V1_4_3",
+  "currency": "VND",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "source_metadata": {
+    "source_type": "OWNER_DIRECT_INSTRUCTION",
+    "source_recorded_on": "2026-11-25",
+    "effective_from": "2026-11-25",
+    "status": "OWNER_CONFIRMED_ACTIVE",
+    "notes": "Bổ sung chính sách bữa sáng theo xác nhận trực tiếp của Chủ dự án. Không thay đổi giá phòng hay canonical room dataset V1.4.3."
+  },
+  "change_history": [
+    {
+      "version": "1.4.4-addendum-1",
+      "recorded_on": "2026-11-25",
+      "source_type": "OWNER_DIRECT_INSTRUCTION",
+      "summary": "Xác nhận giá phòng tại cả 3 cơ sở (Hà Đông, Trần Khát Chân, J Village) và mọi gói nghỉ (nghỉ giờ, qua đêm, ngày đêm) không bao gồm bữa sáng; dịch vụ đặt/phục vụ ăn sáng riêng chưa công bố trên hệ thống (UNKNOWN)."
+    }
+  ],
+  "breakfast": {
+    "included_in_room_rate": false,
+    "scope": "ALL_PROPERTIES",
+    "properties": [
+      "jacayl-ha-dong",
+      "jacayl-tran-khat-chan",
+      "j-village"
+    ],
+    "applies_to": [
+      "nghi_gio",
+      "qua_dem",
+      "ngay_dem"
+    ],
+    "applies_to_all_categories": true,
+    "room_rates_modified": false,
+    "separate_service_availability": "UNKNOWN",
+    "official_statement": "Giá phòng tại cả ba cơ sở J Collection (Jacayl Hà Đông, Jacayl Trần Khát Chân, J Village) áp dụng cho tất cả hạng phòng và mọi gói nghỉ (nghỉ giờ, qua đêm, ngày đêm) đều không bao gồm bữa sáng. Khả năng phục vụ hoặc đặt riêng bữa sáng (có phụ thu hay không) chưa được công bố trên hệ thống (UNKNOWN) — vui lòng liên hệ trực tiếp lễ tân để xác nhận chi tiết nếu cần."
+  }
+}

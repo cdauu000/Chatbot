@@ -200,16 +200,26 @@ export function getDashboardHtml(): string {
     .close-btn { cursor: pointer; font-size: 20px; color: var(--text-muted); }
 
     /* Image Gallery & Lightbox */
-    .msg-images-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-top: 10px; }
+    .room-albums-stack { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .room-album-block { background: rgba(18, 22, 28, 0.72); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+    .room-album-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 12px; }
+    .room-album-title { font-weight: 700; color: var(--gold-light); }
+    .room-album-meta { font-size: 11px; color: var(--text-muted); }
+    .msg-images-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin-top: 6px; }
     .gallery-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; transition: transform 0.15s, border-color 0.15s; }
     .gallery-card:hover { transform: translateY(-2px); border-color: var(--gold); }
     .room-thumbnail { width: 100%; height: 85px; object-fit: cover; display: block; }
     .gallery-card-caption { font-size: 11px; padding: 4px 6px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    #lightbox-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1001; }
+    #lightbox-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.88); display: none; align-items: center; justify-content: center; z-index: 1001; }
     .lightbox-content { position: relative; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column; align-items: center; }
-    .lightbox-img { max-width: 85vw; max-height: 78vh; min-width: 280px; min-height: 200px; background: #222730; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.9); }
-    .lightbox-caption { color: var(--text-main); font-size: 13.5px; margin-top: 10px; font-weight: 500; text-align: center; }
+    .lightbox-img { max-width: 82vw; max-height: 76vh; min-width: 280px; min-height: 200px; background: #222730; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.9); }
+    .lightbox-header { color: var(--gold-light); font-size: 14px; font-weight: 700; margin-bottom: 8px; text-align: center; }
+    .lightbox-caption { color: var(--text-main); font-size: 13px; margin-top: 8px; font-weight: 500; text-align: center; }
+    .lightbox-nav { display: flex; align-items: center; gap: 16px; margin-top: 10px; }
+    .lightbox-nav-btn { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.22); border-radius: 6px; padding: 6px 14px; cursor: pointer; font-size: 13px; font-weight: 600; }
+    .lightbox-nav-btn:hover:not(:disabled) { background: rgba(212,175,55,0.3); border-color: var(--gold); }
+    .lightbox-nav-btn:disabled { opacity: 0.35; cursor: default; }
     .lightbox-close { position: absolute; top: -36px; right: 0; font-size: 32px; color: #fff; cursor: pointer; line-height: 1; }
   </style>
 </head>
@@ -219,8 +229,14 @@ export function getDashboardHtml(): string {
   <div id="lightbox-modal" onclick="closeLightbox()">
     <div class="lightbox-content" onclick="event.stopPropagation()">
       <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+      <div id="lightbox-room-title" class="lightbox-header"></div>
       <img id="lightbox-img" class="lightbox-img" src="" alt="Room detail" />
       <div id="lightbox-caption" class="lightbox-caption"></div>
+      <div class="lightbox-nav">
+        <button id="lightbox-prev" class="lightbox-nav-btn" type="button" onclick="navigateLightbox(-1)">‹ Trước</button>
+        <span id="lightbox-counter" style="font-size:12px; color:var(--text-muted);"></span>
+        <button id="lightbox-next" class="lightbox-nav-btn" type="button" onclick="navigateLightbox(1)">Sau ›</button>
+      </div>
     </div>
   </div>
 
@@ -266,8 +282,8 @@ export function getDashboardHtml(): string {
   <header>
     <div class="brand">
       <span class="brand-title">J COLLECTION CONCIERGE</span>
-      <span class="brand-sub">Milestone Agentic V2.2 — Staff Concierge & Takeover</span>
-      <span class="badge" style="background:#162a1e; color:#81c784; border:1px solid #2e4a36; font-size:11px; padding:3px 8px; border-radius:4px; font-weight:600; margin-left:8px;">V2.2 Cognitive</span>
+      <span class="brand-sub">V3.0 FINAL — LLM-Native Staff Concierge & Takeover</span>
+      <span class="badge" style="background:#162a1e; color:#81c784; border:1px solid #2e4a36; font-size:11px; padding:3px 8px; border-radius:4px; font-weight:600; margin-left:8px;">V3.0 FINAL</span>
     </div>
     <div class="header-actions">
       <div class="user-pill">
@@ -665,9 +681,21 @@ export function getDashboardHtml(): string {
         btnSendStaff.disabled = true;
       }
 
+      // Reset per-render scoped lightbox album registry
+      window.__roomAlbumRegistry = {};
+
+      function escHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
       // Render Messages
       const container = document.getElementById('chat-messages');
-      container.innerHTML = messages.map(m => {
+      container.innerHTML = messages.map((m, msgIdx) => {
         let cls = 'msg-customer';
         let senderTitle = m.senderName || 'Khách hàng';
         if (m.senderType === 'ai') {
@@ -683,22 +711,98 @@ export function getDashboardHtml(): string {
 
         let telemetryHtml = '';
         if (m.metadata?.telemetry) {
-          telemetryHtml = '<span class="telemetry-tag">' + m.metadata.telemetry.provider + ' (' + m.metadata.telemetry.latencyMs + 'ms)</span>';
+          const tel = m.metadata.telemetry;
+          const engLabel = tel.engine || 'agentic';
+          const provModel = (tel.provider || 'unknown') + ':' + (tel.model || 'unknown');
+          const statusLabel = tel.verificationStatus || (tel.isFallback ? 'DEGRADED' : 'LIVE');
+          const traceLabel = tel.traceId || m.id || 'n/a';
+          telemetryHtml = '<span class="telemetry-tag">engine=' + engLabel + ' | ' + provModel + ' | ' + statusLabel + ' | ' + (tel.latencyMs ?? 0) + 'ms | trace=' + traceLabel + '</span>';
         }
 
         let imagesGalleryHtml = '';
-        if (m.metadata && m.metadata.images && m.metadata.images.length > 0) {
-          imagesGalleryHtml = '<div class="msg-images-gallery">' +
-            m.metadata.images.map(img => {
-              const cap = (img.caption || img.roomName || 'Ảnh phòng');
-              const cleanUrl = img.url.replace(/"/g, '&quot;');
-              const cleanCap = cap.replace(/'/g, "\\\\'").replace(/"/g, '&quot;');
-              return '<div class="gallery-card" data-url="' + cleanUrl + '" data-caption="' + cleanCap + '">' +
-                '<img src="' + cleanUrl + '" alt="' + cleanCap + '" class="room-thumbnail" loading="lazy" />' +
-                '<div class="gallery-card-caption">' + cap + '</div>' +
+        const msgKey = m.id || ('msg_' + msgIdx);
+        const presentations = Array.isArray(m.metadata?.roomPresentations) && m.metadata.roomPresentations.length > 0
+          ? m.metadata.roomPresentations
+          : null;
+
+        if (presentations) {
+          imagesGalleryHtml = '<div class="room-albums-stack">' + presentations.map((grp, grpIdx) => {
+            const grpImgs = Array.isArray(grp.images) ? grp.images : [];
+            if (grpImgs.length === 0) return '';
+            const albumKey = msgKey + '__' + (grp.roomId || ('grp_' + grpIdx));
+            const roomTitle = grp.roomName || (grp.roomCode ? ('Phòng ' + grp.roomCode) : 'Ảnh phòng');
+            const albumImages = grpImgs.map((img, iIdx) => ({
+              url: img.url,
+              caption: img.caption || (roomTitle + ' — Ảnh ' + (iIdx + 1)),
+              roomTitle,
+            }));
+            window.__roomAlbumRegistry[albumKey] = albumImages;
+
+            const priceTag = grp.priceSummary ? ' · ' + escHtml(grp.priceSummary) : '';
+            const headerHtml =
+              '<div class="room-album-header">' +
+                '<span class="room-album-title">📷 ' + escHtml(roomTitle) + '</span>' +
+                '<span class="room-album-meta">' + albumImages.length + ' ảnh' + priceTag + '</span>' +
               '</div>';
-            }).join('') +
-          '</div>';
+
+            const cardsHtml = albumImages.map((item, iIdx) => {
+              const cleanUrl = escHtml(item.url);
+              const cleanCap = escHtml(item.caption);
+              return '<div class="gallery-card" data-album-key="' + escHtml(albumKey) + '" data-index="' + iIdx + '" data-url="' + cleanUrl + '" data-caption="' + cleanCap + '" data-room-title="' + escHtml(roomTitle) + '">' +
+                '<img src="' + cleanUrl + '" alt="' + cleanCap + '" class="room-thumbnail" loading="lazy" />' +
+                '<div class="gallery-card-caption">' + cleanCap + '</div>' +
+              '</div>';
+            }).join('');
+
+            return '<div class="room-album-block" data-room-id="' + escHtml(grp.roomId || '') + '" data-room-code="' + escHtml(grp.roomCode || '') + '">' +
+              headerHtml +
+              '<div class="msg-images-gallery">' + cardsHtml + '</div>' +
+            '</div>';
+          }).join('') + '</div>';
+        } else if (m.metadata && Array.isArray(m.metadata.images) && m.metadata.images.length > 0) {
+          // Backward compatibility: group only when images already carry explicit roomId+roomName metadata; otherwise keep neutral unguessed legacy album.
+          const hasExplicitRoomMeta = m.metadata.images.every(img => img && (img.roomId || img.roomName));
+          if (hasExplicitRoomMeta) {
+            const groupedMap = new Map();
+            m.metadata.images.forEach((img, idx) => {
+              const rKey = img.roomId || img.roomName || ('room_' + idx);
+              if (!groupedMap.has(rKey)) groupedMap.set(rKey, { roomId: img.roomId || '', roomName: img.roomName || 'Ảnh phòng', images: [] });
+              groupedMap.get(rKey).images.push(img);
+            });
+            imagesGalleryHtml = '<div class="room-albums-stack">' + Array.from(groupedMap.entries()).map(([rKey, grp], grpIdx) => {
+              const albumKey = msgKey + '__legacygrp_' + grpIdx;
+              const albumImages = grp.images.map((img, iIdx) => ({
+                url: img.url,
+                caption: img.caption || (grp.roomName + ' — Ảnh ' + (iIdx + 1)),
+                roomTitle: grp.roomName,
+              }));
+              window.__roomAlbumRegistry[albumKey] = albumImages;
+              return '<div class="room-album-block" data-room-id="' + escHtml(grp.roomId) + '">' +
+                '<div class="room-album-header"><span class="room-album-title">📷 ' + escHtml(grp.roomName) + '</span><span class="room-album-meta">' + albumImages.length + ' ảnh</span></div>' +
+                '<div class="msg-images-gallery">' + albumImages.map((item, iIdx) =>
+                  '<div class="gallery-card" data-album-key="' + escHtml(albumKey) + '" data-index="' + iIdx + '" data-url="' + escHtml(item.url) + '" data-caption="' + escHtml(item.caption) + '" data-room-title="' + escHtml(grp.roomName) + '">' +
+                    '<img src="' + escHtml(item.url) + '" alt="' + escHtml(item.caption) + '" class="room-thumbnail" loading="lazy" />' +
+                    '<div class="gallery-card-caption">' + escHtml(item.caption) + '</div>' +
+                  '</div>'
+                ).join('') + '</div></div>';
+            }).join('') + '</div>';
+          } else {
+            const legacyKey = msgKey + '__legacy_flat';
+            const albumImages = m.metadata.images.map((img, idx) => ({
+              url: img.url,
+              caption: img.caption || img.alt || ('Ảnh đính kèm #' + (idx + 1)),
+              roomTitle: 'Ảnh phòng (phiên cũ)',
+            }));
+            window.__roomAlbumRegistry[legacyKey] = albumImages;
+            imagesGalleryHtml = '<div class="room-album-block room-album-legacy">' +
+              '<div class="room-album-header"><span class="room-album-title">📷 Ảnh phòng (phiên cũ)</span><span class="room-album-meta">' + albumImages.length + ' ảnh</span></div>' +
+              '<div class="msg-images-gallery">' + albumImages.map((item, iIdx) =>
+                '<div class="gallery-card" data-album-key="' + escHtml(legacyKey) + '" data-index="' + iIdx + '" data-url="' + escHtml(item.url) + '" data-caption="' + escHtml(item.caption) + '" data-room-title="' + escHtml(item.roomTitle) + '">' +
+                  '<img src="' + escHtml(item.url) + '" alt="' + escHtml(item.caption) + '" class="room-thumbnail" loading="lazy" />' +
+                  '<div class="gallery-card-caption">' + escHtml(item.caption) + '</div>' +
+                '</div>'
+              ).join('') + '</div></div>';
+          }
         }
 
         const timeStr = new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -735,15 +839,52 @@ export function getDashboardHtml(): string {
       return escaped;
     }
 
-    function openLightbox(url, caption) {
+    let currentLightboxState = { albumKey: null, index: 0, items: [] };
+
+    function renderLightboxSlide() {
       const modal = document.getElementById('lightbox-modal');
-      const img = document.getElementById('lightbox-img');
-      const cap = document.getElementById('lightbox-caption');
-      if (modal && img && cap) {
-        img.src = url;
-        cap.textContent = caption || '';
-        modal.style.display = 'flex';
-      }
+      const titleEl = document.getElementById('lightbox-room-title');
+      const imgEl = document.getElementById('lightbox-img');
+      const capEl = document.getElementById('lightbox-caption');
+      const counterEl = document.getElementById('lightbox-counter');
+      const prevBtn = document.getElementById('lightbox-prev');
+      const nextBtn = document.getElementById('lightbox-next');
+      const items = currentLightboxState.items || [];
+      if (!modal || !imgEl || items.length === 0) return;
+
+      const idx = Math.max(0, Math.min(currentLightboxState.index, items.length - 1));
+      currentLightboxState.index = idx;
+      const item = items[idx];
+      if (titleEl) titleEl.textContent = item.roomTitle || '';
+      imgEl.src = item.url || '';
+      imgEl.alt = item.caption || item.roomTitle || 'Room image';
+      if (capEl) capEl.textContent = item.caption || '';
+      if (counterEl) counterEl.textContent = (idx + 1) + ' / ' + items.length;
+      if (prevBtn) prevBtn.disabled = idx <= 0;
+      if (nextBtn) nextBtn.disabled = idx >= items.length - 1;
+      modal.style.display = 'flex';
+    }
+
+    function openLightbox(url, caption, albumKey, index, roomTitle) {
+      const reg = window.__roomAlbumRegistry || {};
+      const albumItems = albumKey && Array.isArray(reg[albumKey]) && reg[albumKey].length > 0
+        ? reg[albumKey]
+        : [{ url, caption: caption || '', roomTitle: roomTitle || '' }];
+      currentLightboxState = {
+        albumKey: albumKey || null,
+        index: Number.isFinite(index) ? index : 0,
+        items: albumItems,
+      };
+      renderLightboxSlide();
+    }
+
+    function navigateLightbox(delta) {
+      const items = currentLightboxState.items || [];
+      if (items.length === 0) return;
+      const next = currentLightboxState.index + delta;
+      if (next < 0 || next >= items.length) return;
+      currentLightboxState.index = next;
+      renderLightboxSlide();
     }
 
     function closeLightbox() {
@@ -751,13 +892,23 @@ export function getDashboardHtml(): string {
       const img = document.getElementById('lightbox-img');
       if (modal) modal.style.display = 'none';
       if (img) img.src = '';
+      currentLightboxState = { albumKey: null, index: 0, items: [] };
     }
 
-    // Delegated click listener for gallery thumbnails (no inline onclick)
+    document.addEventListener('keydown', function(e) {
+      const modal = document.getElementById('lightbox-modal');
+      if (!modal || modal.style.display !== 'flex') return;
+      if (e.key === 'ArrowLeft') navigateLightbox(-1);
+      else if (e.key === 'ArrowRight') navigateLightbox(1);
+      else if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Delegated click listener for gallery thumbnails (strictly scoped to clicked room's album)
     document.addEventListener('click', function(e) {
       const card = e.target.closest('.gallery-card');
       if (card && card.dataset.url) {
-        openLightbox(card.dataset.url, card.dataset.caption);
+        const idx = parseInt(card.dataset.index || '0', 10);
+        openLightbox(card.dataset.url, card.dataset.caption, card.dataset.albumKey, Number.isNaN(idx) ? 0 : idx, card.dataset.roomTitle);
       }
     });
 
@@ -971,18 +1122,23 @@ export function getDashboardHtml(): string {
           headers: { 'Authorization': 'Bearer ' + authToken }
         });
         const data = await res.json();
+        const gt = data.groundingTelemetry || {};
         container.innerHTML = '<div style="display:flex; flex-direction:column; gap:12px;">' +
-          '<div><strong>Engine:</strong> ' + (data.engine || 'agentic') + ' | <strong>Build Version:</strong> ' + (data.buildVersion || '2.2.0-agentic-cognitive') + '</div>' +
+          '<div><strong>Engine:</strong> ' + (data.engine || 'agentic') + ' | <strong>Build Version:</strong> ' + (data.buildVersion || '3.0.0-llm-native-final') + ' | <strong>Commit:</strong> <code>' + (data.gitCommit || 'unknown') + '</code> | <strong>Policy:</strong> V' + (data.effectivePolicyVersion || '1.4.6') + '</div>' +
           '<div><strong>Active Mode:</strong> ' + data.activeMode + ' | <strong>Free Only:</strong> ' + data.freeOnlyMode + '</div>' +
           '<div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border);">' +
-            '<strong style="color:var(--gold);">Groq Provider:</strong> ' + (data.groq.configured ? '✅ Đã cấu hình' : '❌ Chưa cấu hình') + '<br>' +
-            'Model: <code>' + data.groq.model + '</code><br>' +
-            'Rate Limit Cooloff: ' + data.groq.rateLimitCooloffSecRemaining + 's' +
+            '<strong style="color:var(--gold);">Business Grounding Telemetry:</strong> Last: <code>' + (gt.lastGroundingStatus || 'NOT_EVALUATED') + '</code> | Verified: <strong>' + (gt.verifiedTurns ?? 0) + '</strong> | Repaired: <strong>' + (gt.repairedTurns ?? 0) + '</strong> | Blocked: <strong>' + (gt.blockedTurns ?? 0) + '</strong>' +
+          '</div>' +
+          (data.recommendedRouting ? '<div style="font-size:12px; color:var(--text-muted);"><strong>Routing:</strong> ' + data.recommendedRouting + '</div>' : '') +
+          '<div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border);">' +
+            '<strong style="color:var(--gold);">Google Gemini Provider (Primary):</strong> ' + (data.gemini.configured ? '✅ Đã cấu hình' : '❌ Chưa cấu hình') + '<br>' +
+            'Model: <code>' + data.gemini.model + '</code> | Fallback: <code>gemini-3.1-flash-lite</code><br>' +
+            'Rate Limit Cooloff: ' + data.gemini.rateLimitCooloffSecRemaining + 's' +
           '</div>' +
           '<div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border);">' +
-            '<strong style="color:var(--gold);">Google Gemini Provider:</strong> ' + (data.gemini.configured ? '✅ Đã cấu hình' : '❌ Chưa cấu hình') + '<br>' +
-            'Model: <code>' + data.gemini.model + '</code><br>' +
-            'Rate Limit Cooloff: ' + data.gemini.rateLimitCooloffSecRemaining + 's' +
+            '<strong style="color:var(--gold);">Groq Provider (Secondary):</strong> ' + (data.groq.configured ? '✅ Đã cấu hình' : '❌ Chưa cấu hình') + '<br>' +
+            'Model: <code>' + data.groq.model + '</code><br>' +
+            'Rate Limit Cooloff: ' + data.groq.rateLimitCooloffSecRemaining + 's' +
           '</div>' +
           '<div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border);">' +
             '<strong style="color:var(--gold);">Deterministic Mock Engine:</strong> ✅ Sẵn sàng (Zero Cost, Deterministic Invariants)' +

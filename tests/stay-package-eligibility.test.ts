@@ -131,29 +131,35 @@ describe('Business Policy V1.4.3 Golden Tests — Group C: Stay Package Eligibil
   // C09: Multi-turn: Lượt 1 check-in 20:00 (ngày đêm), Lượt 2 khách đổi 21:40 (qua đêm)
   it('C09: Multi-turn: Lượt 1 check-in 20:00 (ngày đêm), Lượt 2 khách đổi 21:40 chuyển qua đêm thành công', async () => {
     const sessionId = 'test-c09-multiturn';
+    const prevEngine = process.env.CONVERSATION_ENGINE;
+    process.env.CONVERSATION_ENGINE = 'legacy';
+    try {
+      // Turn 1: 20:00
+      const turn1 = await orchestrator.processTurn(
+        sessionId,
+        'Tôi muốn nhận phòng lúc 20:00 tối nay ở qua đêm đến trưa mai tại Hà Đông',
+        FIXED_CLOCK
+      );
 
-    // Turn 1: 20:00
-    const turn1 = await orchestrator.processTurn(
-      sessionId,
-      'Tôi muốn nhận phòng lúc 20:00 tối nay ở qua đêm đến trưa mai tại Hà Đông',
-      FIXED_CLOCK
-    );
+      expect(turn1.updated_state.stay_type).toBe('qua_dem');
+      expect(turn1.internal_trace.rules_triggered).toContain('STAY_ELIGIBILITY_ALTERNATIVE_PACKAGE_RECOMMENDED');
+      expect(turn1.customer_visible_response).toContain('21:40');
+      expect(turn1.customer_visible_response).toContain('Ngày Đêm');
 
-    expect(turn1.updated_state.stay_type).toBe('qua_dem');
-    expect(turn1.internal_trace.rules_triggered).toContain('STAY_ELIGIBILITY_ALTERNATIVE_PACKAGE_RECOMMENDED');
-    expect(turn1.customer_visible_response).toContain('21:40');
-    expect(turn1.customer_visible_response).toContain('Ngày Đêm');
+      // Turn 2: Khách đổi sang 21:40
+      const turn2 = await orchestrator.processTurn(
+        sessionId,
+        'Vậy để anh đổi sang 21:40 nhận phòng nhé',
+        FIXED_CLOCK
+      );
 
-    // Turn 2: Khách đổi sang 21:40
-    const turn2 = await orchestrator.processTurn(
-      sessionId,
-      'Vậy để anh đổi sang 21:40 nhận phòng nhé',
-      FIXED_CLOCK
-    );
-
-    expect(turn2.updated_state.checkin_datetime).toContain('21:40');
-    expect(turn2.internal_trace.rules_triggered).toContain('STAY_ELIGIBILITY_EARLY_CHECKIN_GRACE_APPLIED');
-    expect(turn2.customer_visible_response).toContain('20 phút');
+      expect(turn2.updated_state.checkin_datetime).toContain('21:40');
+      expect(turn2.internal_trace.rules_triggered).toContain('STAY_ELIGIBILITY_EARLY_CHECKIN_GRACE_APPLIED');
+      expect(turn2.customer_visible_response).toContain('20 phút');
+    } finally {
+      if (prevEngine === undefined) delete process.env.CONVERSATION_ENGINE;
+      else process.env.CONVERSATION_ENGINE = prevEngine;
+    }
   });
 
   // C10: Check-in 13:00 muốn ở ngày đêm -> NEEDS_POLICY_CLARIFICATION

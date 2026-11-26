@@ -130,10 +130,11 @@ export class GeminiProviderAdapter implements LLMProvider {
     let attempt = 0;
     let lastError: Error | null = null;
     const startTime = performance.now();
-    const endpoint = `${this.baseUrl}/${this.modelName}:generateContent?key=${this.apiKey}`;
+    let activeModel = this.modelName;
 
     while (attempt <= this.maxRetries) {
       attempt++;
+      const endpoint = `${this.baseUrl}/${activeModel}:generateContent?key=${this.apiKey}`;
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeout);
 
@@ -163,7 +164,7 @@ export class GeminiProviderAdapter implements LLMProvider {
 
         // Handle Deprecated / Not Found Models (HTTP 404)
         if (response.status === 404) {
-          throw new ProviderUnavailableError('gemini', `HTTP 404: Model ${this.modelName} not found or retired on Gemini API.`);
+          throw new ProviderUnavailableError('gemini', `HTTP 404: Model ${activeModel} not found or retired on Gemini API.`);
         }
 
         if (!response.ok) {
@@ -191,14 +192,14 @@ export class GeminiProviderAdapter implements LLMProvider {
           raw_content: content,
           telemetry: {
             provider: 'gemini',
-            model: this.modelName,
+            model: activeModel,
             prompt_tokens: data.usageMetadata?.promptTokenCount ?? 0,
             completion_tokens: data.usageMetadata?.candidatesTokenCount ?? 0,
             total_tokens: data.usageMetadata?.totalTokenCount ?? 0,
             latency_ms: latency,
             http_status: response.status,
             retries_attempted: attempt - 1,
-            is_fallback: false,
+            is_fallback: activeModel !== this.modelName,
           },
         };
       } catch (err: any) {
@@ -214,7 +215,11 @@ export class GeminiProviderAdapter implements LLMProvider {
         }
 
         if (attempt <= this.maxRetries) {
-          await new Promise((res) => setTimeout(res, attempt * 300));
+          const isTransient503 = String(lastError?.message || '').includes('HTTP 503');
+          if (isTransient503 && activeModel === 'gemini-3.5-flash-lite') {
+            activeModel = 'gemini-3.1-flash-lite';
+          }
+          await new Promise((res) => setTimeout(res, isTransient503 ? 850 : attempt * 300));
         }
       }
     }

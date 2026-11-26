@@ -76,3 +76,10 @@ npm run chat
 # Khởi chạy Staff Dashboard
 npm run dashboard
 ```
+
+---
+
+## 🔒 Bảo Mật & An Toàn Dữ Liệu
+- Toàn bộ API Key và dữ liệu nhạy cảm được cấu hình qua biến môi trường (`.env`).
+- Cơ sở dữ liệu nội bộ SQLite (`*.db`, `*.db-shm`, `*.db-wal`) được loại trừ khỏi repository.
+- Các báo cáo benchmark kích thước lớn (>50MB) được tự động bỏ qua để tối ưu dung lượng mã nguồn.

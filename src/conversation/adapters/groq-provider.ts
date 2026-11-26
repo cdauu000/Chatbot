@@ -27,7 +27,8 @@ export class GroqProviderAdapter implements LLMProvider {
 
   constructor(config?: GroqProviderConfig) {
     this.apiKey = config?.apiKey ?? process.env.GROQ_API_KEY;
-    this.modelName = config?.model ?? process.env.GROQ_MODEL ?? 'openai/gpt-oss-20b';
+    // Owner Decision V3.0 FINAL: prioritize qwen/qwen3.8-27b over openai/gpt-oss-20b
+    this.modelName = config?.model ?? process.env.GROQ_MODEL ?? 'qwen/qwen3.8-27b';
     this.baseUrl = config?.baseUrl ?? process.env.GROQ_BASE_URL ?? 'https://api.groq.com/openai/v1';
     this.timeoutMs = config?.timeoutMs ?? parseInt(process.env.LLM_TIMEOUT_MS ?? '15000', 10);
     this.maxRetries = config?.maxRetries ?? 1; // Limit retries to preserve free quota
@@ -132,8 +133,26 @@ export class GroqProviderAdapter implements LLMProvider {
         // Handle Rate Limits (HTTP 429)
         if (response.status === 429) {
           const retryAfterHeader = response.headers.get('retry-after');
-          const retryAfterSec = retryAfterHeader ? parseInt(retryAfterHeader, 10) : 60;
-          throw new RateLimitError('groq', Number.isFinite(retryAfterSec) ? retryAfterSec : 60);
+          const resetTokensHeader = response.headers.get('x-ratelimit-reset-tokens');
+          const resetReqHeader = response.headers.get('x-ratelimit-reset-requests');
+          let retryAfterSec = retryAfterHeader ? parseFloat(retryAfterHeader) : NaN;
+          if (!Number.isFinite(retryAfterSec) || retryAfterSec <= 0) {
+            const parseGroqDuration = (raw: string | null): number => {
+              if (!raw) return NaN;
+              const minMatch = raw.match(/(\d+(?:\.\d+)?)m/);
+              const secMatch = raw.match(/(\d+(?:\.\d+)?)s/);
+              const msMatch = raw.match(/(\d+(?:\.\d+)?)ms/);
+              if (minMatch || (secMatch && !msMatch)) {
+                return (minMatch ? parseFloat(minMatch[1]) * 60 : 0) + (secMatch ? parseFloat(secMatch[1]) : 0);
+              }
+              if (msMatch) return Math.ceil(parseFloat(msMatch[1]) / 1000);
+              return NaN;
+            };
+            const tokSec = parseGroqDuration(resetTokensHeader);
+            const reqSec = parseGroqDuration(resetReqHeader);
+            retryAfterSec = Number.isFinite(tokSec) && tokSec > 0 ? Math.ceil(tokSec) : Number.isFinite(reqSec) && reqSec > 0 ? Math.ceil(reqSec) : 60;
+          }
+          throw new RateLimitError('groq', Number.isFinite(retryAfterSec) && retryAfterSec > 0 ? Math.ceil(retryAfterSec) : 60);
         }
 
         // Handle Auth Errors (HTTP 401 / 403)
@@ -168,6 +187,12 @@ export class GroqProviderAdapter implements LLMProvider {
             http_status: response.status,
             retries_attempted: attempt - 1,
             is_fallback: false,
+            rate_limits: {
+              limit_requests: response.headers.get('x-ratelimit-limit-requests'),
+              limit_tokens: response.headers.get('x-ratelimit-limit-tokens'),
+              remaining_requests: response.headers.get('x-ratelimit-remaining-requests'),
+              remaining_tokens: response.headers.get('x-ratelimit-remaining-tokens'),
+            },
           },
         };
       } catch (err: any) {

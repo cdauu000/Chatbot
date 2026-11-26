@@ -25,6 +25,7 @@ yarn-error.log*
 # Heavy benchmark & evaluation outputs
 artifacts/autonomous-evaluation/
 artifacts/autonomous-evaluation-v2-2/
+artifacts/candidate-runtime/
 
 # System files
 .DS_Store

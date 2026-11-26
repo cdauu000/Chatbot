@@ -26,6 +26,63 @@ export interface ToolObservation {
   rawResult?: any;
 }
 
+export type GroundingStatus = 'VERIFIED' | 'CONTRADICTED' | 'MISSING_EVIDENCE' | 'NOT_APPLICABLE';
+
+export interface ScopedRateFact {
+  amountVnd: number;
+  role: 'TOTAL' | 'BASE_2H' | 'EXTRA_HOUR_RATE' | 'EXTRA_HOUR_SUBTOTAL' | 'PACKAGE_RATE' | 'ALT_21_40' | 'POLICY_RATE';
+  roomId?: string;
+  category?: string;
+  stayPackage?: StayType | 'EXTRA_HOUR' | 'ALL';
+  durationHours?: number;
+  timeCondition?: string;
+  eligible?: boolean;
+}
+
+export interface BusinessEvidenceRecord {
+  evidenceId: string;
+  propertyId: CoSoMa;
+  roomId?: string;
+  roomCode?: string;
+  roomName?: string;
+  category?: string;
+  evidenceType: 'QUOTE' | 'CATALOG_SEARCH' | 'ROOM_FACTS' | 'ROOM_MEDIA' | 'POLICY';
+  toolSource: string;
+  stayPackage?: StayType | 'ALL';
+  amountVnd?: number;
+  basePriceVnd?: number;
+  extraHourRateVnd?: number;
+  extraHourSubtotalVnd?: number;
+  alternateAmountsVnd?: number[];
+  scopedRates?: ScopedRateFact[];
+  catalogRoomIds?: string[];
+  roomAmenities?: Record<string, { bon_tam: 'TRUE' | 'FALSE' | 'UNKNOWN'; ghe_tinh_yeu: 'TRUE' | 'FALSE' | 'UNKNOWN' }>;
+  holidayZeroConfirmed?: boolean;
+  holidayProvenance?: string;
+  categoryRateSnapshots?: Array<{
+    category: string;
+    base2hVnd?: number;
+    overnightVnd?: number;
+    dayNightVnd?: number;
+    extraHourRateVnd?: number;
+    base2hVnds?: number[];
+    overnightVnds?: number[];
+    dayNightVnds?: number[];
+    extraHourRateVnds?: number[];
+    hourlyExtendedVnds?: number[];
+  }>;
+  checkinDatetime?: string;
+  checkoutDatetime?: string;
+  durationHours?: number;
+  conditions?: string[];
+  effectivePolicyVersion: string;
+  datasetVersion: string;
+  validityScope: 'SESSION_WHILE_VALID' | 'TURN_LOCAL' | 'CONDITIONAL';
+  isValid: boolean;
+  invalidatedReason?: string;
+  recordedTurn: number;
+}
+
 export interface Evidence {
   subject: string;
   attribute: string;
@@ -63,7 +120,8 @@ export type LLMVerificationStatus =
   | 'DETERMINISTIC_AGENT_FLOW'
   | 'MOCK_AGENT_FLOW'
   | 'PROVIDER_FALLBACK'
-  | 'DEGRADED_DETERMINISTIC_MODE';
+  | 'DEGRADED_DETERMINISTIC_MODE'
+  | 'BLOCKED';
 
 export interface LLMTelemetryTrace {
   verificationStatus: LLMVerificationStatus;
@@ -72,13 +130,21 @@ export interface LLMTelemetryTrace {
   providerRequestId?: string;
   callCount: number;
   decisionType: string;
+  effectivePolicyVersion?: string;
   promptTokens: number;
   completionTokens: number;
   totalTokens: number;
   latencyMs: number;
+  structuredDecisions?: AgentLLMDecision[];
+  finalModelResponse?: string;
   fallbackState?: {
     isFallback: boolean;
     fallbackReason?: string;
+  };
+  protocolMetrics?: {
+    schemaRejections: number;
+    formatRepairs: number;
+    providerFailovers: number;
   };
 }
 
@@ -89,6 +155,8 @@ export interface AgentLLMDecision {
     tool_name: 'search_rooms' | 'get_room_facts' | 'get_room_media' | 'get_policies' | 'quote_price';
     arguments: Record<string, any>;
   }>;
+  claim_refs?: string[];
+  media_refs?: string[];
   clarification_question?: string;
   final_response?: string;
 }
@@ -207,6 +275,32 @@ export interface RecommendationSolveResult {
   summary: string;
 }
 
+export interface RoomPresentationImage {
+  url: string;
+  caption?: string;
+  order?: number;
+  label?: string;
+  alt?: string | null;
+  propertyId?: string;
+  roomId?: string;
+  roomCode?: string;
+  roomName?: string;
+}
+
+export interface RoomPresentationBlock {
+  propertyId: string;
+  roomId: string;
+  roomCode: string;
+  roomName: string;
+  category?: string;
+  displayOrder: number;
+  description?: string;
+  priceSummary?: string;
+  quoteRefs?: string[];
+  bookingLink?: string;
+  images: RoomPresentationImage[];
+}
+
 export interface AgentState {
   sessionId: string;
   channel: 'website' | 'zalo' | 'facebook' | 'cli';
@@ -245,9 +339,21 @@ export interface AgentState {
   // Active room shortlists & focus
   currentCandidateRoomIds: string[];
   focusedRoomId: string | null;
+  lastPresentedRooms?: Array<{
+    propertyId: string;
+    roomId: string;
+    roomCode: string;
+    roomName: string;
+    category?: string;
+    hasMedia: boolean;
+    order: number;
+    summary?: string;
+  }>;
 
-  // Verified facts & observations
+  // Verified facts, scoped business evidence & observations
   verifiedFacts: Record<string, Evidence>;
+  verifiedBusinessEvidence?: BusinessEvidenceRecord[];
+  mediaEvidenceCache?: Record<string, RoomPresentationBlock>;
   observations: ToolObservation[];
 
   // Active valid quote references

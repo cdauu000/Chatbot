@@ -98,20 +98,33 @@ export class AdvisoryComposer {
           const hasBigTub = is601HaDong || rawAms.includes('bồn tắm lớn') || rawAms.includes('bon tam lon');
           const hasTub = room.tien_nghi?.bon_tam?.status === 'CONFIRMED_TRUE';
 
+          const tbField = room.tien_nghi?.bon_tam;
+          const isConfirmedNoTub =
+            tbField?.status === 'CONFIRMED_FALSE' &&
+            !/không có ghi nhận|không nhắc/i.test(tbField.reason || '');
           if (hasBigTub) {
             return `Dạ phòng ${room.ten_phong} có bồn tắm lớn ạ.`;
           } else if (hasTub) {
             return `Dạ phòng ${room.ten_phong} có bồn tắm nằm thư giãn ạ.`;
-          } else {
+          } else if (isConfirmedNoTub) {
             return `Dạ phòng ${room.ten_phong} không có bồn tắm ạ.`;
+          } else {
+            return `Dạ phòng ${room.ten_phong} hiện chưa có thông tin xác nhận bồn tắm trong dữ liệu catalog (UNKNOWN). Anh/chị vui lòng liên hệ trực tiếp lễ tân để kiểm tra thực tế ạ.`;
           }
         }
 
         if (requestedFact === 'ghe_tinh_yeu' || noDia.includes('ghe tinh yeu') || noDia.includes('tantra')) {
-          const hasLoveChair = room.tien_nghi?.ghe_tinh_yeu?.status === 'CONFIRMED_TRUE';
-          return hasLoveChair
-            ? `Dạ phòng ${room.ten_phong} có ghế tình yêu ạ.`
-            : `Dạ phòng ${room.ten_phong} không có ghế tình yêu ạ.`;
+          const lcField = room.tien_nghi?.ghe_tinh_yeu;
+          const hasLoveChair = lcField?.status === 'CONFIRMED_TRUE';
+          const isConfirmedNoChair =
+            lcField?.status === 'CONFIRMED_FALSE' &&
+            !/không có ghi nhận|không nhắc/i.test(lcField.reason || '');
+          if (hasLoveChair) {
+            return `Dạ phòng ${room.ten_phong} có ghế tình yêu ạ.`;
+          } else if (isConfirmedNoChair) {
+            return `Dạ phòng ${room.ten_phong} không có ghế tình yêu ạ.`;
+          }
+          return `Dạ phòng ${room.ten_phong} hiện chưa có thông tin xác nhận về ghế tình yêu trong dữ liệu catalog (UNKNOWN). Anh/chị vui lòng liên hệ trực tiếp lễ tân để kiểm tra thực tế ạ.`;
         }
 
         if (requestedFact === 'features' || noDia.includes('dac biet') || noDia.includes('dac diem')) {

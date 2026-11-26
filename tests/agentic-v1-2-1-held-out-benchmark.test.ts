@@ -118,13 +118,13 @@ describe('AGENTIC V1.2.1 — 100-Scenario Fresh Held-Out Benchmark', () => {
       id: 'HO-FAST-05',
       category: 'FAST',
       name: 'Parking - Car inquiry straightforward',
-      turns: [{ userMessage: 'Khách sạn có chỗ đỗ ô tô không shop', expectedSubstrings: ['chỗ đỗ ô tô và xe máy'], expectedTools: ['get_policies'], forbiddenSubstrings: ['thuận tiện, an toàn'] }],
+      turns: [{ userMessage: 'Khách sạn có chỗ đỗ ô tô không shop', expectedSubstrings: ['có chỗ đỗ xe'], expectedTools: ['get_policies'], forbiddenSubstrings: ['thuận tiện, an toàn'] }],
     },
     {
       id: 'HO-FAST-06',
       category: 'FAST',
       name: 'Parking - Motorbike inquiry',
-      turns: [{ userMessage: 'Bên mình có chỗ gửi xe máy không em', expectedSubstrings: ['chỗ đỗ ô tô và xe máy'], expectedTools: ['get_policies'] }],
+      turns: [{ userMessage: 'Bên mình có chỗ gửi xe máy không em', expectedSubstrings: ['có chỗ đỗ xe'], expectedTools: ['get_policies'] }],
     },
     {
       id: 'HO-FAST-07',
@@ -196,19 +196,19 @@ describe('AGENTIC V1.2.1 — 100-Scenario Fresh Held-Out Benchmark', () => {
       id: 'HO-FAST-18',
       category: 'FAST',
       name: 'Complimentary drinking water',
-      turns: [{ userMessage: 'Trong phòng có sẵn nước uống miễn phí ko', expectedSubstrings: ['nước lọc'] }],
+      turns: [{ userMessage: 'Trong phòng có sẵn nước uống miễn phí ko', expectedSubstrings: ['nước uống', 'chưa được công bố'] }],
     },
     {
       id: 'HO-FAST-19',
       category: 'FAST',
       name: 'Smoking policy',
-      turns: [{ userMessage: 'Trong phòng có được hút thuốc lá ko shop', expectedSubstrings: ['không được hút thuốc'] }],
+      turns: [{ userMessage: 'Trong phòng có được hút thuốc lá ko shop', expectedSubstrings: ['hút thuốc', 'chưa được công bố'] }],
     },
     {
       id: 'HO-FAST-20',
       category: 'FAST',
       name: 'Payment methods QR Transfer',
-      turns: [{ userMessage: 'Bên mình có quét mã QR chuyển khoản ko', expectedSubstrings: ['chuyển khoản', 'tiền mặt'] }],
+      turns: [{ userMessage: 'Bên mình có quét mã QR chuyển khoản ko', expectedSubstrings: ['thanh toán', 'chưa được công bố'] }],
     },
     {
       id: 'HO-FAST-21',
@@ -250,7 +250,7 @@ describe('AGENTIC V1.2.1 — 100-Scenario Fresh Held-Out Benchmark', () => {
       id: 'HO-FAST-27',
       category: 'FAST',
       name: 'Unconfirmed amenity - Jacuzzi bubbling jets',
-      turns: [{ userMessage: 'Phòng 601 có bồn sục tạo bọt massage jacuzzi ko shop', expectedSubstrings: ['bồn tắm lớn', 'chưa được công bố chính thức'] }],
+      turns: [{ userMessage: 'Phòng 601 có bồn sục tạo bọt massage jacuzzi ko shop', expectedSubstrings: ['Bồn tắm lớn', 'chưa được công bố chính thức'] }],
     },
     {
       id: 'HO-FAST-28',
@@ -262,13 +262,13 @@ describe('AGENTIC V1.2.1 — 100-Scenario Fresh Held-Out Benchmark', () => {
       id: 'HO-FAST-29',
       category: 'FAST',
       name: 'Standard bed size inquiry Room 101',
-      turns: [{ userMessage: 'Giường phòng 101 kích cỡ thế nào em', expectedSubstrings: ['giường đôi'] }],
+      turns: [{ userMessage: 'Giường phòng 101 kích cỡ thế nào em', expectedSubstrings: ['kích thước giường', 'chưa được công bố'] }],
     },
     {
       id: 'HO-FAST-30',
       category: 'FAST',
       name: 'Late checkout policy',
-      turns: [{ userMessage: 'Trả phòng muộn sau 12h trưa có bị phạt tiền ko shop', expectedSubstrings: ['12:00', 'phụ thu'] }],
+      turns: [{ userMessage: 'Trả phòng muộn sau 12h trưa có bị phạt tiền ko shop', expectedSubstrings: ['12:00', 'tính thêm giờ'] }],
     },
 
     // -------------------------------------------------------------------------
@@ -356,7 +356,7 @@ describe('AGENTIC V1.2.1 — 100-Scenario Fresh Held-Out Benchmark', () => {
       id: 'HO-STD-14',
       category: 'STANDARD',
       name: 'Boundary time: Checkin at 18:10 evening rate',
-      turns: [{ userMessage: 'Nhận phòng lúc 18h10 thứ 7 nghỉ 2 tiếng giá thế nào', expectedSubstrings: ['18h10', 'buổi tối'] }],
+      turns: [{ userMessage: 'Nhận phòng lúc 18h10 thứ 7 nghỉ 2 tiếng giá thế nào', expectedSubstrings: ['18h10', 'biểu giá gốc'] }],
     },
     {
       id: 'HO-STD-15',
@@ -368,13 +368,13 @@ describe('AGENTIC V1.2.1 — 100-Scenario Fresh Held-Out Benchmark', () => {
       id: 'HO-STD-16',
       category: 'STANDARD',
       name: 'Compound request: Bathtub room search + parking confirmation',
-      turns: [{ userMessage: 'Hà Đông có phòng bồn tắm không và đỗ ô tô có mất phí không', expectedSubstrings: ['bồn tắm', 'đỗ ô tô'] }],
+      turns: [{ userMessage: 'Hà Đông có phòng bồn tắm không và đỗ ô tô có mất phí không', expectedSubstrings: ['bồn tắm', 'Có chỗ đỗ xe'] }],
     },
     {
       id: 'HO-STD-17',
       category: 'STANDARD',
       name: 'Compound request: Room price + parking check',
-      turns: [{ userMessage: 'Phòng 101 giá bao nhiêu và có chỗ gửi ô tô ko em', expectedSubstrings: ['chỗ đỗ ô tô và xe máy'] }],
+      turns: [{ userMessage: 'Phòng 101 giá bao nhiêu và có chỗ gửi ô tô ko em', expectedSubstrings: ['Có chỗ đỗ xe'] }],
     },
     {
       id: 'HO-STD-18',
@@ -416,7 +416,7 @@ describe('AGENTIC V1.2.1 — 100-Scenario Fresh Held-Out Benchmark', () => {
       id: 'HO-STD-24',
       category: 'STANDARD',
       name: 'Early morning stay before 08:00 (6AM checkin)',
-      turns: [{ userMessage: 'Anh nhận phòng lúc 6h sáng thì tính theo giá nào em', expectedSubstrings: ['ban ngày', '08:00'] }],
+      turns: [{ userMessage: 'Anh nhận phòng lúc 6h sáng thì tính theo giá nào em', expectedSubstrings: ['nghỉ giờ gốc', '08:00'] }],
     },
     {
       id: 'HO-STD-25',
@@ -506,7 +506,7 @@ describe('AGENTIC V1.2.1 — 100-Scenario Fresh Held-Out Benchmark', () => {
       id: 'HO-STD-39',
       category: 'STANDARD',
       name: 'Unconfirmed amenity: Kitchen cooking facility inquiry',
-      turns: [{ userMessage: 'Trong phòng có bếp từ nấu nướng ko bạn', expectedSubstrings: ['không', 'bếp nấu'] }],
+      turns: [{ userMessage: 'Trong phòng có bếp từ nấu nướng ko bạn', expectedSubstrings: ['chưa được công bố chính thức', 'bếp nấu'] }],
     },
     {
       id: 'HO-STD-40',
@@ -645,7 +645,7 @@ describe('AGENTIC V1.2.1 — 100-Scenario Fresh Held-Out Benchmark', () => {
       isMultiTurn: true,
       name: 'Multi-turn: Inquire double bathtub -> check price -> gratitude',
       turns: [
-        { userMessage: 'Hà Đông có phòng nào có bồn tắm đôi không em?', expectedSubstrings: ['50 — Sắc Thái', 'bồn tắm lớn'] },
+        { userMessage: 'Hà Đông có phòng nào có bồn tắm đôi không em?', expectedSubstrings: ['50 — Sắc Thái', 'Bồn tắm lớn'] },
         { userMessage: 'Giá phòng này chiều thứ 7 2 tiếng bao nhiêu vậy em', expectedSubstrings: ['449.000đ'] },
         { userMessage: 'Ok cảm ơn em nhiều nha', expectedSubstrings: ['sẵn lòng hỗ trợ'] },
       ],
@@ -726,7 +726,7 @@ describe('AGENTIC V1.2.1 — 100-Scenario Fresh Held-Out Benchmark', () => {
       isMultiTurn: true,
       name: 'Multi-turn: Checkin at 18:00 vs checkin at 17:59 explanation',
       turns: [
-        { userMessage: 'Nhận phòng lúc 17h50 và 18h10 khác nhau về giá thế nào em', expectedSubstrings: ['17h50', '18h10', 'ban ngày', 'buổi tối'] },
+        { userMessage: 'Nhận phòng lúc 17h50 và 18h10 khác nhau về giá thế nào em', expectedSubstrings: ['17h50', '18h10', 'ban ngày', 'biểu giá gốc'] },
       ],
     },
     {

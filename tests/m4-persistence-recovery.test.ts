@@ -1,21 +1,39 @@
 import { describe, it, expect, afterAll } from 'vitest';
 import { existsSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
 import { SqliteStore } from '../src/staff/persistence/sqlite-store.js';
 import { AuthManager } from '../src/staff/auth/access-control.js';
 
 describe('Milestone 4 — Persistence & Disaster Recovery Suite', () => {
   const testDbPath = join(process.cwd(), 'data', 'test_recovery_persistence.db');
+  const backupSourceDbPath = join(process.cwd(), 'data', 'test_online_backup_source.db');
+  const backupDbPath = join(process.cwd(), 'data', 'test_recovery_online_backup.db');
 
-  afterAll(() => {
-    try {
-      if (existsSync(testDbPath)) {
-        unlinkSync(testDbPath);
+  const cleanupTestFiles = () => {
+    for (const p of [
+      testDbPath,
+      `${testDbPath}-wal`,
+      `${testDbPath}-shm`,
+      backupSourceDbPath,
+      `${backupSourceDbPath}-wal`,
+      `${backupSourceDbPath}-shm`,
+      backupDbPath,
+      `${backupDbPath}-wal`,
+      `${backupDbPath}-shm`,
+    ]) {
+      try {
+        if (existsSync(p)) {
+          unlinkSync(p);
+        }
+      } catch {
+        // Ignore cleanup error
       }
-    } catch {
-      // Ignore cleanup error
     }
-  });
+  };
+
+  cleanupTestFiles();
+  afterAll(cleanupTestFiles);
 
   it('Khởi chạy migrations an toàn và có tính lũy đẳng (Idempotent)', () => {
     const store = new SqliteStore({ dbPath: testDbPath });
@@ -105,5 +123,51 @@ describe('Milestone 4 — Persistence & Disaster Recovery Suite', () => {
     expect(secondCheck).toBe(false);
 
     store.close();
+  });
+
+  it('Tạo Online Backup nhất quán khi đang bật WAL và bảo toàn dữ liệu post-promote khi rollback', async () => {
+    const store = new SqliteStore({ dbPath: backupSourceDbPath });
+    const convPre = store.createConversation({
+      id: 'backup-pre-promote-conv',
+      propertyId: 'jacayl-ha-dong',
+      customerName: 'Khách Trước Promote',
+    });
+    store.addMessage({
+      conversationId: convPre.id,
+      senderType: 'customer',
+      content: 'Tin nhắn trước thời điểm promote.',
+    });
+
+    // Execute SQLite Online Backup API while primary connection & WAL journal stay open
+    const pagesCopied = await store.createOnlineBackup(backupDbPath);
+    expect(pagesCopied).toBeGreaterThan(0);
+
+    // Simulate post-promote production activity written AFTER snapshot
+    const convPost = store.createConversation({
+      id: 'backup-post-promote-conv',
+      propertyId: 'j-village',
+      customerName: 'Khách Sau Promote',
+    });
+    store.addMessage({
+      conversationId: convPost.id,
+      senderType: 'customer',
+      content: 'Dữ liệu phát sinh sau promote không được phép bị ghi đè mất.',
+    });
+    store.close();
+
+    // Verify backup passes SQLite PRAGMA integrity_check and preserves pre-promote state cleanly
+    const verifyBak = new DatabaseSync(backupDbPath);
+    const integrity = verifyBak.prepare('PRAGMA integrity_check').get() as { integrity_check: string };
+    expect(integrity.integrity_check).toBe('ok');
+    const preInBak = verifyBak.prepare('SELECT id FROM conversations WHERE id = ?').get('backup-pre-promote-conv');
+    const postInBak = verifyBak.prepare('SELECT id FROM conversations WHERE id = ?').get('backup-post-promote-conv');
+    expect(preInBak).toBeDefined();
+    expect(postInBak).toBeUndefined();
+    verifyBak.close();
+
+    // Verify live/post-promote DB keeps schema compatible & retains post-promote conversation untouched
+    const verifyLive = new SqliteStore({ dbPath: backupSourceDbPath });
+    expect(verifyLive.getConversationById('backup-post-promote-conv')?.customerName).toBe('Khách Sau Promote');
+    verifyLive.close();
   });
 });

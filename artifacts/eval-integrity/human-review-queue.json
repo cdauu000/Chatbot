@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-11-26T11:40:08.276Z",
+  "total_queued": 5,
+  "items": [
+    {
+      "scenarioId": "SCENARIO-007",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 2: Guest asked overnight surcharge/calculation; model gave time/grace policy without quoting rates."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-014",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 2: Guest asked overnight surcharge/calculation; model gave time/grace policy without quoting rates."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-490",
+      "propertyId": "j-village",
+      "gitCommit": "pre-dc11876",
+      "category": "booking_handoff_closing",
+      "reasons": [
+        "Turn 1: Subjective naturalness & tone verification for booking handoff escalation."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-495",
+      "propertyId": "j-village",
+      "gitCommit": "pre-dc11876",
+      "category": "booking_handoff_closing",
+      "reasons": [
+        "Turn 1: Subjective naturalness & tone verification for booking handoff escalation."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-500",
+      "propertyId": "j-village",
+      "gitCommit": "pre-dc11876",
+      "category": "booking_handoff_closing",
+      "reasons": [
+        "Turn 1: Subjective naturalness & tone verification for booking handoff escalation."
+      ],
+      "findings": []
+    }
+  ]
+}

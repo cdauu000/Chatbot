@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import { createServer, IncomingMessage, ServerResponse, Server } from 'node:http';
 import { SqliteStore } from '../persistence/sqlite-store.js';
 import { AuthManager, AuthenticationError, ForbiddenError } from '../auth/access-control.js';
@@ -5,6 +6,7 @@ import { TakeoverCoordinator, DuplicateMessageError, InvalidStateTransitionError
 import { getDashboardHtml } from './dashboard-html.js';
 import { PropertyId, StaffUser } from '../staff-types.js';
 import { FreeLLMGateway } from '../../conversation/adapters/free-llm-gateway.js';
+import { getEffectivePolicyMetadata } from '../../data-loader/pricing-policy-loader.js';
 
 export interface DashboardServerOptions {
   port?: number;
@@ -23,6 +25,7 @@ export class DashboardServer {
   private authManager: AuthManager;
   private takeoverCoordinator: TakeoverCoordinator;
   private llmGateway?: FreeLLMGateway;
+  private resolvedGitCommit: string;
 
   constructor(options: DashboardServerOptions) {
     this.port = options.port ?? parseInt(process.env.DASHBOARD_PORT ?? '3000', 10);
@@ -31,6 +34,15 @@ export class DashboardServer {
     this.authManager = options.authManager;
     this.takeoverCoordinator = options.takeoverCoordinator;
     this.llmGateway = options.llmGateway;
+    let commit = process.env.CANDIDATE_COMMIT || 'unknown';
+    if (commit === 'unknown') {
+      try {
+        commit = execSync('git rev-parse --short HEAD', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() || 'unknown';
+      } catch {
+        commit = 'unknown';
+      }
+    }
+    this.resolvedGitCommit = commit;
 
     this.server = createServer((req, res) => this.handleRequest(req, res));
   }
@@ -135,14 +147,24 @@ export class DashboardServer {
         const status = this.llmGateway ? this.llmGateway.getProviderStatus() : {
           activeMode: 'auto',
           freeOnlyMode: true,
-          groq: { name: 'Groq', configured: true, model: 'openai/gpt-oss-20b', isRateLimited: false, rateLimitCooloffSecRemaining: 0 },
+          groq: { name: 'Groq', configured: true, model: 'qwen/qwen3.8-27b', isRateLimited: false, rateLimitCooloffSecRemaining: 0 },
           gemini: { name: 'Gemini', configured: true, model: 'gemini-3.5-flash-lite', isRateLimited: false, rateLimitCooloffSecRemaining: 0 },
           mock: { name: 'Mock', configured: true, model: 'internal-rulebase', isRateLimited: false, rateLimitCooloffSecRemaining: 0 }
         };
+        const reliabilityMetrics = this.llmGateway ? this.llmGateway.getReliabilityMetrics() : undefined;
+        const policyMeta = getEffectivePolicyMetadata();
+        const groundingTelemetry = this.takeoverCoordinator.getGroundingTelemetry();
         this.sendJson(res, 200, {
           ...status,
           engine,
-          buildVersion: '2.2.0-agentic-cognitive',
+          gitCommit: this.resolvedGitCommit,
+          buildVersion: '3.0.0-llm-native-final',
+          effectivePolicyVersion: policyMeta.effectivePolicyVersion,
+          basePolicyVersion: policyMeta.basePolicyVersion,
+          activeAddendumId: policyMeta.activeAddendumId,
+          recommendedRouting: 'Primary: gemini-3.5-flash-lite -> Secondary: groq:qwen/qwen3.8-27b -> Fallback: gemini-3.1-flash-lite',
+          reliabilityMetrics,
+          groundingTelemetry,
         });
         return;
       }
@@ -269,13 +291,14 @@ export class DashboardServer {
       // 14. Simulated Customer Turn: POST /api/simulate/customer-turn
       if (pathname === '/api/simulate/customer-turn' && method === 'POST') {
         const body = await this.readJsonBody(req);
+        const nowIso = new Date().toISOString();
         const result = await this.takeoverCoordinator.handleCustomerTurn(
           body.conversationId,
           body.propertyId,
           body.content,
           {
             clientMessageId: body.clientMessageId,
-            referenceClock: body.referenceClock,
+            referenceClock: body.referenceClock ?? nowIso,
             customerName: body.customerName,
             customerPhone: body.customerPhone,
           }

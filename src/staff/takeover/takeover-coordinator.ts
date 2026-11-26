@@ -10,6 +10,8 @@ import {
 import { SqliteStore } from '../persistence/sqlite-store.js';
 import { AuthManager, ForbiddenError } from '../auth/access-control.js';
 import { ConversationOrchestrator } from '../../conversation/orchestrator.js';
+import { getVietnamTemporalContext } from '../../pricing/checkin-pricing-resolver.js';
+import { getEffectivePolicyMetadata } from '../../data-loader/pricing-policy-loader.js';
 
 export class DuplicateMessageError extends Error {
   constructor(message: string = 'Tin nhắn trùng lặp đã được tiếp nhận.') {
@@ -33,10 +35,22 @@ export interface TakeoverCoordinatorOptions {
 export class TakeoverCoordinator {
   private orchestrator: ConversationOrchestrator;
   private store: SqliteStore;
+  private groundingStats = {
+    verifiedTurns: 0,
+    repairedTurns: 0,
+    blockedTurns: 0,
+    totalCustomerTurns: 0,
+    lastGroundingStatus: 'NOT_EVALUATED',
+    lastUpdatedAt: null as string | null,
+  };
 
   constructor(options: TakeoverCoordinatorOptions) {
     this.orchestrator = options.orchestrator;
     this.store = options.store;
+  }
+
+  public getGroundingTelemetry() {
+    return { ...this.groundingStats };
   }
 
   // --------------------------------------------------------------------------
@@ -383,12 +397,14 @@ export class TakeoverCoordinator {
     // Capture snapshot version before starting async AI generation
     const capturedVersion = conv.aiGenerationVersion;
 
-    // Asynchronously execute AI turn via Orchestrator
+    // Asynchronously execute AI turn via Orchestrator (always provide real message timestamp + server clock in Asia/Ho_Chi_Minh)
+    const msgTemporal = getVietnamTemporalContext(new Date(customerMsg.createdAt));
     const turnResult = await this.orchestrator.processTurn(
       conversationId,
       content,
       {
-        referenceClock: options?.referenceClock,
+        referenceClock: options?.referenceClock ?? msgTemporal.isoTimestamp,
+        messageTimestamp: msgTemporal.isoTimestamp,
         boundPropertyId: conv.propertyId,
       }
     );
@@ -442,7 +458,25 @@ export class TakeoverCoordinator {
       });
     }
 
-    // Save AI outbound message
+    // Save AI outbound message (strictly customer-facing content; safe telemetry only, never private CoT)
+    const llmTel = turnResult.decision_trace?.llmTelemetry;
+    const groundingStatus = turnResult.claim_validation?.grounding_status ?? 'NOT_APPLICABLE';
+    const wasBlocked = Boolean(
+      llmTel?.fallbackState?.fallbackReason?.startsWith('GROUNDING_BLOCKED') ||
+      groundingStatus === 'CONTRADICTED' ||
+      groundingStatus === 'MISSING_EVIDENCE'
+    );
+    const wasRepaired = Boolean(
+      !wasBlocked && turnResult.decision_trace?.decisionSteps?.some((s: any) => s.phase === 'REVISE')
+    );
+    this.groundingStats.totalCustomerTurns += 1;
+    this.groundingStats.lastGroundingStatus = groundingStatus;
+    this.groundingStats.lastUpdatedAt = new Date().toISOString();
+    if (wasBlocked) this.groundingStats.blockedTurns += 1;
+    else if (wasRepaired) this.groundingStats.repairedTurns += 1;
+    else if (groundingStatus === 'VERIFIED' || groundingStatus === 'NOT_APPLICABLE') this.groundingStats.verifiedTurns += 1;
+    const engineMode = process.env.CONVERSATION_ENGINE || 'agentic';
+    const traceId = `tr_${conversationId}_t${turnResult.turn_index}_${Date.now().toString(36)}`;
     const aiMsg = this.store.addMessage({
       conversationId,
       senderType: 'ai',
@@ -450,12 +484,18 @@ export class TakeoverCoordinator {
       content: turnResult.customer_visible_response,
       metadata: {
         images: turnResult.images,
+        roomPresentations: turnResult.room_presentations,
         telemetry: {
-          provider: turnResult.internal_trace.adapter_used,
-          model: turnResult.internal_trace.applied_policy_id ?? 'unknown',
-          latencyMs: turnResult.internal_trace.latency_ms,
-          tokensTotal: 0,
-          isFallback: false,
+          engine: engineMode,
+          traceId,
+          provider: llmTel?.provider ?? turnResult.internal_trace.adapter_used,
+          model: llmTel?.model ?? turnResult.internal_trace.applied_policy_id ?? 'unknown',
+          verificationStatus: turnResult.decision_trace?.verificationStatus ?? 'DETERMINISTIC_AGENT_FLOW',
+          effectivePolicyVersion: llmTel?.effectivePolicyVersion ?? getEffectivePolicyMetadata().effectivePolicyVersion,
+          latencyMs: llmTel?.latencyMs ?? turnResult.internal_trace.latency_ms,
+          tokensTotal: llmTel?.totalTokens ?? 0,
+          isFallback: llmTel?.fallbackState?.isFallback ?? false,
+          fallbackReason: llmTel?.fallbackState?.fallbackReason,
         },
         escalation: turnResult.human_escalation,
         evidenceReferences: turnResult.evidence_references,

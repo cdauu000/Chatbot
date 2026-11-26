@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { loadRawDataset } from '../src/data-loader/raw-loader.js';
 import { transformRawDatasetToDomain } from '../src/domain/transformer.js';
 import { ConversationOrchestrator } from '../src/conversation/orchestrator.js';
@@ -8,6 +8,18 @@ describe('Golden Multi-Turn Dialogue Scenarios (A - J)', () => {
   const dataset = transformRawDatasetToDomain(raw);
   const orchestrator = new ConversationOrchestrator(dataset);
   const FIXED_CLOCK = '2026-11-28T10:00:00+07:00'; // Saturday
+  let prevEngine: string | undefined;
+
+  // Reconciled V3 Fixture Binding: M3 Golden Dialogues A-J assert legacy AdvisoryComposer & WorkingMemory slot contracts
+  beforeAll(() => {
+    prevEngine = process.env.CONVERSATION_ENGINE;
+    process.env.CONVERSATION_ENGINE = 'legacy';
+  });
+
+  afterAll(() => {
+    if (prevEngine === undefined) delete process.env.CONVERSATION_ENGINE;
+    else process.env.CONVERSATION_ENGINE = prevEngine;
+  });
 
   it('Scenario A: Standard Hourly Consultation with Amenity Requirements (M3 A2 Evidenced Fix)', async () => {
     const sId = 'scenario-a';

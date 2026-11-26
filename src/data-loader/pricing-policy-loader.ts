@@ -72,7 +72,294 @@ export const PricingPolicyConfigSchema = z.object({
 
 export type PricingPolicyConfig = z.infer<typeof PricingPolicyConfigSchema>;
 
+export const BreakfastAddendumSchema = z.object({
+  included_in_room_rate: z.boolean(),
+  service_available: z.boolean().optional(),
+  scope: z.string(),
+  properties: z.array(z.string()),
+  applies_to: z.array(z.string()),
+  applies_to_all_categories: z.boolean().optional(),
+  room_rates_modified: z.boolean().optional(),
+  external_food_rules_confirmed: z.boolean().optional(),
+  separate_service_availability: z.union([z.enum(['TRUE', 'FALSE', 'UNKNOWN']), z.boolean()]),
+  official_statement: z.string(),
+});
+
+export const LateCheckoutAddendumSchema = z.object({
+  applies_to: z.array(z.enum(['qua_dem', 'ngay_dem'])),
+  standard_checkout_time: z.string(),
+  grace_period_minutes: z.number().int().min(0),
+  grace_period_mode: z.enum(['EVERY_EXTRA_HOUR_BOUNDARY', 'FIRST_HOUR_ONLY']).optional(),
+  charge_from_minute: z.number().int().min(1).optional(),
+  billing_method: z.string(),
+  rounding_method: z.string().optional(),
+  rounding_rule: z.string().optional(),
+  default_extra_hour_rate_vnd: z.number().positive(),
+  room_specific_rate_priority: z.boolean(),
+  exceptions: z.array(z.any()).default([]),
+  official_statement: z.string().optional(),
+});
+
+export const OwnerPolicyAddendumSchema = z.object({
+  schema_version: z.string(),
+  policy_version: z.string().optional(),
+  extends_policy_version: z.string().optional(),
+  addendum_id: z.string(),
+  base_policy_id: z.string(),
+  currency: z.literal('VND'),
+  timezone: z.literal('Asia/Ho_Chi_Minh'),
+  source_metadata: z.object({
+    source_type: z.string(),
+    source_recorded_on: z.string(),
+    effective_from: z.string().nullable().optional(),
+    status: z.string(),
+    notes: z.string().optional(),
+  }),
+  scope: z.string().optional(),
+  change_history: z
+    .array(
+      z.object({
+        version: z.string(),
+        recorded_on: z.string(),
+        source_type: z.string(),
+        summary: z.string(),
+      })
+    )
+    .optional(),
+  breakfast: BreakfastAddendumSchema.optional(),
+  late_checkout: LateCheckoutAddendumSchema.optional(),
+});
+
+export type OwnerPolicyAddendum = z.infer<typeof OwnerPolicyAddendumSchema>;
+export type LateCheckoutAddendum = z.infer<typeof LateCheckoutAddendumSchema>;
+
+export interface EffectivePolicyMetadata {
+  basePolicyId: string;
+  basePolicyVersion: string;
+  effectivePolicyVersion: string;
+  activeAddendumId: string | null;
+  activeAddendumFilename: string | null;
+  supersededVersions: string[];
+}
+
+export interface HolidayPolicyProvenance {
+  status: 'FALSE' | 'UNKNOWN';
+  hasHolidaySurcharge: false | 'UNKNOWN';
+  confirmedByOwner: boolean;
+  policyId: string;
+  policyVersion: string;
+  sourceType: string;
+  approvalStatus: string;
+  provenancePath: string;
+  statement: string;
+}
+
+/**
+ * Verifies Owner-approved holiday surcharge provenance dynamically from the loaded policy config.
+ * Never infers 0 VND holiday surcharge unless an active OWNER_CONFIRMED policy explicitly sets has_holiday_surcharge === false.
+ */
+export function getHolidayPolicyProvenance(config?: PricingPolicyConfig | null): HolidayPolicyProvenance {
+  const cfg = config ?? loadActivePricingPolicyConfig();
+  const srcStatus = cfg?.source_metadata?.status;
+  const srcType = cfg?.source_metadata?.source_type ?? 'UNSPECIFIED';
+  const hp: any = cfg?.holiday_policy;
+  const hpStatus = hp?.status ?? srcStatus ?? 'UNCONFIRMED';
+  const isOwnerApprovedSource =
+    srcStatus === 'OWNER_CONFIRMED_ACTIVE' &&
+    (srcType === 'OWNER_CONFIRMED_DIRECTIVE' || srcType === 'OWNER_DIRECT_INSTRUCTION');
+  const confirmed =
+    Boolean(hp) &&
+    hp.has_holiday_surcharge === false &&
+    hpStatus === 'OWNER_CONFIRMED_ACTIVE' &&
+    isOwnerApprovedSource;
+
+  return {
+    status: confirmed ? 'FALSE' : 'UNKNOWN',
+    hasHolidaySurcharge: confirmed ? false : 'UNKNOWN',
+    confirmedByOwner: confirmed,
+    policyId: cfg?.config_id ?? 'UNKNOWN',
+    policyVersion: cfg?.schema_version ?? 'UNKNOWN',
+    sourceType: srcType,
+    approvalStatus: hpStatus,
+    provenancePath: `data/j_collection_business_policy_${String(cfg?.schema_version || 'unknown').replace(/\./g, '_')}.json#holiday_policy`,
+    statement: confirmed
+      ? String(hp.statement || 'J Collection không áp dụng phụ thu hay tăng giá riêng vào các dịp lễ Tết.')
+      : 'Chính sách phụ thu ngày lễ chưa có xác nhận chính thức từ Chủ dự án trong nguồn chính sách đang kích hoạt (UNKNOWN).',
+  };
+}
+
 let cachedActivePricingPolicyConfig: PricingPolicyConfig | null = null;
+let cachedOwnerPolicyAddendum: OwnerPolicyAddendum | null = null;
+
+/**
+ * Resolves the highest-precedence Owner policy addendum file.
+ * Precedence: V1.4.6 -> V1.4.5 -> V1.4.4.
+ */
+export function getOwnerPolicyAddendumPath(): string {
+  const candidates = [
+    path.resolve(process.cwd(), 'data', 'j_collection_business_policy_addendum_v1_4_6.json'),
+    path.resolve(process.cwd(), '..', 'data', 'j_collection_business_policy_addendum_v1_4_6.json'),
+    path.resolve(process.cwd(), 'data', 'j_collection_business_policy_addendum_v1_4_5.json'),
+    path.resolve(process.cwd(), '..', 'data', 'j_collection_business_policy_addendum_v1_4_5.json'),
+    path.resolve(process.cwd(), 'data', 'j_collection_business_policy_addendum_v1_4_4.json'),
+    path.resolve(process.cwd(), '..', 'data', 'j_collection_business_policy_addendum_v1_4_4.json'),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return candidates[0];
+}
+
+export function getV144PolicyAddendumPath(): string {
+  const candidates = [
+    path.resolve(process.cwd(), 'data', 'j_collection_business_policy_addendum_v1_4_4.json'),
+    path.resolve(process.cwd(), '..', 'data', 'j_collection_business_policy_addendum_v1_4_4.json'),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return candidates[0];
+}
+
+export function getV145PolicyAddendumPath(): string {
+  const candidates = [
+    path.resolve(process.cwd(), 'data', 'j_collection_business_policy_addendum_v1_4_5.json'),
+    path.resolve(process.cwd(), '..', 'data', 'j_collection_business_policy_addendum_v1_4_5.json'),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return candidates[0];
+}
+
+function comparePolicyVersions(a: string, b: string): number {
+  const parseParts = (v: string) =>
+    v
+      .replace(/^v/i, '')
+      .split(/[^0-9]+/)
+      .filter(Boolean)
+      .map((n) => parseInt(n, 10));
+  const pa = parseParts(a);
+  const pb = parseParts(b);
+  const len = Math.max(pa.length, pb.length);
+  for (let i = 0; i < len; i++) {
+    const va = pa[i] ?? 0;
+    const vb = pb[i] ?? 0;
+    if (va !== vb) return va - vb;
+  }
+  return 0;
+}
+
+export function loadOwnerPolicyAddendums(addendumPath?: string): OwnerPolicyAddendum | null {
+  if (cachedOwnerPolicyAddendum && !addendumPath) {
+    return cachedOwnerPolicyAddendum;
+  }
+  if (addendumPath) {
+    if (!fs.existsSync(addendumPath)) {
+      return null;
+    }
+    const rawJson = JSON.parse(fs.readFileSync(addendumPath, 'utf8'));
+    const parsed = OwnerPolicyAddendumSchema.safeParse(rawJson);
+    if (!parsed.success) {
+      throw new Error(`Owner policy addendum schema validation failed for ${addendumPath}`);
+    }
+    return Object.freeze(parsed.data);
+  }
+
+  // Load and cumulatively compose all present owner addendums in ascending version order
+  // (1.4.4 -> 1.4.5 -> 1.4.6) so newer versions override only what they update and
+  // preserve prior confirmed sections (such as V1.4.5 breakfast FALSE under V1.4.6).
+  const dataDirs = [
+    path.resolve(process.cwd(), 'data'),
+    path.resolve(process.cwd(), '..', 'data'),
+  ];
+  const candidateFiles = [
+    'j_collection_business_policy_addendum_v1_4_4.json',
+    'j_collection_business_policy_addendum_v1_4_5.json',
+    'j_collection_business_policy_addendum_v1_4_6.json',
+  ];
+
+  const loaded: Array<{ version: string; data: OwnerPolicyAddendum }> = [];
+  const seenFilenames = new Set<string>();
+  for (const dir of dataDirs) {
+    for (const filename of candidateFiles) {
+      if (seenFilenames.has(filename)) continue;
+      const fp = path.join(dir, filename);
+      if (fs.existsSync(fp)) {
+        seenFilenames.add(filename);
+        const rawJson = JSON.parse(fs.readFileSync(fp, 'utf8'));
+        const parsed = OwnerPolicyAddendumSchema.safeParse(rawJson);
+        if (!parsed.success) {
+          throw new Error(`Owner policy addendum schema validation failed for ${fp}`);
+        }
+        const version = parsed.data.policy_version ?? parsed.data.change_history?.[0]?.version ?? parsed.data.schema_version;
+        loaded.push({ version, data: parsed.data });
+      }
+    }
+  }
+
+  if (loaded.length === 0) {
+    return null;
+  }
+
+  loaded.sort((a, b) => comparePolicyVersions(a.version, b.version));
+  let mergedBreakfast = loaded[0].data.breakfast;
+  let mergedLateCheckout = loaded[0].data.late_checkout;
+  for (let i = 1; i < loaded.length; i++) {
+    const next = loaded[i].data;
+    if (next.breakfast) {
+      mergedBreakfast = mergedBreakfast ? { ...mergedBreakfast, ...next.breakfast } : next.breakfast;
+    }
+    if (next.late_checkout) {
+      mergedLateCheckout = mergedLateCheckout
+        ? { ...mergedLateCheckout, ...next.late_checkout }
+        : next.late_checkout;
+    }
+  }
+
+  const highest = loaded[loaded.length - 1].data;
+  const composed: OwnerPolicyAddendum = {
+    ...highest,
+    ...(mergedBreakfast ? { breakfast: mergedBreakfast } : {}),
+    ...(mergedLateCheckout ? { late_checkout: mergedLateCheckout } : {}),
+  };
+  const frozen = Object.freeze(composed);
+  cachedOwnerPolicyAddendum = frozen;
+  return frozen;
+}
+
+export function getEffectivePolicyMetadata(): EffectivePolicyMetadata {
+  const base = loadActivePricingPolicyConfig();
+  const addendum = loadOwnerPolicyAddendums();
+  const addendumPath = getOwnerPolicyAddendumPath();
+  const effectiveVersion =
+    addendum?.policy_version ??
+    addendum?.change_history?.[0]?.version ??
+    base.schema_version;
+  const historyVersions = (addendum?.change_history ?? [])
+    .map((h) => h.version)
+    .filter((v) => v && v !== effectiveVersion && v !== base.schema_version);
+  const supersededVersions = Array.from(
+    new Set([
+      ...(addendum?.extends_policy_version ? [addendum.extends_policy_version] : []),
+      ...historyVersions,
+    ])
+  );
+  return {
+    basePolicyId: base.config_id,
+    basePolicyVersion: base.schema_version,
+    effectivePolicyVersion: effectiveVersion,
+    activeAddendumId: addendum?.addendum_id ?? null,
+    activeAddendumFilename: addendum ? path.basename(addendumPath) : null,
+    supersededVersions,
+  };
+}
 
 export function getActivePricingConfigPath(): string {
   const candidates = [
@@ -259,4 +546,5 @@ export function validatePolicyCategoryConsistency(
 
 export function clearPricingPolicyConfigCache(): void {
   cachedActivePricingPolicyConfig = null;
+  cachedOwnerPolicyAddendum = null;
 }

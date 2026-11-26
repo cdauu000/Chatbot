@@ -21,22 +21,22 @@ describe('Milestone 3 - A5. Restored Golden Multi-Turn Extended Scenarios', () =
     expect(res1.updated_state.active_facility).toBe('jacayl-ha-dong');
     expect(res1.updated_state.duration_hours).toBe(2);
     expect(res1.updated_state.checkin_datetime).toContain('2026-11-28T09:00');
-    expect(res1.tool_results.quote_results?.[0]?.total_estimate).toBe(180000);
+    expect(res1.tool_results.quote_results?.[0]?.total_price_vnd ?? res1.tool_results.quote_results?.[0]?.total_estimate).toBe(180000);
 
     // Step 2: Cùng phòng 4 giờ -> 380.000đ (180k + 2h * 100k)
     const res2 = await orchestrator.processTurn(sId, 'Tăng lên ở 4 tiếng thì giá bao nhiêu em?', FIXED_CLOCK);
     expect(res2.updated_state.duration_hours).toBe(4);
-    expect(res2.tool_results.quote_results?.[0]?.total_estimate).toBe(380000);
+    expect(res2.tool_results.quote_results?.[0]?.total_price_vnd ?? res2.tool_results.quote_results?.[0]?.total_estimate).toBe(380000);
 
     // Step 3: Đổi Deluxe, giữ 4 giờ -> 515.000đ (315k + 2h * 100k)
     const res3 = await orchestrator.processTurn(sId, 'Nếu đổi sang phòng Deluxe vẫn ở 4 tiếng thì sao?', FIXED_CLOCK);
     expect(res3.updated_state.duration_hours).toBe(4);
-    expect(res3.tool_results.quote_results?.[0]?.total_estimate).toBe(515000);
+    expect(res3.tool_results.quote_results?.[0]?.total_price_vnd ?? res3.tool_results.quote_results?.[0]?.total_estimate).toBe(515000);
 
     // Step 4: Đổi sang phòng 601, giữ 4 giờ -> 849.000đ (449k + 2h * 200k)
     const res4 = await orchestrator.processTurn(sId, 'Cho anh xem phòng 601 ở 4 tiếng thì hết bao nhiêu?', FIXED_CLOCK);
     expect(res4.updated_state.duration_hours).toBe(4);
-    expect(res4.tool_results.quote_results?.[0]?.total_estimate).toBe(849000);
+    expect(res4.tool_results.quote_results?.[0]?.total_price_vnd ?? res4.tool_results.quote_results?.[0]?.total_estimate).toBe(849000);
 
     // Step 5: Khách hỏi vì sao giá tăng -> Giải thích đúng giá 2h đầu và giờ thêm riêng của phòng (50 — Sắc Thái)
     const res5 = await orchestrator.processTurn(sId, 'Sao phòng 601 này đắt thế, vì sao giá lại tăng lên vậy em?', FIXED_CLOCK);
@@ -55,7 +55,7 @@ describe('Milestone 3 - A5. Restored Golden Multi-Turn Extended Scenarios', () =
     );
     expect(res1.updated_state.duration_hours).toBe(4);
     expect(res1.updated_state.checkin_datetime).toContain('2026-11-28T17:00');
-    expect(res1.tool_results.quote_results?.[0]?.total_estimate).toBe(649000);
+    expect(res1.tool_results.quote_results?.[0]?.total_price_vnd ?? res1.tool_results.quote_results?.[0]?.total_estimate).toBe(649000);
 
     // Step 2: Khách đổi giờ nhận sang 19:00 -> 599.000đ (19:00 >= 18:00, base lấy từ dataset 399k + 2h * 100k)
     const res2 = await orchestrator.processTurn(
@@ -65,6 +65,6 @@ describe('Milestone 3 - A5. Restored Golden Multi-Turn Extended Scenarios', () =
     );
     expect(res2.updated_state.duration_hours).toBe(4); // Duration 4h unchanged
     expect(res2.updated_state.checkin_datetime).toContain('2026-11-28T19:00');
-    expect(res2.tool_results.quote_results?.[0]?.total_estimate).toBe(599000);
+    expect(res2.tool_results.quote_results?.[0]?.total_price_vnd ?? res2.tool_results.quote_results?.[0]?.total_estimate).toBe(599000);
   });
 });

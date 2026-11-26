@@ -1,0 +1,655 @@
+{
+  "generated_at": "2026-11-26T08:57:30.751Z",
+  "gitCommit": "1365f33",
+  "effectivePolicyVersion": "1.4.6",
+  "freeOnlyMode": true,
+  "strictLiveOnly": true,
+  "summary": {
+    "total_cases": 9,
+    "completed_cases": 8,
+    "blocked_cases": 1,
+    "total_turns": 17,
+    "live_verified_turns": 14,
+    "blocked_turns": 1,
+    "first_attempt_clean_turns": 13,
+    "first_attempt_clean_rate_pct": 76.5,
+    "grounding_repairs": 4,
+    "grounding_blocks": 2,
+    "rejected_claims_on_final_output": 0,
+    "raw_think_leaks": 0
+  },
+  "gemini_gateway_reliability": {
+    "groq": {
+      "calls": 1,
+      "successes": 1,
+      "http429": 0,
+      "http503": 0,
+      "otherErrors": 0,
+      "promptTokens": 2714,
+      "completionTokens": 207,
+      "totalLatencyMs": 890,
+      "queueWaitEvents": 0,
+      "totalQueueDelayMs": 0,
+      "maxConcurrentWaiters": 1
+    },
+    "gemini": {
+      "calls": 39,
+      "successes": 38,
+      "http429": 0,
+      "http503": 0,
+      "otherErrors": 1,
+      "promptTokens": 122078,
+      "completionTokens": 10171,
+      "totalLatencyMs": 129176,
+      "queueWaitEvents": 0,
+      "totalQueueDelayMs": 0,
+      "maxConcurrentSeen": 0,
+      "maxConcurrentWaiters": 1
+    },
+    "coordinator": {
+      "serializedCalls": 40,
+      "totalQueueDelayMs": 0
+    }
+  },
+  "groq_gateway_reliability": {
+    "groq": {
+      "calls": 3,
+      "successes": 2,
+      "http429": 1,
+      "http503": 0,
+      "otherErrors": 0,
+      "promptTokens": 6045,
+      "completionTokens": 488,
+      "totalLatencyMs": 2473,
+      "queueWaitEvents": 0,
+      "totalQueueDelayMs": 0,
+      "maxConcurrentWaiters": 1
+    },
+    "gemini": {
+      "calls": 0,
+      "successes": 0,
+      "http429": 0,
+      "http503": 0,
+      "otherErrors": 0,
+      "promptTokens": 0,
+      "completionTokens": 0,
+      "totalLatencyMs": 0,
+      "queueWaitEvents": 0,
+      "totalQueueDelayMs": 0,
+      "maxConcurrentSeen": 0,
+      "maxConcurrentWaiters": 0
+    },
+    "coordinator": {
+      "serializedCalls": 3,
+      "totalQueueDelayMs": 0
+    }
+  },
+  "cases": [
+    {
+      "caseId": "REPLAY-SCENARIO-033",
+      "title": "Verbatim SCENARIO-033: Ha Dong 4h -> Overnight 22h (Prevent 450k/590k/750k hallucination)",
+      "propertyId": "jacayl-ha-dong",
+      "providerMode": "auto",
+      "status": "LIVE_COMPLETED",
+      "turns": [
+        {
+          "turnIndex": 1,
+          "userMessage": "gia nghi 4 tieng o hà đông tinh the nao shop? (#33)",
+          "referenceClock": "2026-11-28T14:00:00+07:00",
+          "customerVisibleResponse": "Dạ hiện hệ thống chưa hoàn tất đối soát đầy đủ dữ kiện biểu giá hoặc danh mục phòng xác thực cho nội dung vừa rồi từ công cụ dữ liệu, nên em chưa thể xác nhận con số cụ thể ạ. Anh/chị vui lòng cho em biết cụ thể hơn hạng phòng/thời điểm mong muốn hoặc liên hệ trực tiếp lễ tân (0522 464 646) để được hỗ trợ chính xác nhất ạ.",
+          "toolsExecuted": [
+            "search_rooms",
+            "quote_price"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-ha-dong"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "DEGRADED_DETERMINISTIC_MODE",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": false,
+          "groundingGateRepairs": 2,
+          "groundingBlocked": true,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": true,
+          "fallbackReason": "GROUNDING_BLOCKED_AFTER_RETRIES: REJECTED_PRICE_MISMATCH: Amount 259.000đ (259.000đ) contradicts verified Standard:nghi_gio rates in active evidence. | REJECTED_PRICE_MISMATCH: Amount 100.000đ (100.000đ) contradicts verified Standard:nghi_gio rates in active evidence. | REJECTED_PRICE_MISMATCH: Amount 439.000đ (439.000đ) contradicts verified Deluxe:nghi_gio rates in active evidence. | REJECTED_PRICE_MISMATCH: Amount 160.000đ (160.000đ) contradicts verified Deluxe:nghi_gio rates in active evidence.",
+          "promptTokens": 14436,
+          "completionTokens": 1353,
+          "totalTokens": 15789,
+          "latencyMs": 16919
+        },
+        {
+          "turnIndex": 2,
+          "userMessage": "Nếu mình lấy thêm gói qua đêm từ 22h ở Hà Đông thì phụ thu hay tính thế nào?",
+          "referenceClock": "2026-11-28T14:00:00+07:00",
+          "customerVisibleResponse": "Dạ với gói nghỉ qua đêm từ 22:00 đến 12:00 trưa hôm sau tại phòng 50 — Sắc Thái (Mã 601) ở chi nhánh Hà Đông, mức giá là 700.000đ ạ.",
+          "toolsExecuted": [
+            "quote_price",
+            "quote_price"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-ha-dong"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": false,
+          "groundingGateRepairs": 1,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 11409,
+          "completionTokens": 982,
+          "totalTokens": 12391,
+          "latencyMs": 11852
+        }
+      ]
+    },
+    {
+      "caseId": "REPLAY-SCENARIO-035",
+      "title": "Verbatim SCENARIO-035: Ambiguous \"chiều nay\" must NOT lock referenceClock 14:00 as guest arrival",
+      "propertyId": "jacayl-ha-dong",
+      "providerMode": "auto",
+      "status": "LIVE_COMPLETED",
+      "turns": [
+        {
+          "turnIndex": 1,
+          "userMessage": "Cho mình xin thông tin chi phí phòng 4 tiếng tại Hà Đông chiều nay? [heldout_35]",
+          "referenceClock": "2026-11-28T14:00:00+07:00",
+          "customerVisibleResponse": "Dạ hiện hệ thống chưa hoàn tất đối soát đầy đủ dữ kiện biểu giá hoặc danh mục phòng xác thực cho nội dung vừa rồi từ công cụ dữ liệu, nên em chưa thể xác nhận con số cụ thể ạ. Anh/chị vui lòng cho em biết cụ thể hơn hạng phòng/thời điểm mong muốn hoặc liên hệ trực tiếp lễ tân (0522 464 646) để được hỗ trợ chính xác nhất ạ.",
+          "toolsExecuted": [
+            "search_rooms",
+            "quote_price",
+            "quote_price",
+            "quote_price"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-ha-dong"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "DEGRADED_DETERMINISTIC_MODE",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": false,
+          "groundingGateRepairs": 1,
+          "groundingBlocked": true,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": true,
+          "fallbackReason": "GROUNDING_BLOCKED_AFTER_RETRIES: REJECTED_PRICE_MISMATCH: Amount 200.000đ (200.000đ) contradicts verified Standard:nghi_gio rates in active evidence. | REJECTED_PRICE_MISMATCH: Amount 200.000đ (200.000đ) contradicts verified Deluxe:nghi_gio rates in active evidence. | REJECTED_PRICE_MISMATCH: Amount 400.000đ (400.000đ) contradicts verified Concept:nghi_gio rates in active evidence.",
+          "promptTokens": 13855,
+          "completionTokens": 1476,
+          "totalTokens": 15331,
+          "latencyMs": 13124
+        },
+        {
+          "turnIndex": 2,
+          "userMessage": "Thế còn gói nghỉ qua đêm tại Hà Đông bắt đầu từ mấy giờ tối vậy bạn? [ho_35]",
+          "referenceClock": "2026-11-28T14:00:00+07:00",
+          "customerVisibleResponse": "Dạ, gói nghỉ qua đêm bên em nhận phòng tiêu chuẩn từ 22:00 (được hỗ trợ nhận sớm từ 21:40) và trả phòng trước 12:00 trưa hôm sau anh/chị nhé.",
+          "toolsExecuted": [
+            "get_policies"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-ha-dong"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 6648,
+          "completionTokens": 406,
+          "totalTokens": 7054,
+          "latencyMs": 3143
+        }
+      ]
+    },
+    {
+      "caseId": "REPLAY-SCENARIO-039",
+      "title": "Verbatim SCENARIO-039: Complete 4h total quote (no 2h base + vague surcharge) -> Overnight 22h",
+      "propertyId": "jacayl-ha-dong",
+      "providerMode": "auto",
+      "status": "LIVE_COMPLETED",
+      "turns": [
+        {
+          "turnIndex": 1,
+          "userMessage": "Báo giá giúp mình gói 4 tiếng ở Hà Đông nhé bạn. [câu hỏi #39]",
+          "referenceClock": "2026-11-25T15:00:00+07:00",
+          "customerVisibleResponse": "Dạ, Jacayl Hà Đông gửi bạn bảng báo giá cho gói lưu trú **4 tiếng** áp dụng theo các phân hạng phòng ạ:\n\n1. **Phòng Standard** (Ví dụ: 201 La Casta, 205 Red Velvet,...):\n   - Ngày thường (T2–T6) hoặc khung giờ sáng sớm/tối: **359.000đ** (2h đầu 159k + 2h thêm 200k)\n   - Ban ngày cuối tuần (T7–CN, nhận phòng 08:00–17:59): **380.000đ**\n\n2. **Phòng Deluxe** (Ví dụ: 202 Grand Canyon, 203 Red Rum,...):\n   - Ngày thường (T2–T6) hoặc khung giờ sáng sớm/tối: **479.000đ** (2h đầu 279k + 2h thêm 200k)\n   - Ban ngày cuối tuần (T7–CN, nhận phòng 08:00–17:59): **515.000đ**\n\n3. **Phòng Concept** (Có bồn tắm / ghế tình yêu như 101 Lồng Chim, 601 Sắc Thái,...):\n   - Ngày thường (T2–T6) hoặc khung giờ sáng sớm/tối: **599.000đ** (2h đầu 399k + 2h thêm 200k)\n   - Ban ngày cuối tuần (T7–CN, nhận phòng 08:00–17:59): **649.000đ**\n\nBạn ưng hạng phòng nào để em kiểm tra chi tiết hoặc hỗ trợ thêm cho mình nhé!",
+          "toolsExecuted": [
+            "search_rooms",
+            "quote_price",
+            "quote_price",
+            "quote_price"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-ha-dong"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 10745,
+          "completionTokens": 1162,
+          "totalTokens": 11907,
+          "latencyMs": 7504
+        },
+        {
+          "turnIndex": 2,
+          "userMessage": "Nếu mình lấy thêm gói qua đêm từ 22h ở Hà Đông thì phụ thu hay tính thế nào?",
+          "referenceClock": "2026-11-25T15:00:00+07:00",
+          "customerVisibleResponse": "Dạ, gói lưu trú **qua đêm** tại Jacayl Hà Đông áp dụng từ **22:00** (hỗ trợ nhận phòng sớm tối đa 20 phút từ 21:40) đến **12:00 trưa hôm sau**. \n\nMức giá qua đêm theo từng phân hạng phòng:\n1. **Phòng Standard** (Ví dụ: 201 La Casta): **420.000đ**\n2. **Phòng Deluxe** (Ví dụ: 202 Grand Canyon): **560.000đ**\n3. **Phòng Concept** (Có bồn tắm/ghế tình yêu như 101 Lồng Chim): **700.000đ**\n\n**Chính sách trả phòng quá giờ (từ 12:00 trưa hôm sau):**\n- Được ân hạn 10 phút miễn phí (12:00–12:10 = 0đ).\n- Từ 12:11 trở đi sẽ tính phí phụ thu giờ phát sinh (mặc định 100.000đ/giờ đối với phòng thường; riêng phòng 601 Sắc Thái và 602 Playboy là 200.000đ/giờ).\n\nAnh/chị muốn đặt gói qua đêm cho hạng phòng nào để em kiểm tra và hỗ trợ giữ phòng ạ?",
+          "toolsExecuted": [
+            "get_policies"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-ha-dong"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 7224,
+          "completionTokens": 740,
+          "totalTokens": 7964,
+          "latencyMs": 10380
+        }
+      ]
+    },
+    {
+      "caseId": "REPLAY-SCENARIO-041",
+      "title": "Verbatim SCENARIO-041 + Non-existent Room 301 check (must NOT fabricate Phong 301)",
+      "propertyId": "jacayl-ha-dong",
+      "providerMode": "auto",
+      "status": "LIVE_COMPLETED",
+      "turns": [
+        {
+          "turnIndex": 1,
+          "userMessage": "gia nghi 4 tieng o hà đông tinh the nao shop? (#41)",
+          "referenceClock": "2026-11-27T21:45:00+07:00",
+          "customerVisibleResponse": "Dạ, mức giá nghỉ 4 tiếng tại Jacayl Hà Đông tùy thuộc vào hạng phòng như sau ạ:\n\n- **Hạng Standard** (ví dụ La Casta, Red Velvet, Yêu I...): **359.000đ** (Ngày thường / buổi tối) hoặc **380.000đ** (Ban ngày cuối tuần).\n- **Hạng Deluxe** (ví dụ Grand Canyon, Red Rum, Rico Dinner...): **479.000đ** (Ngày thường / buổi tối) hoặc **515.000đ** (Ban ngày cuối tuần).\n- **Hạng Concept** (ví dụ Lồng Chim, 50 Sắc Thái, Playboy): **599.000đ** (Ngày thường / buổi tối) hoặc **649.000đ** (Ban ngày cuối tuần).\n\nAnh/chị muốn đặt phòng hạng nào hay cần em tư vấn thêm phòng có bồn tắm/ghế tình yêu không ạ?",
+          "toolsExecuted": [
+            "search_rooms",
+            "quote_price",
+            "quote_price",
+            "quote_price"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-ha-dong"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 10733,
+          "completionTokens": 907,
+          "totalTokens": 11640,
+          "latencyMs": 11877
+        },
+        {
+          "turnIndex": 2,
+          "userMessage": "Ở Hà Đông có phòng 301 không shop? Nếu có cho mình xem thông tin phòng 301 nhé.",
+          "referenceClock": "2026-11-27T21:45:00+07:00",
+          "customerVisibleResponse": "Dạ tại cơ sở Jacayl Hà Đông bên em không có phòng 301 ạ. Tuy nhiên, ở tầng 3 bên em có các phòng rất đẹp thuộc hạng Deluxe như **302 — Barbie Bedroom**, **303 — Rose Wine**, **304 — French Kiss** hoặc hạng Standard như **305 — Yêu I**. Anh/chị có muốn tham khảo thông tin hoặc hình ảnh của các phòng này không ạ?",
+          "toolsExecuted": [
+            "search_rooms"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-ha-dong"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 7716,
+          "completionTokens": 437,
+          "totalTokens": 8153,
+          "latencyMs": 9406
+        }
+      ]
+    },
+    {
+      "caseId": "REPLAY-QUOTE-REUSE-RETRACT",
+      "title": "Multi-turn valid quote reuse after non-pricing constraint retraction (bathtub)",
+      "propertyId": "jacayl-ha-dong",
+      "providerMode": "auto",
+      "status": "LIVE_COMPLETED",
+      "turns": [
+        {
+          "turnIndex": 1,
+          "userMessage": "Phòng 201 — La Casta ở Hà Đông nghỉ 2 tiếng và có bồn tắm thì sao bạn?",
+          "referenceClock": "2026-11-25T15:00:00+07:00",
+          "customerVisibleResponse": "Dạ phòng 201 — La Casta bên em không có bồn tắm ạ. Giá nghỉ 2 tiếng cho phòng này là 159.000đ (áp dụng ngày thường từ Thứ Hai đến Thứ Sáu, hoặc buổi tối từ 18:00 trở đi và sáng sớm mọi ngày) hoặc 180.000đ (nếu nhận phòng ban ngày cuối tuần Thứ Bảy – Chủ Nhật). Anh/chị có muốn xem các phòng khác có bồn tắm không ạ?",
+          "toolsExecuted": [
+            "get_room_facts",
+            "quote_price"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-ha-dong"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 5341,
+          "completionTokens": 457,
+          "totalTokens": 5798,
+          "latencyMs": 7165
+        },
+        {
+          "turnIndex": 2,
+          "userMessage": "Thôi không cần bồn tắm nữa đâu, phòng 201 đó giá 2 tiếng vẫn vậy đúng không?",
+          "referenceClock": "2026-11-25T15:00:00+07:00",
+          "customerVisibleResponse": "Dạ đúng rồi ạ, giá nghỉ 2 tiếng cho phòng 201 — La Casta vẫn là 159.000đ (ngày thường từ Thứ Hai đến Thứ Sáu, hoặc buổi tối từ 18:00 trở đi và sáng sớm mọi ngày) hoặc 180.000đ (nếu nhận phòng ban ngày cuối tuần Thứ Bảy – Chủ Nhật) ạ.",
+          "toolsExecuted": [
+            "quote_price"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-ha-dong"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 5709,
+          "completionTokens": 437,
+          "totalTokens": 6146,
+          "latencyMs": 12397
+        }
+      ]
+    },
+    {
+      "caseId": "REPLAY-PKG-SWITCH",
+      "title": "Multi-turn stay package switch invalidates prior QUOTE evidence and triggers re-quote",
+      "propertyId": "jacayl-tran-khat-chan",
+      "providerMode": "auto",
+      "status": "LIVE_COMPLETED",
+      "turns": [
+        {
+          "turnIndex": 1,
+          "userMessage": "Phòng 201 ở Trần Khát Chân gói qua đêm giá bao nhiêu em?",
+          "referenceClock": "2026-11-25T15:00:00+07:00",
+          "customerVisibleResponse": "Dạ phòng 201 — Sapphire (Standard) tại Jacayl Hotel Trần Khát Chân gói qua đêm có giá 900.000đ ạ.",
+          "toolsExecuted": [
+            "search_rooms",
+            "quote_price"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-tran-khat-chan"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 6179,
+          "completionTokens": 483,
+          "totalTokens": 6662,
+          "latencyMs": 4629
+        },
+        {
+          "turnIndex": 2,
+          "userMessage": "À đổi sang gói cả ngày (ngày đêm) cho phòng 201 đó giúp anh nhé.",
+          "referenceClock": "2026-11-25T15:00:00+07:00",
+          "customerVisibleResponse": "Dạ phòng 201 — Sapphire (Standard) tại Jacayl Hotel Trần Khát Chân gói ngày đêm có giá 1.100.000đ ạ.",
+          "toolsExecuted": [
+            "quote_price"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-tran-khat-chan"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 5586,
+          "completionTokens": 368,
+          "totalTokens": 5954,
+          "latencyMs": 19886
+        }
+      ]
+    },
+    {
+      "caseId": "REPLAY-MEDIA-CACHE",
+      "title": "Media attachment + ordinary turn no auto-attach + cached media_refs resend",
+      "propertyId": "j-village",
+      "providerMode": "auto",
+      "status": "LIVE_COMPLETED",
+      "turns": [
+        {
+          "turnIndex": 1,
+          "userMessage": "Cho mình xem hình ảnh thực tế phòng 202 (Neon) tại J Village nhé.",
+          "referenceClock": "2026-11-25T15:00:00+07:00",
+          "customerVisibleResponse": "Dạ gửi anh/chị hình ảnh thực tế phòng 202 (Neon) tại J Village ạ.",
+          "toolsExecuted": [
+            "get_room_media"
+          ],
+          "evidenceReferences": [
+            "facility::j-village"
+          ],
+          "deliveredMediaCount": 3,
+          "roomPresentationsCount": 1,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 5097,
+          "completionTokens": 316,
+          "totalTokens": 5413,
+          "latencyMs": 6034
+        },
+        {
+          "turnIndex": 2,
+          "userMessage": "Phòng 202 này có ban công hay bồn tắm không em?",
+          "referenceClock": "2026-11-25T15:00:00+07:00",
+          "customerVisibleResponse": "Dạ phòng 202 (Neon) bên em không có bồn tắm anh/chị nhé.",
+          "toolsExecuted": [
+            "get_room_facts"
+          ],
+          "evidenceReferences": [
+            "facility::j-village"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 5321,
+          "completionTokens": 292,
+          "totalTokens": 5613,
+          "latencyMs": 7583
+        },
+        {
+          "turnIndex": 3,
+          "userMessage": "Gửi lại giúp mình bộ ảnh phòng 202 đó với.",
+          "referenceClock": "2026-11-25T15:00:00+07:00",
+          "customerVisibleResponse": "Dạ em gửi lại anh/chị hình ảnh thực tế phòng 202 (Neon) ạ.",
+          "toolsExecuted": [],
+          "evidenceReferences": [
+            "facility::j-village"
+          ],
+          "deliveredMediaCount": 3,
+          "roomPresentationsCount": 1,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 2667,
+          "completionTokens": 164,
+          "totalTokens": 2831,
+          "latencyMs": 2183
+        }
+      ]
+    },
+    {
+      "caseId": "REPLAY-BUDGET-NO-QUOTE",
+      "title": "Customer budget inquiry without quoting tool needed stays free of false rejection",
+      "propertyId": "jacayl-tran-khat-chan",
+      "providerMode": "auto",
+      "status": "LIVE_COMPLETED",
+      "turns": [
+        {
+          "turnIndex": 1,
+          "userMessage": "Tầm ngân sách khoảng 400k thì Trần Khát Chân có hạng phòng nào nghỉ giờ phù hợp không bạn?",
+          "referenceClock": "2026-11-24T07:30:00+07:00",
+          "customerVisibleResponse": "Dạ ngân sách khoảng 400k của anh/chị hiện chưa đủ để đặt phòng nghỉ giờ tại Jacayl Hotel Trần Khát Chân ạ. Giá phòng nghỉ giờ thấp nhất bên em (hạng Standard) là 500.000đ cho 2 giờ đầu tiên. Anh/chị có thể cân nhắc nâng ngân sách một chút để trải nghiệm các phòng Standard bên em nhé ạ!",
+          "toolsExecuted": [
+            "search_rooms"
+          ],
+          "evidenceReferences": [
+            "facility::jacayl-tran-khat-chan"
+          ],
+          "deliveredMediaCount": 0,
+          "roomPresentationsCount": 0,
+          "verificationStatus": "LIVE_LLM_DECISION_VERIFIED",
+          "groundingStatus": "VERIFIED",
+          "rejectedClaims": [],
+          "missingEvidenceClaims": [],
+          "postAuditForbiddenUrlsOrIdentity": [],
+          "firstAttemptClean": true,
+          "groundingGateRepairs": 0,
+          "groundingBlocked": false,
+          "hasThinkLeak": false,
+          "providerModel": "gemini:gemini-3.5-flash-lite",
+          "isFallback": false,
+          "promptTokens": 6126,
+          "completionTokens": 398,
+          "totalTokens": 6524,
+          "latencyMs": 3728
+        }
+      ]
+    },
+    {
+      "caseId": "REPLAY-GROQ-QWEN-PARITY",
+      "title": "Secondary provider live verification (Groq Qwen 3.8 27B): 4h + qua_dem Phòng 201 Hà Đông",
+      "propertyId": "jacayl-ha-dong",
+      "providerMode": "groq",
+      "status": "BLOCKED",
+      "turns": [
+        {
+          "turnIndex": 1,
+          "userMessage": "Báo giúp mình giá phòng 201 — La Casta ở Hà Đông cho gói nghỉ 4 tiếng và gói qua đêm nhé.",
+          "referenceClock": "2026-11-25T15:00:00+07:00",
+          "verificationStatus": "BLOCKED",
+          "blockedReason": "BLOCKED: LIVE_LLM_UNAVAILABLE: groq:429(24s)",
+          "latencyMs": 2700
+        }
+      ]
+    }
+  ]
+}
