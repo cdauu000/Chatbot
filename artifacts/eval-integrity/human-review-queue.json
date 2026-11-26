@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-26T11:40:08.276Z",
-  "total_queued": 5,
+  "generated_at": "2026-11-26T14:49:34.790Z",
+  "total_queued": 6,
   "items": [
     {
       "scenarioId": "SCENARIO-007",
@@ -19,6 +19,16 @@
       "category": "pricing_time_packages",
       "reasons": [
         "Turn 2: Guest asked overnight surcharge/calculation; model gave time/grace policy without quoting rates."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-042",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 3: Response lacks objective tool/pricing/policy evidence markers for automated goal sign-off."
       ],
       "findings": []
     },

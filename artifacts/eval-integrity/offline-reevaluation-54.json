@@ -1,6 +1,6 @@
 {
   "summary": {
-    "evaluated_at": "2026-11-26T11:40:08.270Z",
+    "evaluated_at": "2026-11-26T14:49:34.785Z",
     "total_scenarios": 54,
     "total_turns": 96,
     "by_execution_status": {
@@ -10,35 +10,35 @@
       "FAILED_FALLBACK": 0
     },
     "historical_businessPassed_true": 52,
-    "strict_quality_passed_true": 30,
+    "strict_quality_passed_true": 27,
     "by_terminal_outcome": {
-      "CONFIRMED_PASS": 30,
-      "CONFIRMED_FAIL": 17,
-      "PENDING_HUMAN_REVIEW": 5,
+      "CONFIRMED_PASS": 27,
+      "CONFIRMED_FAIL": 19,
+      "PENDING_HUMAN_REVIEW": 6,
       "BLOCKED": 2
     },
-    "false_pass_count": 17,
-    "human_review_queue_count": 5,
+    "false_pass_count": 19,
+    "human_review_queue_count": 6,
     "reconciliation_check_overlap_count": 0,
     "breakdown_by_commit": {
       "pre_dc11876": {
         "total": 42,
         "live_completed": 42,
-        "confirmed_pass": 26,
-        "confirmed_fail": 11,
+        "confirmed_pass": 25,
+        "confirmed_fail": 12,
         "pending_human_review": 5,
-        "quality_passed": 26,
-        "false_pass": 11
+        "quality_passed": 25,
+        "false_pass": 12
       },
       "commit_dc11876": {
         "total": 12,
         "live_completed": 10,
-        "confirmed_pass": 4,
-        "confirmed_fail": 6,
-        "pending_human_review": 0,
+        "confirmed_pass": 2,
+        "confirmed_fail": 7,
+        "pending_human_review": 1,
         "blocked": 2,
-        "quality_passed": 4,
-        "false_pass": 6
+        "quality_passed": 2,
+        "false_pass": 7
       }
     }
   },
@@ -107,8 +107,8 @@
       "context_understanding": "ALIGNED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
-        "T2: REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:any rates in active evidence.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 700 đ (700đ) contradicts verified Concept:any rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:qua_dem:ANY rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 700 đ (700đ) contradicts verified Concept:any:ANY rates in active evidence.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 560 đ (560đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 700 đ (700đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
       ]
@@ -143,7 +143,7 @@
       "context_understanding": "ALIGNED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
-        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI only returned 2h base + vague surcharge note.",
+        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals.",
         "T2: POLICY_RULE_VIOLATION: Claimed 18:00/20:00 arrival transitioning to overnight uses hourly + overnight instead of ngay_dem (14:00-21:39 rule)."
       ]
     },
@@ -179,9 +179,9 @@
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 450.000đ (450.000đ) contradicts verified Standard:any rates in active evidence.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 590.000đ (590.000đ) contradicts verified Deluxe:any rates in active evidence.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 750.000đ (750.000đ) contradicts verified Concept:any rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 450.000đ (450.000đ) contradicts verified Standard:any:ANY rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 590.000đ (590.000đ) contradicts verified Deluxe:any:ANY rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 750.000đ (750.000đ) contradicts verified Concept:any:ANY rates in active evidence.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 450.000đ (450.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 590.000đ (590.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 750.000đ (750.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
@@ -202,6 +202,22 @@
       "findings": [
         "T1: REJECTED_UNCONFIRMED_REFERENCE_CLOCK_ASSERTION: Response locked unconfirmed reference clock (14:00) as guest arrival time without user specifying 14:00.",
         "T1: REJECTED_UNCONFIRMED_REFERENCE_CLOCK_ASSERTION: Response locked unconfirmed reference clock (14:00) as guest arrival time without user specifying 14:00."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-036",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T2: REJECTED_PRICE_MISMATCH: Amount 100.000đ (100.000đ) contradicts verified 601-50-sac-thai:EXTRA_HOUR:EXTRA_HOUR_RATE rates in active evidence."
       ]
     },
     {
@@ -233,7 +249,7 @@
       "context_understanding": "ALIGNED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
-        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI only returned 2h base + vague surcharge note."
+        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
       ]
     },
     {
@@ -245,11 +261,12 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
+      "goal_completion": "INCOMPLETE",
       "context_understanding": "ALIGNED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
-        "T1: REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong."
+        "T1: REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong.",
+        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
       ]
     },
     {
@@ -333,6 +350,22 @@
       ]
     },
     {
+      "scenarioId": "SCENARIO-345",
+      "propertyId": "jacayl-tran-khat-chan",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T2: REJECTED_PRICE_MISMATCH: Amount 1.000.000đ (1.000.000đ) contradicts verified Concept:qua_dem:ANY rates in active evidence."
+      ]
+    },
+    {
       "scenarioId": "SCENARIO-350",
       "propertyId": "jacayl-tran-khat-chan",
       "gitCommit": "pre-dc11876",
@@ -370,6 +403,16 @@
       "category": "pricing_time_packages",
       "reasons": [
         "Turn 2: Guest asked overnight surcharge/calculation; model gave time/grace policy without quoting rates."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-042",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 3: Response lacks objective tool/pricing/policy evidence markers for automated goal sign-off."
       ],
       "findings": []
     },
@@ -839,7 +882,7 @@
       "business_accuracy": "ACCURATE",
       "goal_completion": "HUMAN_REVIEW_REQUIRED",
       "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "PENDING_HUMAN_REVIEW",
       "quality_passed": false,
@@ -899,7 +942,7 @@
           "business_accuracy": "ACCURATE",
           "goal_completion": "HUMAN_REVIEW_REQUIRED",
           "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 24441,
           "totalTokens": 5335,
@@ -1343,7 +1386,7 @@
       "business_accuracy": "ACCURATE",
       "goal_completion": "HUMAN_REVIEW_REQUIRED",
       "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "PENDING_HUMAN_REVIEW",
       "quality_passed": false,
@@ -1403,7 +1446,7 @@
           "business_accuracy": "ACCURATE",
           "goal_completion": "HUMAN_REVIEW_REQUIRED",
           "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 12982,
           "totalTokens": 6635,
@@ -1651,8 +1694,8 @@
       "needsHumanReview": false,
       "humanReviewReasons": [],
       "findings": [
-        "T2: REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:any rates in active evidence.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 700 đ (700đ) contradicts verified Concept:any rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:qua_dem:ANY rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 700 đ (700đ) contradicts verified Concept:any:ANY rates in active evidence.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 560 đ (560đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 700 đ (700đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
       ],
@@ -1713,8 +1756,8 @@
           "latencyMs": 27882,
           "totalTokens": 8108,
           "findings": [
-            "REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:any rates in active evidence.",
-            "REJECTED_PRICE_MISMATCH: Amount 700 đ (700đ) contradicts verified Concept:any rates in active evidence.",
+            "REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:qua_dem:ANY rates in active evidence.",
+            "REJECTED_PRICE_MISMATCH: Amount 700 đ (700đ) contradicts verified Concept:any:ANY rates in active evidence.",
             "CANONICAL_RATE_MISMATCH: Amount 560 đ (560đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
             "CANONICAL_RATE_MISMATCH: Amount 700 đ (700đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
           ],
@@ -2296,7 +2339,7 @@
       "needsHumanReview": false,
       "humanReviewReasons": [],
       "findings": [
-        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI only returned 2h base + vague surcharge note.",
+        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals.",
         "T2: POLICY_RULE_VIOLATION: Claimed 18:00/20:00 arrival transitioning to overnight uses hourly + overnight instead of ngay_dem (14:00-21:39 rule)."
       ],
       "operational_metrics": {
@@ -2331,7 +2374,7 @@
           "latencyMs": 10452,
           "totalTokens": 5066,
           "findings": [
-            "INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI only returned 2h base + vague surcharge note."
+            "INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
           ],
           "needsHumanReview": false
         },
@@ -2765,9 +2808,9 @@
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 450.000đ (450.000đ) contradicts verified Standard:any rates in active evidence.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 590.000đ (590.000đ) contradicts verified Deluxe:any rates in active evidence.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 750.000đ (750.000đ) contradicts verified Concept:any rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 450.000đ (450.000đ) contradicts verified Standard:any:ANY rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 590.000đ (590.000đ) contradicts verified Deluxe:any:ANY rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 750.000đ (750.000đ) contradicts verified Concept:any:ANY rates in active evidence.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 450.000đ (450.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 590.000đ (590.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 750.000đ (750.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
@@ -2829,9 +2872,9 @@
           "latencyMs": 3996,
           "totalTokens": 3191,
           "findings": [
-            "REJECTED_PRICE_MISMATCH: Amount 450.000đ (450.000đ) contradicts verified Standard:any rates in active evidence.",
-            "REJECTED_PRICE_MISMATCH: Amount 590.000đ (590.000đ) contradicts verified Deluxe:any rates in active evidence.",
-            "REJECTED_PRICE_MISMATCH: Amount 750.000đ (750.000đ) contradicts verified Concept:any rates in active evidence.",
+            "REJECTED_PRICE_MISMATCH: Amount 450.000đ (450.000đ) contradicts verified Standard:any:ANY rates in active evidence.",
+            "REJECTED_PRICE_MISMATCH: Amount 590.000đ (590.000đ) contradicts verified Deluxe:any:ANY rates in active evidence.",
+            "REJECTED_PRICE_MISMATCH: Amount 750.000đ (750.000đ) contradicts verified Concept:any:ANY rates in active evidence.",
             "CANONICAL_RATE_MISMATCH: Amount 450.000đ (450.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
             "CANONICAL_RATE_MISMATCH: Amount 590.000đ (590.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
             "CANONICAL_RATE_MISMATCH: Amount 750.000đ (750.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
@@ -2990,18 +3033,20 @@
       "effectivePolicyVersion": "1.4.6",
       "historicalPassedFlag": true,
       "execution_status": "LIVE_COMPLETED",
-      "grounding_status": "VERIFIED",
-      "business_accuracy": "ACCURATE",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
       "context_understanding": "ALIGNED",
       "semantic_quality": "PASS",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
-      "isFalsePass": false,
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "quality_passed": false,
+      "isFalsePass": true,
       "needsHumanReview": false,
       "humanReviewReasons": [],
-      "findings": [],
+      "findings": [
+        "T2: REJECTED_PRICE_MISMATCH: Amount 100.000đ (100.000đ) contradicts verified 601-50-sac-thai:EXTRA_HOUR:EXTRA_HOUR_RATE rates in active evidence."
+      ],
       "operational_metrics": {
         "turnCount": 3,
         "totalLatencyMs": 37614,
@@ -3046,15 +3091,17 @@
             "get_policies"
           ],
           "execution_status": "LIVE_COMPLETED",
-          "grounding_status": "VERIFIED",
-          "business_accuracy": "ACCURATE",
+          "grounding_status": "CONTRADICTED",
+          "business_accuracy": "CONTRADICTED",
           "goal_completion": "COMPLETE",
           "context_understanding": "ALIGNED",
           "semantic_quality": "PASS",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 9700,
           "totalTokens": 6135,
-          "findings": [],
+          "findings": [
+            "REJECTED_PRICE_MISMATCH: Amount 100.000đ (100.000đ) contradicts verified 601-50-sac-thai:EXTRA_HOUR:EXTRA_HOUR_RATE rates in active evidence."
+          ],
           "needsHumanReview": false
         },
         {
@@ -3216,7 +3263,7 @@
       "needsHumanReview": false,
       "humanReviewReasons": [],
       "findings": [
-        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI only returned 2h base + vague surcharge note."
+        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
       ],
       "operational_metrics": {
         "turnCount": 2,
@@ -3249,7 +3296,7 @@
           "latencyMs": 3610,
           "totalTokens": 6704,
           "findings": [
-            "INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI only returned 2h base + vague surcharge note."
+            "INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
           ],
           "needsHumanReview": false
         },
@@ -3346,7 +3393,7 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
+      "goal_completion": "INCOMPLETE",
       "context_understanding": "ALIGNED",
       "semantic_quality": "PASS",
       "media_delivery_status": "NOT_REQUESTED",
@@ -3356,7 +3403,8 @@
       "needsHumanReview": false,
       "humanReviewReasons": [],
       "findings": [
-        "T1: REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong."
+        "T1: REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong.",
+        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
       ],
       "operational_metrics": {
         "turnCount": 1,
@@ -3379,14 +3427,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
+          "goal_completion": "INCOMPLETE",
           "context_understanding": "ALIGNED",
           "semantic_quality": "PASS",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 5029,
           "totalTokens": 2526,
           "findings": [
-            "REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong."
+            "REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong.",
+            "INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
           ],
           "needsHumanReview": false
         }
@@ -3403,15 +3452,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
       "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 3: Response lacks objective tool/pricing/policy evidence markers for automated goal sign-off."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 3,
@@ -3478,14 +3529,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
           "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 7404,
           "totalTokens": 2888,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response lacks objective tool/pricing/policy evidence markers for automated goal sign-off."
         }
       ]
     },
@@ -4221,18 +4273,20 @@
       "effectivePolicyVersion": "1.4.6",
       "historicalPassedFlag": true,
       "execution_status": "LIVE_COMPLETED",
-      "grounding_status": "VERIFIED",
-      "business_accuracy": "ACCURATE",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
       "context_understanding": "ALIGNED",
       "semantic_quality": "PASS",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
-      "isFalsePass": false,
+      "terminal_outcome": "CONFIRMED_FAIL",
+      "quality_passed": false,
+      "isFalsePass": true,
       "needsHumanReview": false,
       "humanReviewReasons": [],
-      "findings": [],
+      "findings": [
+        "T2: REJECTED_PRICE_MISMATCH: Amount 1.000.000đ (1.000.000đ) contradicts verified Concept:qua_dem:ANY rates in active evidence."
+      ],
       "operational_metrics": {
         "turnCount": 2,
         "totalLatencyMs": 6896,
@@ -4277,15 +4331,17 @@
             "quote_price"
           ],
           "execution_status": "LIVE_COMPLETED",
-          "grounding_status": "VERIFIED",
-          "business_accuracy": "ACCURATE",
+          "grounding_status": "CONTRADICTED",
+          "business_accuracy": "CONTRADICTED",
           "goal_completion": "COMPLETE",
           "context_understanding": "ALIGNED",
           "semantic_quality": "PASS",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 3596,
           "totalTokens": 5664,
-          "findings": [],
+          "findings": [
+            "REJECTED_PRICE_MISMATCH: Amount 1.000.000đ (1.000.000đ) contradicts verified Concept:qua_dem:ANY rates in active evidence."
+          ],
           "needsHumanReview": false
         }
       ]
@@ -4386,9 +4442,9 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
       "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "PENDING_HUMAN_REVIEW",
       "quality_passed": false,
@@ -4421,9 +4477,9 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
           "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 1587,
           "totalTokens": 3660,
@@ -4444,9 +4500,9 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
       "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "DELIVERED",
       "terminal_outcome": "PENDING_HUMAN_REVIEW",
       "quality_passed": false,
@@ -4480,9 +4536,9 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
           "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "DELIVERED",
           "latencyMs": 5082,
           "totalTokens": 4173,
@@ -4503,9 +4559,9 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
       "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "PENDING_HUMAN_REVIEW",
       "quality_passed": false,
@@ -4538,9 +4594,9 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
           "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 3178,
           "totalTokens": 3653,

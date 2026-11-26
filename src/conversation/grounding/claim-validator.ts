@@ -15,9 +15,10 @@ import {
   GroundingStatus,
   RoomPresentationBlock,
   RoomPresentationImage,
+  ScopedRateFact,
 } from '../../agent/agent-contracts.js';
 import { resolveTriStateAmenity } from '../../agent/agent-tools.js';
-import { extractVndMentions, ParsedVndMention } from './business-evidence.js';
+import { computeDatasetVersionHash, extractVndMentions, ParsedVndMention } from './business-evidence.js';
 
 export interface ClaimValidationConfig {
   allowedBookingDomainOverride?: string; // e.g. "jcollection.vn" only if explicitly configured
@@ -37,6 +38,10 @@ export interface ExpectedQuoteInput {
   totalVnd: number;
   alternateAmountsVnd?: number[];
   checkinCondition?: string;
+  timeCondition?: string;
+  eligible?: boolean;
+  ineligibilityReason?: string;
+  delayedAlt2140Vnd?: number;
   policyVersion?: string;
 }
 
@@ -741,6 +746,7 @@ export class ClaimLevelValidator {
 
     const addendum = loadOwnerPolicyAddendums();
     const activeEffectivePolicy = context.effectivePolicyVersion ?? '1.4.6';
+    const activeDatasetHash = computeDatasetVersionHash(this.dataset, context.policyConfig ?? null, addendum);
 
     // Collect valid active evidence & expectedQuotes for THIS facility
     const rawExpected = context.expectedQuotes || [];
@@ -767,18 +773,54 @@ export class ClaimLevelValidator {
       }
     }
 
-    const validPriceEntries: BusinessEvidenceRecord[] = rawEvidence.filter(
-      (ev) =>
-        ev.isValid &&
-        (!context.facility || ev.propertyId === context.facility) &&
-        ev.effectivePolicyVersion === activeEffectivePolicy &&
-        (ev.evidenceType === 'QUOTE' ||
-          ev.evidenceType === 'CATALOG_SEARCH' ||
-          ev.evidenceType === 'ROOM_FACTS' ||
-          ev.evidenceType === 'POLICY')
+    // Enforce authoritative dataset/policy content hash: stale hashes cannot validate monetary claims
+    const staleRevisionEntries = rawEvidence.filter(
+      (ev) => ev.isValid && ev.datasetVersion && ev.datasetVersion !== activeDatasetHash
     );
+    if (staleRevisionEntries.length > 0) {
+      for (const stale of staleRevisionEntries) {
+        recordCheck({
+          claim_type: 'POLICY',
+          raw_text: stale.datasetVersion,
+          status: 'CONTRADICTED',
+          reason: `REJECTED_STALE_DATASET_REVISION: Evidence ${stale.evidenceId} has revision "${stale.datasetVersion}", which mismatches active authoritative revision "${activeDatasetHash}".`,
+        });
+      }
+    }
 
-    // Bridge context.expectedQuotes if caller passed expectedQuotes directly (e.g. unit test without state)
+    const validPriceEntries: BusinessEvidenceRecord[] = rawEvidence
+      .filter(
+        (ev) =>
+          ev.isValid &&
+          (!context.facility || ev.propertyId === context.facility) &&
+          ev.effectivePolicyVersion === activeEffectivePolicy &&
+          (!ev.datasetVersion || ev.datasetVersion === activeDatasetHash) &&
+          (ev.evidenceType === 'QUOTE' ||
+            ev.evidenceType === 'CATALOG_SEARCH' ||
+            ev.evidenceType === 'ROOM_FACTS' ||
+            ev.evidenceType === 'POLICY')
+      )
+      .map((ev) => {
+        if (ev.evidenceType !== 'QUOTE' || (ev.scopedRates && ev.scopedRates.length > 0)) {
+          return ev;
+        }
+        const derived: ScopedRateFact[] = [];
+        if (typeof ev.amountVnd === 'number') {
+          derived.push({ amountVnd: ev.amountVnd, role: 'TOTAL', roomId: ev.roomId, category: ev.category, stayPackage: ev.stayPackage, durationHours: ev.durationHours, eligible: ev.eligible ?? true });
+        }
+        if (typeof ev.basePriceVnd === 'number') {
+          derived.push({ amountVnd: ev.basePriceVnd, role: ev.stayPackage === 'nghi_gio' ? 'BASE_2H' : 'PACKAGE_RATE', roomId: ev.roomId, category: ev.category, stayPackage: ev.stayPackage, durationHours: ev.stayPackage === 'nghi_gio' ? 2 : ev.durationHours, eligible: ev.eligible ?? true });
+        }
+        if (typeof ev.extraHourRateVnd === 'number' && ev.extraHourRateVnd > 0) {
+          derived.push({ amountVnd: ev.extraHourRateVnd, role: 'EXTRA_HOUR_RATE', roomId: ev.roomId, category: ev.category, stayPackage: 'EXTRA_HOUR', eligible: true });
+        }
+        if (typeof ev.extraHourSubtotalVnd === 'number') {
+          derived.push({ amountVnd: ev.extraHourSubtotalVnd, role: 'EXTRA_HOUR_SUBTOTAL', roomId: ev.roomId, category: ev.category, stayPackage: ev.stayPackage, durationHours: ev.durationHours, eligible: ev.eligible ?? true });
+        }
+        return { ...ev, scopedRates: derived };
+      });
+
+    // Bridge context.expectedQuotes directly into typed ScopedRateFact[] (no flat untyped number bags)
     const bridgedFromExpected: BusinessEvidenceRecord[] = rawExpected
       .filter((q) => !context.facility || !q.propertyId || q.propertyId === context.facility)
       .map((q, idx) => {
@@ -787,17 +829,93 @@ export class ClaimLevelValidator {
             (p) => p.co_so_ma === context.facility && (p.ma_phong === q.roomId || p.ma_phong.startsWith(q.roomId))
           )
           : undefined;
-        const alts = new Set<number>([q.totalVnd, ...(q.alternateAmountsVnd || [])]);
-        if (typeof q.baseVnd === 'number') alts.add(q.baseVnd);
-        if (typeof q.extraHourRateVnd === 'number') alts.add(q.extraHourRateVnd);
-        if (typeof q.extraHourSubtotalVnd === 'number') alts.add(q.extraHourSubtotalVnd);
+        const resolvedRoomId = roomMeta?.ma_phong ?? q.roomId;
+        const resolvedCat = q.category ?? roomMeta?.hang;
+        const cond = q.timeCondition ?? q.checkinCondition;
+        const eligFlag = q.eligible ?? true;
+        const scopedRates: ScopedRateFact[] = [];
+        const alts = new Set<number>([q.totalVnd]);
+        scopedRates.push({
+          amountVnd: q.totalVnd,
+          role: 'TOTAL',
+          roomId: resolvedRoomId,
+          category: resolvedCat,
+          stayPackage: q.stayType,
+          durationHours: q.durationHours,
+          timeCondition: cond,
+          eligible: eligFlag,
+          ineligibilityReason: q.ineligibilityReason,
+        });
+        if (typeof q.baseVnd === 'number') {
+          alts.add(q.baseVnd);
+          scopedRates.push({
+            amountVnd: q.baseVnd,
+            role: q.stayType === 'nghi_gio' ? 'BASE_2H' : 'PACKAGE_RATE',
+            roomId: resolvedRoomId,
+            category: resolvedCat,
+            stayPackage: q.stayType,
+            durationHours: q.stayType === 'nghi_gio' ? 2 : q.durationHours,
+            timeCondition: cond,
+            eligible: eligFlag,
+            ineligibilityReason: q.ineligibilityReason,
+          });
+        }
+        if (typeof q.extraHourRateVnd === 'number' && q.extraHourRateVnd > 0) {
+          alts.add(q.extraHourRateVnd);
+          scopedRates.push({
+            amountVnd: q.extraHourRateVnd,
+            role: 'EXTRA_HOUR_RATE',
+            roomId: resolvedRoomId,
+            category: resolvedCat,
+            stayPackage: 'EXTRA_HOUR',
+            eligible: true,
+          });
+        }
+        if (typeof q.extraHourSubtotalVnd === 'number') {
+          alts.add(q.extraHourSubtotalVnd);
+          scopedRates.push({
+            amountVnd: q.extraHourSubtotalVnd,
+            role: 'EXTRA_HOUR_SUBTOTAL',
+            roomId: resolvedRoomId,
+            category: resolvedCat,
+            stayPackage: q.stayType,
+            durationHours: q.durationHours,
+            timeCondition: cond,
+            eligible: eligFlag,
+          });
+        }
+        if (typeof q.delayedAlt2140Vnd === 'number') {
+          alts.add(q.delayedAlt2140Vnd);
+          scopedRates.push({
+            amountVnd: q.delayedAlt2140Vnd,
+            role: 'ALT_21_40',
+            roomId: resolvedRoomId,
+            category: resolvedCat,
+            stayPackage: 'qua_dem',
+            timeCondition: 'delayed_to_21_40',
+            eligible: true,
+          });
+        }
+        for (const a of q.alternateAmountsVnd || []) {
+          alts.add(a);
+          scopedRates.push({
+            amountVnd: a,
+            role: q.stayType === 'nghi_gio' ? 'TOTAL' : 'PACKAGE_RATE',
+            roomId: resolvedRoomId,
+            category: resolvedCat,
+            stayPackage: q.stayType,
+            durationHours: q.durationHours,
+            timeCondition: cond,
+            eligible: eligFlag,
+          });
+        }
         return {
           evidenceId: `expected_quote_${q.roomId}_${idx}`,
           propertyId: (q.propertyId ?? context.facility ?? 'jacayl-ha-dong') as CoSoMa,
-          roomId: roomMeta?.ma_phong ?? q.roomId,
-          roomCode: q.roomCode ?? (roomMeta?.ma_phong ?? q.roomId).split('-')[0],
+          roomId: resolvedRoomId,
+          roomCode: q.roomCode ?? resolvedRoomId.split('-')[0],
           roomName: q.roomName ?? roomMeta?.ten_phong,
-          category: q.category ?? roomMeta?.hang,
+          category: resolvedCat,
           evidenceType: 'QUOTE' as const,
           toolSource: 'quote_price',
           stayPackage: q.stayType,
@@ -806,10 +924,14 @@ export class ClaimLevelValidator {
           extraHourRateVnd: q.extraHourRateVnd,
           extraHourSubtotalVnd: q.extraHourSubtotalVnd,
           alternateAmountsVnd: Array.from(alts),
+          scopedRates,
+          eligible: eligFlag,
+          timeCondition: cond,
+          ineligibilityReason: q.ineligibilityReason,
           durationHours: q.durationHours,
           checkinDatetime: q.checkinCondition,
           effectivePolicyVersion: q.policyVersion ?? activeEffectivePolicy,
-          datasetVersion: 'canonical',
+          datasetVersion: activeDatasetHash,
           validityScope: 'SESSION_WHILE_VALID' as const,
           isValid: true,
           recordedTurn: 0,
@@ -951,7 +1073,7 @@ export class ClaimLevelValidator {
       const prevHeaderCandidate = linesBefore
         .slice(Math.max(0, linesBefore.length - 4), -1)
         .reverse()
-        .find((l) => /:\s*$/.test(l.trim()) && l.trim().length > 4);
+        .find((l) => /:\s*$/.test(l.trim()) || (l.trim().length > 8 && /chi tiết biểu giá|gồm|2\s*giờ đầu|2h đầu/iu.test(curLineTrim)));
       const precedingHeader = /^[-*•]/.test(curLineTrim) || !curLineTrim.includes(':') ? prevHeaderCandidate : undefined;
       const clauseScope = this.detectClauseEntityScope(mention, localPre, facilityRooms, precedingHeader);
 
@@ -977,6 +1099,22 @@ export class ClaimLevelValidator {
           normalized_value: mention.amountVnd,
           status: 'CONTRADICTED',
           reason: `REJECTED_PRICE_MISMATCH: Amount ${mention.raw} (${mention.amountVnd.toLocaleString('vi-VN')}đ) contradicts verified ${clauseScope.summary} rates in active evidence.`,
+        });
+      } else if (matchedEvidenceId === 'INELIGIBLE_PACKAGE_CONFLICT') {
+        recordCheck({
+          claim_type: 'POLICY',
+          raw_text: mention.raw,
+          normalized_value: mention.amountVnd,
+          status: 'CONTRADICTED',
+          reason: `REJECTED_INELIGIBLE_PACKAGE_CLAIM: Amount ${mention.raw} applies to an INELIGIBLE package or delayed condition for ${clauseScope.summary} without stating eligibility limits.`,
+        });
+      } else if (matchedEvidenceId === 'TIME_CONDITION_CONFLICT') {
+        recordCheck({
+          claim_type: 'POLICY',
+          raw_text: mention.raw,
+          normalized_value: mention.amountVnd,
+          status: 'CONTRADICTED',
+          reason: `REJECTED_TIME_CONDITION_MISMATCH: Amount ${mention.raw} for ${clauseScope.summary} mismatches the stated check-in time/day condition (${clauseScope.clauseTimeCondition}).`,
         });
       } else if (matchedEvidenceId === 'MISSING_SCOPED_EVIDENCE') {
         // E.g. active evidence only fetched 'nghi_gio' 4h, while sentence claims 'qua đêm 450.000đ'
@@ -1030,6 +1168,9 @@ export class ClaimLevelValidator {
     roomId?: string;
     category?: string;
     stayPackage?: StayType | 'EXTRA_HOUR';
+    monetaryRole: 'TOTAL' | 'BASE_2H' | 'PACKAGE_RATE' | 'EXTRA_HOUR_RATE' | 'EXTRA_HOUR_SUBTOTAL' | 'ALT_21_40' | 'ANY';
+    clauseTimeCondition: 'weekend_daytime' | 'weekday_or_after_18' | null;
+    explicitIneligibilityFraming: boolean;
     isBase2hOnly?: boolean;
     explicitTotalHours?: number;
     summary: string;
@@ -1037,7 +1178,6 @@ export class ClaimLevelValidator {
     const s = mention.sentenceLower;
     const rawLower = mention.raw.toLowerCase();
     const mRelIdx = Math.max(0, s.indexOf(rawLower));
-    // Extract tight sub-clause around this mention delimited by commas, parentheses, semicolons, +, =, or "hoặc"
     const leftBound = Math.max(
       s.lastIndexOf(',', mRelIdx),
       s.lastIndexOf(';', mRelIdx),
@@ -1064,8 +1204,7 @@ export class ClaimLevelValidator {
 
     const extractRoomAndCat = (textSeg: string): { roomId?: string; category?: string } => {
       const segNorm = textSeg.replace(/\*/g, '').replace(/\s*[—–-]\s*/g, ' ');
-      let rId: string | undefined;
-      let cat: string | undefined;
+      const matchedRooms: NormalizedRoom[] = [];
       for (const r of facilityRooms) {
         const rCode = r.ma_phong.split('-')[0].toLowerCase();
         const rName = r.ten_phong.toLowerCase().replace(/^\d+\s*[—–-]\s*/, '').replace(/\s*[—–-]\s*/g, ' ').trim();
@@ -1073,11 +1212,13 @@ export class ClaimLevelValidator {
           new RegExp(`(?<![\\p{L}\\d])${rCode}(?![\\p{L}\\d])`, 'iu').test(segNorm) ||
           (rName.length >= 4 && segNorm.includes(rName))
         ) {
-          rId = r.ma_phong;
-          cat = r.hang;
-          break;
+          matchedRooms.push(r);
         }
       }
+      // Bind specific roomId ONLY when unambiguously singular; multi-room examples (e.g. "601, 101, 602") stay category-scoped!
+      const rId = matchedRooms.length === 1 ? matchedRooms[0].ma_phong : undefined;
+      const distinctMatchedCats = new Set(matchedRooms.map((r) => r.hang));
+      let cat: string | undefined = distinctMatchedCats.size === 1 ? matchedRooms[0].hang : undefined;
       if (!cat) {
         if (/\bstandard\b|tiêu chuẩn/iu.test(segNorm)) cat = 'Standard';
         else if (/\bdeluxe\b/iu.test(segNorm)) cat = 'Deluxe';
@@ -1089,13 +1230,12 @@ export class ClaimLevelValidator {
       return { roomId: rId, category: cat };
     };
 
-    // Priority: 1) tight sub-clause -> 2) line header before ":" -> 3) whole line -> 4) parent bullet header
     let { roomId, category } = extractRoomAndCat(subClause);
     if (!roomId && !category && headerSlice) {
       ({ roomId, category } = extractRoomAndCat(headerSlice));
     }
     if (!roomId && !category) {
-      ({ roomId, category } = extractRoomAndCat(s));
+      ({ roomId, category } = extractRoomAndCat(s.slice(0, mRelIdx + rawLower.length)));
     }
     if (!roomId && !category && precedingHeader) {
       ({ roomId, category } = extractRoomAndCat(precedingHeader.toLowerCase()));
@@ -1103,11 +1243,25 @@ export class ClaimLevelValidator {
 
     let stayPackage: StayType | 'EXTRA_HOUR' | undefined;
     const afterRaw = s.slice(mRelIdx + rawLower.length, mRelIdx + rawLower.length + 32);
-    const isExtraRateClause =
+    const immediateAfter = s.slice(mRelIdx + rawLower.length, mRelIdx + rawLower.length + 10);
+    const hasPerHourUnit =
       /\/\s*(?:giờ|gio|h|tiếng|tieng)(?![\p{L}\d])/iu.test(rawLower) ||
-      /^\s*\/\s*(?:giờ|gio|h|tiếng|tieng)(?![\p{L}\d])/iu.test(afterRaw) ||
-      /(?:phụ thu|thêm giờ|giờ phát sinh|quá giờ|mỗi giờ tiếp theo)[^.\n=]*$/iu.test(localPre) ||
-      /\b\d+\s*[x×*]\s*$/iu.test(localPre);
+      /^\s*(?:\*\*|__)?\s*\/\s*(?:giờ|gio|h|tiếng|tieng)(?![\p{L}\d])/iu.test(immediateAfter) ||
+      /(?:^|[\s\d\(])[x×*]\s*$/iu.test(localPre);
+    const isMultiHourSubtotalClause =
+      !hasPerHourUnit &&
+      (/\b(?:[1-9]\d?)\s*(?:giờ|tiếng|h)\s*(?:thêm|sau|tiếp theo|phát sinh|quá giờ|cộng)|(?:thêm|phát sinh|trễ)\s*(?:[1-9]\d?)\s*(?:giờ|tiếng|h)/iu.test(
+        subClause
+      ) ||
+        /(?:\b(?:[1-9]\d?)\s*(?:giờ|tiếng|h)\s*(?:thêm|sau|tiếp theo|phát sinh|quá giờ|cộng)(?:\s*\([^)]*\))?\s*[:là]?\s*|(?:tổng\s+)?(?:phí\s+)?(?:phụ thu\s+trễ|quá giờ|tiền phát sinh|tiền thêm giờ)\s*[:là]?\s*)$/iu.test(
+          localPre
+        ));
+    const isPerHourUnitRate =
+      hasPerHourUnit ||
+      (/(?:phụ thu thêm giờ|phát sinh mỗi giờ|mỗi giờ tiếp theo|thêm giờ là|quá giờ mỗi tiếng|đơn giá giờ phát sinh)[^.\n=]*$/iu.test(
+        localPre
+      ) &&
+        !isMultiHourSubtotalClause);
 
     const detectPkg = (seg: string): StayType | undefined => {
       if (/ngày đêm|ngay dem|cả ngày/iu.test(seg)) return 'ngay_dem';
@@ -1116,15 +1270,16 @@ export class ClaimLevelValidator {
       return undefined;
     };
 
-    const appositivePkgMatch = afterRaw.match(/^\s*\*\*\s*\((?:gói\s+)?(ngày đêm|qua đêm)/iu) ||
+    const appositivePkgMatch =
+      afterRaw.match(/^\s*\*\*\s*\((?:gói\s+)?(ngày đêm|qua đêm)/iu) ||
       afterRaw.match(/^\s*\((?:gói\s+)?(ngày đêm|qua đêm)/iu);
 
-    if (isExtraRateClause && mention.amountVnd <= 250000) {
+    if (isMultiHourSubtotalClause || isPerHourUnitRate) {
       stayPackage = 'EXTRA_HOUR';
     } else if (appositivePkgMatch) {
       stayPackage = /ngày/iu.test(appositivePkgMatch[1]) ? 'ngay_dem' : 'qua_dem';
     } else {
-      stayPackage = detectPkg(subClause) ?? detectPkg(s);
+      stayPackage = detectPkg(subClause) ?? detectPkg(s) ?? (precedingHeader ? detectPkg(precedingHeader.toLowerCase()) : undefined);
     }
 
     const isBase2hOnly =
@@ -1141,13 +1296,45 @@ export class ClaimLevelValidator {
         ? parseInt(durMatch[1], 10)
         : undefined;
 
+    let monetaryRole: 'TOTAL' | 'BASE_2H' | 'PACKAGE_RATE' | 'EXTRA_HOUR_RATE' | 'EXTRA_HOUR_SUBTOTAL' | 'ALT_21_40' | 'ANY' =
+      'ANY';
+    if (isMultiHourSubtotalClause) {
+      monetaryRole = 'EXTRA_HOUR_SUBTOTAL';
+    } else if (isPerHourUnitRate) {
+      monetaryRole = 'EXTRA_HOUR_RATE';
+    } else if (isBase2hOnly) {
+      monetaryRole = 'BASE_2H';
+    } else if (/(?:đợi|chờ|lùi|nếu nhận)\s*(?:đến|tới|từ)?\s*21[:h]40/iu.test(s) && /qua đêm|420|560|700/iu.test(subClause)) {
+      monetaryRole = 'ALT_21_40';
+    } else if (stayPackage === 'nghi_gio' && explicitTotalHours && explicitTotalHours >= 3) {
+      monetaryRole = 'TOTAL';
+    } else if (/(?:tổng\s*(?:cộng|tiền|chi phí|thanh toán)|thành tiền)/iu.test(subClause + ' ' + localPre)) {
+      monetaryRole = 'TOTAL';
+    } else if (stayPackage === 'qua_dem' || stayPackage === 'ngay_dem') {
+      monetaryRole = /giá\s*(?:gói|cơ bản|gốc)/iu.test(subClause) ? 'PACKAGE_RATE' : 'ANY';
+    }
+
+    const condCtx = `${subClause} ${localPre}`;
+    const mentionsWknd = /(?:ban ngày\s+)?(?:cuối tuần|thứ\s*7|\bt7\b|chủ nhật|\bcn\b)/iu.test(condCtx);
+    const mentionsWkd = /(?:ngày thường|thứ\s*[2-6]|\bt[2-6]\b|sau\s*18[:h]?00|từ\s*18[:h]?00|trước\s*08[:h]?00|buổi tối)/iu.test(condCtx);
+    const clauseTimeCondition: 'weekend_daytime' | 'weekday_or_after_18' | null =
+      mentionsWknd && !mentionsWkd ? 'weekend_daytime' : mentionsWkd && !mentionsWknd ? 'weekday_or_after_18' : null;
+
+    const explicitIneligibilityFraming =
+      /(?:không\s+(?:áp dụng|đủ điều kiện|hợp lệ|tính được)|chưa\s+(?:đủ điều kiện|áp dụng|tới giờ)|chỉ\s+áp dụng\s+từ|ngoài\s+khung|nếu\s+(?:đợi|chờ|lùi)\s*(?:đến|tới)?\s*21[:h]40)/iu.test(
+        s
+      );
+
     return {
       roomId,
       category,
       stayPackage,
+      monetaryRole,
+      clauseTimeCondition,
+      explicitIneligibilityFraming,
       isBase2hOnly,
       explicitTotalHours,
-      summary: `${roomId || category || 'facility'}:${stayPackage || 'any'}${explicitTotalHours ? `(${explicitTotalHours}h)` : ''}`,
+      summary: `${roomId || category || 'facility'}:${stayPackage || 'any'}:${monetaryRole}${explicitTotalHours ? `(${explicitTotalHours}h)` : ''}`,
     };
   }
 
@@ -1257,6 +1444,28 @@ export class ClaimLevelValidator {
     return null;
   }
 
+  private roleMatchesFact(
+    expectedRole: ReturnType<ClaimLevelValidator['detectClauseEntityScope']>['monetaryRole'],
+    factRole: ScopedRateFact['role'],
+    factDurationHours: number | undefined,
+    clauseDurationHours: number | undefined
+  ): boolean {
+    if (expectedRole === 'EXTRA_HOUR_RATE') return factRole === 'EXTRA_HOUR_RATE' || factRole === 'POLICY_RATE';
+    if (expectedRole === 'EXTRA_HOUR_SUBTOTAL') return factRole === 'EXTRA_HOUR_SUBTOTAL';
+    if (expectedRole === 'BASE_2H') return factRole === 'BASE_2H' || (factRole === 'TOTAL' && factDurationHours === 2);
+    if (expectedRole === 'ALT_21_40') return factRole === 'ALT_21_40';
+    if (expectedRole === 'TOTAL') {
+      if (factRole !== 'TOTAL') return false;
+      if (clauseDurationHours && clauseDurationHours >= 3 && factDurationHours && factDurationHours !== clauseDurationHours) {
+        return false;
+      }
+      return true;
+    }
+    if (expectedRole === 'PACKAGE_RATE') return factRole === 'PACKAGE_RATE' || factRole === 'TOTAL';
+    // 'ANY': still NEVER allow EXTRA_HOUR_SUBTOTAL or EXTRA_HOUR_RATE or ALT_21_40 to impersonate a primary quote
+    return factRole !== 'EXTRA_HOUR_SUBTOTAL' && factRole !== 'ALT_21_40';
+  }
+
   private findMatchingEvidenceForMention(
     mention: ParsedVndMention,
     scope: ReturnType<ClaimLevelValidator['detectClauseEntityScope']>,
@@ -1266,61 +1475,82 @@ export class ClaimLevelValidator {
   ): string {
     const val = mention.amountVnd;
 
-    // A) Extra hour rate check (also allow multi-hour extra subtotal when text says e.g. "phụ thu 2 tiếng tiếp theo 200.000đ")
-    if (scope.stayPackage === 'EXTRA_HOUR') {
-      const mentionsMultiHourSubtotal = /\b(?:[2-9]\d?)\s*(?:giờ|tiếng|h)\s*(?:thêm|sau|tiếp theo|phát sinh|quá giờ|cộng)|(?:thêm|phát sinh)\s*(?:[2-9]\d?)\s*(?:giờ|tiếng|h)/iu.test(
-        mention.sentenceLower
-      );
+    // A) Extra hour rate OR multi-hour extra subtotal (strict role separation + P0-3 per-room precedence over policy default)
+    if (scope.stayPackage === 'EXTRA_HOUR' || scope.monetaryRole === 'EXTRA_HOUR_RATE' || scope.monetaryRole === 'EXTRA_HOUR_SUBTOTAL') {
       const scopedQuotes = quoteEntries.filter(
         (q) =>
           (!scope.roomId || q.roomId === scope.roomId) &&
           (!scope.category || q.category === scope.category)
       );
-      const scopedRateMatch = scopedQuotes.find(
-        (q) =>
-          q.extraHourRateVnd === val ||
-          (mentionsMultiHourSubtotal && q.extraHourSubtotalVnd === val) ||
-          (q.scopedRates || []).some(
-            (r) =>
-              (r.role === 'EXTRA_HOUR_RATE' || (mentionsMultiHourSubtotal && r.role === 'EXTRA_HOUR_SUBTOTAL')) &&
-              r.amountVnd === val
-          )
-      );
-      if (scopedRateMatch) return scopedRateMatch.evidenceId;
 
-      for (const c of catalogOrFactsEntries) {
-        const catTyped = (c.scopedRates || []).find(
-          (r) =>
-            r.role === 'EXTRA_HOUR_RATE' &&
-            r.amountVnd === val &&
-            (!scope.roomId || !r.roomId || r.roomId === scope.roomId) &&
-            (!scope.category || !r.category || r.category.toLowerCase() === scope.category.toLowerCase())
+      // P0-3 Precedence check: when a specific room is named, resolve its canonical per-room extra_hour_rate first
+      const roomCanonicalRate = scope.roomId
+        ? scopedQuotes.find((q) => typeof q.extraHourRateVnd === 'number' && q.extraHourRateVnd > 0)?.extraHourRateVnd ??
+          this.dataset.phong.find((p) => p.ma_phong === scope.roomId && (!quoteEntries[0]?.propertyId || p.co_so_ma === quoteEntries[0]?.propertyId))
+            ?.gia_goc_dataset.gio_phat_sinh_ap_dung
+        : undefined;
+
+      if (scope.monetaryRole === 'EXTRA_HOUR_SUBTOTAL') {
+        const subMatch = scopedQuotes.find(
+          (q) =>
+            (q.scopedRates || []).some((r) => r.role === 'EXTRA_HOUR_SUBTOTAL' && r.amountVnd === val) ||
+            q.extraHourSubtotalVnd === val
         );
-        if (catTyped) return c.evidenceId;
-        const snaps = (c.categoryRateSnapshots || []).filter(
-          (sn) => !scope.category || sn.category === scope.category
-        );
-        if (snaps.some((sn) => sn.extraHourRateVnd === val)) return c.evidenceId;
+        if (subMatch) return subMatch.evidenceId;
+        const subSnapMatch = this.checkCatalogSnapshots(val, scope, catalogOrFactsEntries);
+        if (subSnapMatch) return subSnapMatch;
+        if (scopedQuotes.some((q) => (q.scopedRates || []).some((r) => r.role === 'EXTRA_HOUR_SUBTOTAL') || typeof q.extraHourSubtotalVnd === 'number')) {
+          return 'SCOPE_CONTRADICTION';
+        }
+        return 'MISSING_SCOPED_EVIDENCE';
       }
-      for (const p of policyEntries) {
-        if (
-          (p.scopedRates || []).some(
+
+      // EXTRA_HOUR_RATE: P0-3 per-room rate strictly overrides policy default (default 100k NEVER validates room 601/602 = 200k!)
+      if (typeof roomCanonicalRate === 'number' && roomCanonicalRate > 0) {
+        if (val !== roomCanonicalRate) {
+          return 'SCOPE_CONTRADICTION';
+        }
+        const roomSpecificEv =
+          scopedQuotes.find((q) => q.extraHourRateVnd === val || (q.scopedRates || []).some((r) => r.role === 'EXTRA_HOUR_RATE' && r.amountVnd === val)) ||
+          catalogOrFactsEntries.find((c) => (c.scopedRates || []).some((r) => r.role === 'EXTRA_HOUR_RATE' && r.roomId === scope.roomId && r.amountVnd === val)) ||
+          policyEntries.find((p) => (p.scopedRates || []).some((r) => !r.isDefaultPolicyRate && r.roomId === scope.roomId && r.amountVnd === val));
+        if (roomSpecificEv) return roomSpecificEv.evidenceId;
+      } else {
+        const unscopedQuoteRate = scopedQuotes.find(
+          (q) => q.extraHourRateVnd === val || (q.scopedRates || []).some((r) => r.role === 'EXTRA_HOUR_RATE' && r.amountVnd === val)
+        );
+        if (unscopedQuoteRate) return unscopedQuoteRate.evidenceId;
+        for (const c of catalogOrFactsEntries) {
+          const catTyped = (c.scopedRates || []).find(
             (r) =>
-              (r.role === 'EXTRA_HOUR_RATE' || r.role === 'POLICY_RATE') &&
+              r.role === 'EXTRA_HOUR_RATE' &&
               r.amountVnd === val &&
               (!scope.roomId || !r.roomId || r.roomId === scope.roomId) &&
               (!scope.category || !r.category || r.category.toLowerCase() === scope.category.toLowerCase())
-          ) ||
-          (!p.scopedRates && (p.alternateAmountsVnd || []).includes(val))
-        ) {
-          return p.evidenceId;
+          );
+          if (catTyped) return c.evidenceId;
+        }
+        for (const p of policyEntries) {
+          const roomSpecificMatch = (p.scopedRates || []).find(
+            (r) =>
+              !r.isDefaultPolicyRate &&
+              r.role === 'EXTRA_HOUR_RATE' &&
+              r.amountVnd === val &&
+              (!scope.roomId || r.roomId === scope.roomId) &&
+              (!scope.category || !r.category || r.category.toLowerCase() === scope.category.toLowerCase())
+          );
+          if (roomSpecificMatch) return p.evidenceId;
+          // Allow policy default rate ONLY when no specific room with a conflicting rate is claimed
+          const defaultMatch = (p.scopedRates || []).find(
+            (r) => r.role === 'POLICY_RATE' && r.isDefaultPolicyRate && r.amountVnd === val && !scope.roomId
+          );
+          if (defaultMatch) return p.evidenceId;
         }
       }
-      // Also check any generic catalog snapshots matching room/category extraHourRateVnd
+
       const extraSnapMatch = this.checkCatalogSnapshots(val, scope, catalogOrFactsEntries);
       if (extraSnapMatch) return extraSnapMatch;
 
-      // If we DO have scoped quotes/policies/catalog for that room/category with a different extraHourRateVnd -> contradiction!
       if (
         scopedQuotes.some((q) => typeof q.extraHourRateVnd === 'number') ||
         policyEntries.some((p) => (p.scopedRates || []).some((r) => r.role === 'EXTRA_HOUR_RATE' || r.role === 'POLICY_RATE'))
@@ -1330,7 +1560,7 @@ export class ClaimLevelValidator {
       return 'MISSING_SCOPED_EVIDENCE';
     }
 
-    // B) Match against active QUOTE evidence respecting room/category/stayPackage/duration & typed scopedRates
+    // B) Match against active QUOTE evidence enforcing typed monetary roles, eligibility & timeCondition
     if (quoteEntries.length > 0) {
       const entityMatched = quoteEntries.filter(
         (q) =>
@@ -1339,78 +1569,60 @@ export class ClaimLevelValidator {
       );
 
       if (entityMatched.length > 0) {
+        let sawIneligibleMatch = false;
+        let sawTimeConditionConflict = false;
+
         for (const q of entityMatched) {
           const sr = q.scopedRates || [];
-          if (sr.length > 0) {
-            const mentionsExtraSubtotal = /(?:phát sinh|thêm|cộng thêm|\+|tiếp theo|tiếng sau|giờ sau|phụ thu|phụ phí|sau\s*2\s*(?:h|giờ|tiếng))/iu.test(
-              mention.sentenceLower
-            );
-            const matchedTyped = sr.find((r) => {
-              if (r.amountVnd !== val) return false;
-              if (scope.roomId && r.roomId && r.roomId !== scope.roomId) return false;
-              if (scope.category && r.category && r.category.toLowerCase() !== scope.category.toLowerCase()) return false;
-              if (scope.stayPackage && scope.stayPackage !== 'EXTRA_HOUR') {
-                const allowExtraInBreakdown =
-                  r.role === 'EXTRA_HOUR_RATE' &&
-                  /\b\d+\s*[x×*]|\bphát sinh\b|\bgiờ thêm\b|\btiếng thêm\b|\/\s*(?:giờ|h)/iu.test(mention.sentenceLower);
-                if (!allowExtraInBreakdown && r.stayPackage && r.stayPackage !== 'ALL' && r.stayPackage !== scope.stayPackage) {
-                  return false;
-                }
-              }
-              if (scope.isBase2hOnly) {
-                return r.role === 'BASE_2H' || (r.role === 'TOTAL' && r.durationHours === 2);
-              }
-              if (r.role === 'EXTRA_HOUR_SUBTOTAL') return mentionsExtraSubtotal;
-              if (scope.explicitTotalHours && scope.stayPackage === 'nghi_gio') {
-                if (r.role === 'BASE_2H') return true;
-                return !r.durationHours || r.durationHours === scope.explicitTotalHours;
-              }
-              return true;
-            });
-            if (matchedTyped) return q.evidenceId;
+          for (const r of sr) {
+            if (r.amountVnd !== val) continue;
+            if (scope.roomId && r.roomId && r.roomId !== scope.roomId) continue;
+            if (scope.category && r.category && r.category.toLowerCase() !== scope.category.toLowerCase()) continue;
+            if (scope.stayPackage && r.stayPackage && r.stayPackage !== 'ALL' && r.stayPackage !== scope.stayPackage) {
+              continue;
+            }
+            if (!this.roleMatchesFact(scope.monetaryRole, r.role, r.durationHours, scope.explicitTotalHours)) {
+              continue;
+            }
+            // P0-2a: Enforce eligibility across evidence lifecycle
+            if (r.eligible === false && !scope.explicitIneligibilityFraming) {
+              sawIneligibleMatch = true;
+              continue;
+            }
+            if (r.role === 'ALT_21_40' && !scope.explicitIneligibilityFraming) {
+              sawIneligibleMatch = true;
+              continue;
+            }
+            // P0-2b: Enforce weekday vs weekend conditional time windows
+            if (
+              scope.clauseTimeCondition &&
+              (r.timeCondition === 'weekend_daytime' || r.timeCondition === 'weekday_or_after_18') &&
+              r.timeCondition !== scope.clauseTimeCondition
+            ) {
+              sawTimeConditionConflict = true;
+              continue;
+            }
+            return q.evidenceId;
           }
         }
+
+        if (sawIneligibleMatch) return 'INELIGIBLE_PACKAGE_CONFLICT';
+        if (sawTimeConditionConflict) return 'TIME_CONDITION_CONFLICT';
 
         const pkgMatched = scope.stayPackage
           ? entityMatched.filter((q) => {
             if (q.stayPackage === scope.stayPackage) return true;
             if ((q.scopedRates || []).some((r) => r.stayPackage === scope.stayPackage)) return true;
-            return !q.stayPackage && !(q.scopedRates && q.scopedRates.length > 0);
+            return false;
           })
           : entityMatched;
 
+        const catFallbackMatch = this.checkCatalogSnapshots(val, scope, catalogOrFactsEntries);
+        if (catFallbackMatch && catFallbackMatch !== 'SCOPE_CONTRADICTION') {
+          return catFallbackMatch;
+        }
+
         if (pkgMatched.length > 0) {
-          // Legacy fallback ONLY when structured scopedRates is absent (e.g. unit test bridging ExpectedQuoteInput)
-          for (const q of pkgMatched) {
-            if (q.scopedRates && q.scopedRates.length > 0) continue;
-            const validNums = new Set<number>();
-            if (scope.isBase2hOnly) {
-              if (typeof q.basePriceVnd === 'number') validNums.add(q.basePriceVnd);
-              for (const a of q.alternateAmountsVnd || []) validNums.add(a);
-            } else if (scope.explicitTotalHours && typeof q.durationHours === 'number' && q.durationHours === scope.explicitTotalHours) {
-              if (typeof q.amountVnd === 'number') validNums.add(q.amountVnd);
-              if (typeof q.basePriceVnd === 'number') validNums.add(q.basePriceVnd);
-              if (typeof q.extraHourSubtotalVnd === 'number') validNums.add(q.extraHourSubtotalVnd);
-              for (const a of q.alternateAmountsVnd || []) validNums.add(a);
-            } else {
-              if (typeof q.amountVnd === 'number') validNums.add(q.amountVnd);
-              if (typeof q.basePriceVnd === 'number') validNums.add(q.basePriceVnd);
-              if (typeof q.extraHourRateVnd === 'number') validNums.add(q.extraHourRateVnd);
-              if (typeof q.extraHourSubtotalVnd === 'number') validNums.add(q.extraHourSubtotalVnd);
-              for (const a of q.alternateAmountsVnd || []) validNums.add(a);
-            }
-            if (validNums.has(val)) return q.evidenceId;
-          }
-
-          // Before declaring SCOPE_CONTRADICTION when text omits stayPackage (e.g. "Standard: 420.000đ" after earlier hourly quote),
-          // check whether CATALOG_SEARCH / ROOM_FACTS verifies val for that room/category!
-          const catFallbackMatch = this.checkCatalogSnapshots(val, scope, catalogOrFactsEntries);
-          if (catFallbackMatch && catFallbackMatch !== 'SCOPE_CONTRADICTION') {
-            return catFallbackMatch;
-          }
-
-          // If we matched the EXACT room/category AND stayPackage (and duration if hourly total),
-          // and the number wasn't found among its valid values (nor in valid catalog snapshots) -> CONTRADICTION!
           const sameDurationChecked =
             !scope.explicitTotalHours ||
             scope.isBase2hOnly ||
@@ -1419,15 +1631,8 @@ export class ClaimLevelValidator {
                 q.durationHours === scope.explicitTotalHours ||
                 (q.scopedRates || []).some((r) => r.durationHours === scope.explicitTotalHours)
             );
-
-          if (sameDurationChecked) {
-            return 'SCOPE_CONTRADICTION';
-          }
+          if (sameDurationChecked) return 'SCOPE_CONTRADICTION';
         } else if (scope.stayPackage) {
-          // Wait: entityMatched had e.g. only nghi_gio, whereas text asks qua_dem!
-          // Check catalog/facts snapshots before concluding MISSING_SCOPED_EVIDENCE
-          const snapMatch = this.checkCatalogSnapshots(val, scope, catalogOrFactsEntries);
-          if (snapMatch) return snapMatch;
           return 'MISSING_SCOPED_EVIDENCE';
         }
       }
@@ -1459,22 +1664,32 @@ export class ClaimLevelValidator {
         const ext = new Set<number>([...(sn.extraHourRateVnds || []), ...(typeof sn.extraHourRateVnd === 'number' ? [sn.extraHourRateVnd] : [])]);
         const hExt = new Set<number>(sn.hourlyExtendedVnds || []);
 
-        if (scope.stayPackage === 'qua_dem') {
+        if (scope.monetaryRole === 'EXTRA_HOUR_SUBTOTAL') {
+          if (hExt.has(val)) return ev.evidenceId;
+          if (hExt.size > 0) sawApplicablePackageData = true;
+        } else if (scope.monetaryRole === 'EXTRA_HOUR_RATE' || scope.stayPackage === 'EXTRA_HOUR') {
+          if (ext.has(val)) return ev.evidenceId;
+          if (ext.size > 0) sawApplicablePackageData = true;
+        } else if (scope.stayPackage === 'qua_dem') {
           if (ovn.has(val)) return ev.evidenceId;
           if (ovn.size > 0) sawApplicablePackageData = true;
         } else if (scope.stayPackage === 'ngay_dem') {
           if (dnt.has(val)) return ev.evidenceId;
           if (dnt.size > 0) sawApplicablePackageData = true;
         } else if (scope.stayPackage === 'nghi_gio') {
-          if (scope.isBase2hOnly || !scope.explicitTotalHours || scope.explicitTotalHours === 2) {
+          if (scope.monetaryRole === 'BASE_2H' || scope.isBase2hOnly || !scope.explicitTotalHours || scope.explicitTotalHours === 2) {
             if (b2h.has(val)) return ev.evidenceId;
+            if (scope.monetaryRole === 'BASE_2H' || scope.isBase2hOnly) {
+              if (b2h.size > 0) sawApplicablePackageData = true;
+              continue;
+            }
           }
-          if (scope.explicitTotalHours && scope.explicitTotalHours > 2 && hExt.has(val)) {
-            return ev.evidenceId;
+          if (scope.explicitTotalHours && scope.explicitTotalHours > 2) {
+            if (hExt.has(val)) return ev.evidenceId;
+            if (hExt.size > 0 || b2h.size > 0) sawApplicablePackageData = true;
+            continue;
           }
-          if (b2h.has(val) || ext.has(val) || hExt.has(val)) {
-            return ev.evidenceId;
-          }
+          if (b2h.has(val) || hExt.has(val)) return ev.evidenceId;
           if (b2h.size > 0 || hExt.size > 0) sawApplicablePackageData = true;
         } else {
           if (b2h.has(val) || ovn.has(val) || dnt.has(val) || ext.has(val) || hExt.has(val)) {
@@ -1501,16 +1716,63 @@ export class ClaimLevelValidator {
     }
     const textPrices = new Set(extractVndMentions(text).map((m) => m.amountVnd));
 
-    for (const refId of refs) {
-      const exactEv = evidenceMap.get(refId);
+    for (const rawRef of refs) {
+      // Structured role or field reference: <evId>::<ROLE> or <evId>#<field>
+      const roleSplit = rawRef.match(/^([^:#]+)::([A-Z0-9_]+)$/);
+      const fieldSplit = rawRef.match(/^([^:#]+)#([a-zA-Z0-9_]+)$/);
+      const baseId = roleSplit ? roleSplit[1] : fieldSplit ? fieldSplit[1] : rawRef;
+      const exactEv = evidenceMap.get(baseId);
+
       if (exactEv) {
         if (!exactEv.isValid) {
           recordCheck({
             claim_type: 'POLICY',
-            raw_text: refId,
+            raw_text: rawRef,
             status: 'CONTRADICTED',
-            reason: `REJECTED_INVALID_CLAIM_REF: Structured claim_ref "${refId}" is missing or invalidated.`,
+            reason: `REJECTED_INVALID_CLAIM_REF: Structured claim_ref "${rawRef}" is missing or invalidated.`,
           });
+          continue;
+        }
+        if (roleSplit) {
+          const targetRole = roleSplit[2];
+          const fact = (exactEv.scopedRates || []).find((r) => r.role === targetRole);
+          if (!fact) {
+            recordCheck({
+              claim_type: 'PRICE',
+              raw_text: rawRef,
+              status: 'CONTRADICTED',
+              reason: `REJECTED_MISSING_SCOPED_ROLE_REF: Role "${targetRole}" does not exist in evidence "${baseId}".`,
+            });
+          } else if (fact.eligible === false && !/(?:không\s+(?:áp dụng|đủ điều kiện)|ngoài khung)/iu.test(text)) {
+            recordCheck({
+              claim_type: 'POLICY',
+              raw_text: rawRef,
+              status: 'CONTRADICTED',
+              reason: `REJECTED_INELIGIBLE_CLAIM_REF: Referenced rate ${rawRef} is marked INELIGIBLE (${fact.ineligibilityReason || 'window_mismatch'}).`,
+            });
+          } else if (textPrices.size > 0 && !textPrices.has(fact.amountVnd)) {
+            recordCheck({
+              claim_type: 'PRICE',
+              raw_text: rawRef,
+              normalized_value: fact.amountVnd,
+              status: 'CONTRADICTED',
+              reason: `REJECTED_CLAIM_REF_TEXT_MISMATCH: Role ref "${rawRef}" expects ${fact.amountVnd.toLocaleString('vi-VN')}đ, missing from final text.`,
+            });
+          }
+          continue;
+        }
+        if (fieldSplit) {
+          const fieldKey = fieldSplit[2];
+          const fieldVal = exactEv.fieldRefs?.[fieldKey];
+          if (typeof fieldVal === 'number' && textPrices.size > 0 && !textPrices.has(fieldVal)) {
+            recordCheck({
+              claim_type: 'PRICE',
+              raw_text: rawRef,
+              normalized_value: fieldVal,
+              status: 'CONTRADICTED',
+              reason: `REJECTED_CLAIM_REF_TEXT_MISMATCH: Field ref "${rawRef}" expects ${fieldVal.toLocaleString('vi-VN')}đ, missing from final text.`,
+            });
+          }
           continue;
         }
         if (exactEv.evidenceType === 'QUOTE' && typeof exactEv.amountVnd === 'number' && textPrices.size > 0) {
@@ -1519,26 +1781,25 @@ export class ClaimLevelValidator {
           if (!hasAnyExpected) {
             recordCheck({
               claim_type: 'PRICE',
-              raw_text: refId,
+              raw_text: rawRef,
               normalized_value: exactEv.amountVnd,
               status: 'CONTRADICTED',
-              reason: `REJECTED_CLAIM_REF_TEXT_MISMATCH: Structured claim_ref "${refId}" expects ${exactEv.amountVnd.toLocaleString('vi-VN')}đ, which mismatches final text prices [${Array.from(textPrices).join(', ')}].`,
+              reason: `REJECTED_CLAIM_REF_TEXT_MISMATCH: Structured claim_ref "${rawRef}" expects ${exactEv.amountVnd.toLocaleString('vi-VN')}đ, which mismatches final text prices [${Array.from(textPrices).join(', ')}].`,
             });
           }
         }
         continue;
       }
 
-      // Live LLMs also emit canonical roomId / roomCode in claim_refs when referencing tool-fetched rooms
       const matchingRoomEvs = activeValid.filter(
-        (ev) => ev.roomId === refId || ev.roomCode === refId || (ev.catalogRoomIds || []).includes(refId)
+        (ev) => ev.roomId === baseId || ev.roomCode === baseId || (ev.catalogRoomIds || []).includes(baseId)
       );
       if (matchingRoomEvs.length === 0) {
         recordCheck({
           claim_type: 'POLICY',
-          raw_text: refId,
+          raw_text: rawRef,
           status: 'CONTRADICTED',
-          reason: `REJECTED_INVALID_CLAIM_REF: Structured claim_ref "${refId}" is missing or invalidated.`,
+          reason: `REJECTED_INVALID_CLAIM_REF: Structured claim_ref "${rawRef}" is missing or invalidated.`,
         });
       }
     }

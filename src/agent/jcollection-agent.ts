@@ -20,6 +20,7 @@ import {
 import { AgentToolGateway } from './agent-tools.js';
 import { ClaimLevelValidator } from '../conversation/grounding/claim-validator.js';
 import {
+  computeDatasetVersionHash,
   formatValidEvidenceForPrompt,
   invalidateStaleBusinessEvidence,
   recordToolResultAsEvidence,
@@ -752,8 +753,10 @@ export class JCollectionAgent {
       };
     };
 
+    let offlineHeuristicsApplied = false;
     if (!isRealLLM) {
       applyOfflineTemporalAndDurationHeuristics();
+      offlineHeuristicsApplied = true;
     }
 
     if (mentionedRoomId) {
@@ -1374,6 +1377,10 @@ export class JCollectionAgent {
           }
         } else {
           // DEGRADED DETERMINISTIC FALLBACK (Only when no live LLM is active or all live providers failed in non-strict mode)
+          if (!offlineHeuristicsApplied) {
+            applyOfflineTemporalAndDurationHeuristics();
+            offlineHeuristicsApplied = true;
+          }
           const plan = this.planDeterministicTurnStep(
             currentIteration,
             userMessage,
@@ -1461,6 +1468,7 @@ export class JCollectionAgent {
               checkinDatetime: firstQ?.checkin_conditions?.checkin_datetime ?? state.hardConstraints.checkinDatetime,
               checkoutDatetime: firstQ?.confirmed_checkout ?? state.conditionalAssumptions?.checkoutDatetime,
               effectivePolicyVersion: activePolicyVersion,
+              datasetVersion: computeDatasetVersionHash(this.dataset),
             });
           } else if (tc.toolName === 'get_room_facts' && res.status === 'SUCCESS') {
             factsResultRecord = res.data;
@@ -1668,8 +1676,9 @@ export class JCollectionAgent {
             throw new Error(`BLOCKED: ${fallbackReason}`);
           }
         }
-        if (isRealLLM && fallbackHappened) {
+        if (isRealLLM && fallbackHappened && !offlineHeuristicsApplied) {
           applyOfflineTemporalAndDurationHeuristics();
+          offlineHeuristicsApplied = true;
         }
         finalCustomerResponse = this.composeGroundedResponse({
           state,
@@ -2871,7 +2880,7 @@ Output valid JSON only.`;
 
   /**
    * Maps confirmed, conditional (checkin window), and package-eligibility quotes into ExpectedQuoteInput
-   * without dropping CONDITIONAL_ON_CHECKIN_TIME results.
+   * while strictly preserving eligibility, time conditions, and separate monetary roles.
    */
   private buildExpectedQuotesForValidation(quoteResultsRecord: any[], activePolicyVersion: string) {
     const out: Array<{
@@ -2887,6 +2896,11 @@ Output valid JSON only.`;
       extraHourSubtotalVnd?: number;
       totalVnd: number;
       alternateAmountsVnd?: number[];
+      checkinCondition?: string;
+      timeCondition?: string;
+      eligible?: boolean;
+      ineligibilityReason?: string;
+      delayedAlt2140Vnd?: number;
       policyVersion?: string;
     }> = [];
 
@@ -2909,11 +2923,19 @@ Output valid JSON only.`;
           extraHourRateVnd: q.extra_hour_rate_vnd ?? q.extra_hour_rate,
           extraHourSubtotalVnd: q.extra_hour_subtotal_vnd,
           totalVnd: q.total_price_vnd,
+          checkinCondition: q.confirmed_checkin ?? q.checkin_conditions?.checkin_datetime,
+          eligible: true,
         });
       }
       if (Array.isArray(q.conditional_quotes)) {
         for (const cq of q.conditional_quotes) {
           if (typeof cq.total_price_vnd === 'number') {
+            const rawCond = String(cq.condition_label || cq.checkin_window || cq.condition || 'conditional');
+            const condTag = /cuối tuần|t7|chủ nhật|weekend/iu.test(rawCond)
+              ? 'weekend_daytime'
+              : /ngày thường|sau 18|trước 08|weekday/iu.test(rawCond)
+                ? 'weekday_or_after_18'
+                : rawCond;
             out.push({
               ...baseFields,
               stayType: q.stay_type,
@@ -2925,30 +2947,41 @@ Output valid JSON only.`;
                   ? cq.extra_hours * cq.extra_hour_rate
                   : undefined,
               totalVnd: cq.total_price_vnd,
+              checkinCondition: condTag,
+              timeCondition: condTag,
+              eligible: true,
             });
           }
         }
       }
       const elig = q.stay_package_eligibility;
       if (elig) {
-        for (const pkg of [...(elig.eligible_packages || []), ...(elig.ineligible_packages || [])]) {
+        const mappedPkgs = [
+          ...(elig.eligible_packages || []).map((p: any) => ({ ...p, _elig: true })),
+          ...(elig.ineligible_packages || []).map((p: any) => ({ ...p, _elig: false })),
+        ];
+        for (const pkg of mappedPkgs) {
           const pkgTotal =
             typeof pkg.total_price_vnd === 'number'
               ? pkg.total_price_vnd
               : typeof pkg.base_package_price_vnd === 'number'
                 ? pkg.base_package_price_vnd
                 : undefined;
-          if (typeof pkgTotal === 'number') {
+          if (typeof pkgTotal === 'number' || typeof pkg.alternative_if_delayed_to_21_40_vnd === 'number') {
+            const rawPkg = String(pkg.stay_type ?? q.stay_type);
+            const normStay = rawPkg.startsWith('ngay_dem') ? 'ngay_dem' : rawPkg;
             out.push({
               ...baseFields,
-              stayType: pkg.stay_type ?? q.stay_type,
+              stayType: normStay,
               durationHours: pkg.duration_hours ?? q.duration_hours,
               baseVnd: pkg.base_package_price_vnd,
-              totalVnd: pkgTotal,
-              alternateAmountsVnd:
-                typeof pkg.alternative_if_delayed_to_21_40_vnd === 'number'
-                  ? [pkg.alternative_if_delayed_to_21_40_vnd]
-                  : undefined,
+              extraHourSubtotalVnd: pkg.extra_hour_subtotal_vnd,
+              totalVnd: pkgTotal ?? pkg.alternative_if_delayed_to_21_40_vnd,
+              checkinCondition: pkg.applicable_window,
+              timeCondition: pkg.applicable_window,
+              eligible: pkg._elig,
+              ineligibilityReason: pkg._elig ? undefined : String(pkg.reason || elig.business_reason || ''),
+              delayedAlt2140Vnd: pkg.alternative_if_delayed_to_21_40_vnd,
             });
           }
         }

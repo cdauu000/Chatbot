@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import { FACILITY_CATEGORY_CONFIGS, FacilityCategoryConfig } from '../pricing/category-mapper.js';
 import { CoSoMa } from '../domain/types.js';
@@ -186,6 +187,19 @@ export function getHolidayPolicyProvenance(config?: PricingPolicyConfig | null):
       ? String(hp.statement || 'J Collection không áp dụng phụ thu hay tăng giá riêng vào các dịp lễ Tết.')
       : 'Chính sách phụ thu ngày lễ chưa có xác nhận chính thức từ Chủ dự án trong nguồn chính sách đang kích hoạt (UNKNOWN).',
   };
+}
+
+/**
+ * Computes a deterministic SHA-256 content hash over the active pricing policy config and owner addendums.
+ */
+export function computePolicyContentHash(
+  config?: PricingPolicyConfig | null,
+  addendum?: OwnerPolicyAddendum | null
+): string {
+  const cfg = config ?? loadActivePricingPolicyConfig();
+  const add = addendum === undefined ? loadOwnerPolicyAddendums() : addendum;
+  const payload = JSON.stringify({ cfg, add });
+  return createHash('sha256').update(payload).digest('hex').slice(0, 12);
 }
 
 let cachedActivePricingPolicyConfig: PricingPolicyConfig | null = null;

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-26T11:40:08.275Z",
-  "total_false_pass": 17,
+  "generated_at": "2026-11-26T14:49:34.790Z",
+  "total_false_pass": 19,
   "cases": [
     {
       "scenarioId": "SCENARIO-005",
@@ -66,8 +66,8 @@
       "context_understanding": "ALIGNED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
-        "T2: REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:any rates in active evidence.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 700 đ (700đ) contradicts verified Concept:any rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:qua_dem:ANY rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 700 đ (700đ) contradicts verified Concept:any:ANY rates in active evidence.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 560 đ (560đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 700 đ (700đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
       ]
@@ -102,7 +102,7 @@
       "context_understanding": "ALIGNED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
-        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI only returned 2h base + vague surcharge note.",
+        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals.",
         "T2: POLICY_RULE_VIOLATION: Claimed 18:00/20:00 arrival transitioning to overnight uses hourly + overnight instead of ngay_dem (14:00-21:39 rule)."
       ]
     },
@@ -138,9 +138,9 @@
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 450.000đ (450.000đ) contradicts verified Standard:any rates in active evidence.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 590.000đ (590.000đ) contradicts verified Deluxe:any rates in active evidence.",
-        "T2: REJECTED_PRICE_MISMATCH: Amount 750.000đ (750.000đ) contradicts verified Concept:any rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 450.000đ (450.000đ) contradicts verified Standard:any:ANY rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 590.000đ (590.000đ) contradicts verified Deluxe:any:ANY rates in active evidence.",
+        "T2: REJECTED_PRICE_MISMATCH: Amount 750.000đ (750.000đ) contradicts verified Concept:any:ANY rates in active evidence.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 450.000đ (450.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 590.000đ (590.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
         "T2: CANONICAL_RATE_MISMATCH: Amount 750.000đ (750.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
@@ -161,6 +161,22 @@
       "findings": [
         "T1: REJECTED_UNCONFIRMED_REFERENCE_CLOCK_ASSERTION: Response locked unconfirmed reference clock (14:00) as guest arrival time without user specifying 14:00.",
         "T1: REJECTED_UNCONFIRMED_REFERENCE_CLOCK_ASSERTION: Response locked unconfirmed reference clock (14:00) as guest arrival time without user specifying 14:00."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-036",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T2: REJECTED_PRICE_MISMATCH: Amount 100.000đ (100.000đ) contradicts verified 601-50-sac-thai:EXTRA_HOUR:EXTRA_HOUR_RATE rates in active evidence."
       ]
     },
     {
@@ -192,7 +208,7 @@
       "context_understanding": "ALIGNED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
-        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI only returned 2h base + vague surcharge note."
+        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
       ]
     },
     {
@@ -204,11 +220,12 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
+      "goal_completion": "INCOMPLETE",
       "context_understanding": "ALIGNED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
-        "T1: REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong."
+        "T1: REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong.",
+        "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
       ]
     },
     {
@@ -289,6 +306,22 @@
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 301-ivory has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 401-blush has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 501-onyx has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO-345",
+      "propertyId": "jacayl-tran-khat-chan",
+      "gitCommit": "pre-dc11876",
+      "effectivePolicyVersion": "1.4.6",
+      "historicalPassedFlag": true,
+      "execution_status": "LIVE_COMPLETED",
+      "grounding_status": "CONTRADICTED",
+      "business_accuracy": "CONTRADICTED",
+      "goal_completion": "COMPLETE",
+      "context_understanding": "ALIGNED",
+      "media_delivery_status": "NOT_REQUESTED",
+      "findings": [
+        "T2: REJECTED_PRICE_MISMATCH: Amount 1.000.000đ (1.000.000đ) contradicts verified Concept:qua_dem:ANY rates in active evidence."
       ]
     },
     {

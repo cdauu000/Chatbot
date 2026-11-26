@@ -37,6 +37,8 @@ export interface ScopedRateFact {
   durationHours?: number;
   timeCondition?: string;
   eligible?: boolean;
+  isDefaultPolicyRate?: boolean;
+  ineligibilityReason?: string;
 }
 
 export interface BusinessEvidenceRecord {
@@ -55,6 +57,10 @@ export interface BusinessEvidenceRecord {
   extraHourSubtotalVnd?: number;
   alternateAmountsVnd?: number[];
   scopedRates?: ScopedRateFact[];
+  fieldRefs?: Record<string, string | number | boolean | null | undefined>;
+  eligible?: boolean;
+  timeCondition?: string;
+  ineligibilityReason?: string;
   catalogRoomIds?: string[];
   roomAmenities?: Record<string, { bon_tam: 'TRUE' | 'FALSE' | 'UNKNOWN'; ghe_tinh_yeu: 'TRUE' | 'FALSE' | 'UNKNOWN' }>;
   holidayZeroConfirmed?: boolean;

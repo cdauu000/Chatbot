@@ -94,7 +94,24 @@ export function calculateLateCheckoutExtension(params: {
   const standardTime = lateCfg?.standard_checkout_time ?? '12:00';
   const graceMinutes = lateCfg?.grace_period_minutes ?? 10;
   const graceMode = lateCfg?.grace_period_mode ?? 'EVERY_EXTRA_HOUR_BOUNDARY';
-  const extraHourRate = params.extra_hour_rate > 0 ? params.extra_hour_rate : (lateCfg?.default_extra_hour_rate_vnd ?? 100000);
+  if (!Number.isFinite(params.extra_hour_rate) || params.extra_hour_rate <= 0) {
+    return {
+      is_valid: false,
+      error_reason: 'Thiếu đơn giá phát sinh hợp lệ riêng của phòng (MISSING_ROOM_EXTRA_HOUR_RATE); không tự ý dùng giá mặc định.',
+      late_checkout_applied: false,
+      standard_checkout: standardTime,
+      confirmed_checkout: params.checkout_datetime,
+      grace_period_minutes: graceMinutes,
+      grace_period_mode: graceMode,
+      actual_late_checkout_minutes: 0,
+      actual_late_checkout_seconds: 0,
+      billable_extra_hours: 0,
+      extra_hour_rate: 0,
+      extra_hour_subtotal: 0,
+      effective_policy_version: policyMeta.effectivePolicyVersion,
+    };
+  }
+  const extraHourRate = params.extra_hour_rate;
 
   const checkoutParts = parseVietnamDateTime(params.checkout_datetime);
   if (!checkoutParts) {

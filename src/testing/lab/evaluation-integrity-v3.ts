@@ -1,9 +1,9 @@
 import { NormalizedDataset } from '../../domain/normalized-schema.js';
 import { CoSoMa } from '../../domain/types.js';
 import { ClaimLevelValidator } from '../../conversation/grounding/claim-validator.js';
-import { extractVndMentions } from '../../conversation/grounding/business-evidence.js';
+import { computeDatasetVersionHash, extractVndMentions } from '../../conversation/grounding/business-evidence.js';
 import { NeedCategory, SimulationScenario } from './autonomous-customer-simulation-lab-v2-2.js';
-import { BusinessEvidenceRecord } from '../../agent/agent-contracts.js';
+import { BusinessEvidenceRecord, ScopedRateFact } from '../../agent/agent-contracts.js';
 import {
   getHolidayPolicyProvenance,
   loadActivePricingPolicyConfig,
@@ -19,7 +19,12 @@ export type ContextUnderstandingStatusV3 =
   | 'HUMAN_REVIEW_REQUIRED'
   | 'NOT_EVALUATED';
 export type SemanticQualityStatusV3 = 'PASS' | 'MINOR_ISSUE' | 'FAIL' | 'HUMAN_REVIEW_REQUIRED' | 'NOT_EVALUATED';
-export type MediaDeliveryStatusV3 = 'DELIVERED' | 'MISSING_ATTACHMENT' | 'NOT_REQUESTED' | 'NOT_EVALUATED';
+export type MediaDeliveryStatusV3 =
+  | 'DELIVERED'
+  | 'MISSING_ATTACHMENT'
+  | 'UNVERIFIED_MISSING_ARTIFACT'
+  | 'NOT_REQUESTED'
+  | 'NOT_EVALUATED';
 
 export interface EvaluatedTurnV3 {
   scenarioId: string;
@@ -299,6 +304,10 @@ export class OfflineEvaluationIntegrityAuditorV3 {
       byCat.set(cat, prev);
     }
 
+    const activePolicyConfig = loadActivePricingPolicyConfig();
+    const datasetHash = computeDatasetVersionHash(this.dataset, activePolicyConfig);
+    const holProv = getHolidayPolicyProvenance(activePolicyConfig);
+
     const oracleEvidence: BusinessEvidenceRecord[] = [
       {
         evidenceId: `oracle_catalog_${propertyId}`,
@@ -320,15 +329,28 @@ export class OfflineEvaluationIntegrityAuditorV3 {
           hourlyExtendedVnds: Array.from(vals.hourlyExtendedVnds),
         })),
         effectivePolicyVersion,
-        datasetVersion: 'canonical',
+        datasetVersion: datasetHash,
         validityScope: 'SESSION_WHILE_VALID',
         isValid: true,
         recordedTurn: 0,
       },
     ];
 
-    const activePolicyConfig = loadActivePricingPolicyConfig();
-    const holProv = getHolidayPolicyProvenance(activePolicyConfig);
+    const oraclePolicyScoped: ScopedRateFact[] = propertyRooms.map((r) => ({
+      amountVnd: r.gia_goc_dataset.gio_phat_sinh_ap_dung,
+      role: 'EXTRA_HOUR_RATE' as const,
+      roomId: r.ma_phong,
+      category: r.hang,
+      stayPackage: 'EXTRA_HOUR' as const,
+      eligible: true,
+    }));
+    oraclePolicyScoped.push({
+      amountVnd: 100000,
+      role: 'POLICY_RATE',
+      stayPackage: 'EXTRA_HOUR',
+      isDefaultPolicyRate: true,
+      eligible: true,
+    });
     const oraclePolicyEvidence: BusinessEvidenceRecord[] = [
       {
         evidenceId: `oracle_policy_${propertyId}`,
@@ -336,16 +358,13 @@ export class OfflineEvaluationIntegrityAuditorV3 {
         evidenceType: 'POLICY',
         toolSource: 'get_policies',
         stayPackage: 'ALL',
-        alternateAmountsVnd: [100000, 200000],
-        scopedRates: [
-          { amountVnd: 100000, role: 'POLICY_RATE', stayPackage: 'EXTRA_HOUR' },
-          { amountVnd: 200000, role: 'POLICY_RATE', stayPackage: 'EXTRA_HOUR' },
-        ],
+        alternateAmountsVnd: Array.from(new Set(oraclePolicyScoped.map((r) => r.amountVnd))),
+        scopedRates: oraclePolicyScoped,
         conditions: ['late_checkout', 'holiday_surcharge'],
         holidayZeroConfirmed: holProv.confirmedByOwner && holProv.hasHolidaySurcharge === false,
         holidayProvenance: holProv.provenancePath,
         effectivePolicyVersion,
-        datasetVersion: 'canonical',
+        datasetVersion: datasetHash,
         validityScope: 'SESSION_WHILE_VALID',
         isValid: true,
         recordedTurn: 0,
@@ -413,19 +432,9 @@ export class OfflineEvaluationIntegrityAuditorV3 {
         ...(hasPolicyTools || cumulativeHasPolicyRateEvidence ? oraclePolicyEvidence : []),
       ];
 
-      // Reconstruct canonical media objects when only count was serialized (e.g. Gate 2 compact log)
-      const recordedMediaCount = Array.isArray(t.deliveredMedia)
-        ? t.deliveredMedia.length
-        : typeof t.deliveredMediaCount === 'number'
-          ? t.deliveredMediaCount
-          : 0;
-      const effectiveDeliveredMedia = Array.isArray(t.deliveredMedia)
-        ? t.deliveredMedia
-        : recordedMediaCount > 0
-          ? propertyRooms
-              .flatMap((r) => (r.anh || []).slice(0, 1).map((a) => ({ url: a.url, roomId: r.ma_phong })))
-              .slice(0, recordedMediaCount)
-          : [];
+      // NEVER fabricate or reconstruct missing deliveredMedia[] artifacts!
+      const hasRawDeliveredMedia = Array.isArray(t.deliveredMedia);
+      const effectiveDeliveredMedia = hasRawDeliveredMedia ? t.deliveredMedia : [];
 
       // Run ClaimValidator against canonical property evidence + cumulative tool execution!
       const claimAuditAgainstRuntimeTools = this.claimValidator.validate(resp, {
@@ -454,6 +463,16 @@ export class OfflineEvaluationIntegrityAuditorV3 {
           grounding_status = 'CONTRADICTED';
         }
       } else if (
+        grounding_status === 'MISSING_EVIDENCE' &&
+        !Array.isArray(t.deliveredMedia) &&
+        typeof t.deliveredMediaCount === 'number' &&
+        t.deliveredMediaCount > 0 &&
+        (claimAuditAgainstRuntimeTools.missing_evidence_claims || []).every((m) => m.includes('MISSING_MEDIA_ATTACHMENT'))
+      ) {
+        // Compact logs that recorded count without deliveredMedia[] cannot pass media verification,
+        // so map to INSUFFICIENT_EVIDENCE + PENDING_HUMAN_REVIEW instead of false PASS or fabricated URLs.
+        grounding_status = 'INSUFFICIENT_EVIDENCE';
+      } else if (
         vndMentions.length > 0 &&
         !effectiveHasPriceEvidence &&
         !hasPolicyTools &&
@@ -478,87 +497,130 @@ export class OfflineEvaluationIntegrityAuditorV3 {
         );
       }
 
-      // 2) Goal Completion audit (avoid hardcoded question phrasing, check goal semantics)
-      let goal_completion: GoalCompletionStatusV3 = 'COMPLETE';
+      // 2) Independent Goal Completion evaluation (NEVER blank-default COMPLETE!)
+      let goal_completion: GoalCompletionStatusV3 = 'HUMAN_REVIEW_REQUIRED';
       let needsHumanReview = false;
       let humanReviewReason: string | undefined;
 
       const userAsks4h = /\b4\s*(?:tiếng|tieng|giờ|gio|h)\b/i.test(userMsg);
-      if (userAsks4h) {
-        const mentions359Or380 = /\b(359\.?000|380\.?000|479\.?000|515\.?000|599\.?000|649\.?000|359k|380k|599k|649k)\b/i.test(resp);
-        const defersFormulaVague = /sẽ có phụ phí|tính theo quy định phụ thu giờ/i.test(resp) && !mentions359Or380;
-        if (defersFormulaVague) {
-          goal_completion = 'INCOMPLETE';
-          findings.push('INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI only returned 2h base + vague surcharge note.');
-        }
-      }
-
-      // Check overnight price question answered only with check-in hour policy without price when pricing expected (e.g. SCENARIO-036 T2)
       const userAsksOvernightPrice = /qua đêm.*(?:phụ thu|tính thế nào|bao nhiêu)/i.test(userMsg);
-      if (userAsksOvernightPrice && vndMentions.length === 0 && /nêu rõ|tính theo|phụ thu/i.test(userMsg)) {
-        // Needs human review or incomplete
+      const isDegradedOrBlockedText =
+        execution_status !== 'LIVE_COMPLETED' ||
+        /chưa hoàn tất đối soát đầy đủ dữ kiện biểu giá/i.test(resp) ||
+        resp.trim().length < 20;
+
+      if (isDegradedOrBlockedText) {
+        goal_completion = 'INCOMPLETE';
+        findings.push(
+          execution_status !== 'LIVE_COMPLETED'
+            ? `INCOMPLETE_DEGRADED_EXECUTION: Execution status is ${execution_status}, cannot mark goal COMPLETE.`
+            : 'INCOMPLETE_RESPONSE_OR_GROUNDING_BLOCK: Response is empty or fell back to grounding refusal.'
+        );
+      } else if (userAsks4h) {
+        const mentions359Or380 = /\b(359\.?000|380\.?000|479\.?000|515\.?000|599\.?000|649\.?000|799\.?000|849\.?000|359k|380k|599k|649k|799k|849k)\b/i.test(resp);
+        const defersFormulaVague = /sẽ có phụ phí|tính theo quy định phụ thu giờ/i.test(resp) && !mentions359Or380;
+        if (defersFormulaVague || vndMentions.length === 0) {
+          goal_completion = 'INCOMPLETE';
+          findings.push('INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals.');
+        } else {
+          goal_completion = 'COMPLETE';
+        }
+      } else if (userAsksOvernightPrice && vndMentions.length === 0 && /nêu rõ|tính theo|phụ thu/i.test(userMsg)) {
         goal_completion = 'HUMAN_REVIEW_REQUIRED';
         needsHumanReview = true;
         humanReviewReason = 'Guest asked overnight surcharge/calculation; model gave time/grace policy without quoting rates.';
+      } else if (scenarioSpec?.category === 'booking_handoff_closing') {
+        goal_completion = 'HUMAN_REVIEW_REQUIRED';
+        needsHumanReview = true;
+        humanReviewReason = 'Subjective naturalness & tone verification for booking handoff escalation.';
+      } else {
+        // Require positive observable goal satisfaction (relevant pricing/fact/policy/escalation content)
+        const hasSubstantiveAnswer =
+          vndMentions.length > 0 ||
+          toolsExecuted.length > 0 ||
+          /(?:lễ tân|hotline|liên hệ|cơ sở|địa chỉ|bồn tắm|ghế tình yêu|không phục vụ|ân hạn)/iu.test(resp);
+        goal_completion = hasSubstantiveAnswer ? 'COMPLETE' : 'HUMAN_REVIEW_REQUIRED';
+        if (goal_completion === 'HUMAN_REVIEW_REQUIRED') {
+          needsHumanReview = true;
+          humanReviewReason = 'Response lacks objective tool/pricing/policy evidence markers for automated goal sign-off.';
+        }
       }
 
-      // 3) Context Understanding & Temporal Hygiene
-      let context_understanding: ContextUnderstandingStatusV3 = 'ALIGNED';
+      // 3) Context Understanding & Temporal Hygiene (NO blind ALIGNED default)
+      let context_understanding: ContextUnderstandingStatusV3 = 'HUMAN_REVIEW_REQUIRED';
       const tempViolations = (claimAuditAgainstRuntimeTools.claim_checks || []).filter(
         (c) => c.claim_type === 'TEMPORAL' && c.status === 'CONTRADICTED'
       );
+      const mentionsOtherPropertyName =
+        (propertyId !== 'jacayl-ha-dong' && /hà đông|ngã ba phúc la/i.test(resp)) ||
+        (propertyId !== 'jacayl-tran-khat-chan' && /trần khát chân/i.test(resp)) ||
+        (propertyId !== 'j-village' && /j\s*village|triệu việt vương/i.test(resp));
+
       if (tempViolations.length > 0) {
         context_understanding = 'TEMPORAL_LEAK';
         findings.push(...tempViolations.map((v) => v.reason));
+      } else if (mentionsOtherPropertyName && !/hà đông|trần khát chân|j\s*village|triệu việt vương/i.test(userMsg)) {
+        context_understanding = 'CONTEXT_DRIFT';
+        findings.push(`PROPERTY_CONTEXT_DRIFT: Response referenced another property inside ${propertyId} session.`);
       } else if (
         propertyId === 'jacayl-ha-dong' &&
         /ban ngày cuối tuần|t7-cn/i.test(resp) &&
         !/cuối tuần|thứ 7|t7|chủ nhật|cn|chiều nay|ngày thường/i.test(userMsg) &&
         !/ngày thường/i.test(resp)
       ) {
-        // Locked generic inquiry purely onto weekend daytime rate from fixedClock Saturday without mentioning weekday baseline
         context_understanding = 'TEMPORAL_LEAK';
         findings.push('TEMPORAL_FIXTURE_BIAS: Locked generic Ha Dong inquiry onto weekend daytime rate (Saturday fixture) without mentioning weekday/evening rate.');
+      } else if (resp.trim().length > 0) {
+        context_understanding = 'ALIGNED';
       }
 
-      // 4) Media Delivery Status (any natural photo request -> check deliveredMedia)
+      // 4) Media Delivery Status (NEVER treat unverified compact counts as DELIVEREĐ canonical proof!)
       let media_delivery_status: MediaDeliveryStatusV3 = 'NOT_REQUESTED';
       const userRequestedPhotos =
         /xem\s*(?:hình|ảnh)|gửi.*ảnh|album\s*ảnh|ảnh chụp thực tế|photo/i.test(userMsg) ||
         scenarioSpec?.turnSpecs?.[i]?.expectedGoal === 'VIEW_ROOM_PHOTOS' ||
         scenarioSpec?.turnSpecs?.[i]?.expectedGoal === 'PROACTIVE_ROOM_PHOTO_INQUIRY';
-      const deliveredCount = Array.isArray(t.deliveredMedia)
-        ? t.deliveredMedia.length
-        : typeof t.deliveredMediaCount === 'number'
-          ? t.deliveredMediaCount
-          : 0;
+      const rawDeliveredCount = Array.isArray(t.deliveredMedia) ? t.deliveredMedia.length : 0;
+      const compactCountOnly = !Array.isArray(t.deliveredMedia) && typeof t.deliveredMediaCount === 'number' ? t.deliveredMediaCount : 0;
 
       if (userRequestedPhotos) {
-        if (deliveredCount > 0) {
+        if (rawDeliveredCount > 0) {
           media_delivery_status = 'DELIVERED';
+        } else if (compactCountOnly > 0) {
+          media_delivery_status = 'UNVERIFIED_MISSING_ARTIFACT';
+          needsHumanReview = true;
+          humanReviewReason =
+            humanReviewReason ||
+            `Media artifact deliveredMedia[] omitted from log (recorded count=${compactCountOnly}); cannot independently verify canonical URLs.`;
+          findings.push(`UNVERIFIED_MEDIA_ARTIFACT: Compact log records count=${compactCountOnly} without deliveredMedia[].`);
         } else {
           media_delivery_status = 'MISSING_ATTACHMENT';
           findings.push('MISSING_MEDIA_ATTACHMENT: Guest requested room photos, yet deliveredMedia is empty.');
         }
-      } else if (deliveredCount > 0) {
+      } else if (rawDeliveredCount > 0) {
         media_delivery_status = 'DELIVERED';
       }
 
-      // 5) Semantic Quality & Conciseness
-      let semantic_quality: SemanticQualityStatusV3 = 'PASS';
+      // 5) Independent Semantic Quality Evaluation (NEVER blind PASS on degraded/empty/leaked replies)
+      let semantic_quality: SemanticQualityStatusV3 = 'HUMAN_REVIEW_REQUIRED';
       const hasRawWebp = /https?:\/\/[^\s]+\.webp/i.test(resp);
-      if (hasRawWebp && deliveredCount === 0) {
+      const hasThinkOrJsonLeak = /<\/?(?:think|thought|reasoning)>|\{"action"\s*:/i.test(resp);
+      if (hasRawWebp && rawDeliveredCount === 0) {
         semantic_quality = 'FAIL';
         findings.push('RAW_IMAGE_URL_WITHOUT_ATTACHMENT: Response pasted raw .webp gallery links into prose.');
+      } else if (hasThinkOrJsonLeak) {
+        semantic_quality = 'FAIL';
+        findings.push('RAW_REASONING_OR_JSON_LEAK: Response leaked raw CoT tags or JSON.');
+      } else if (execution_status !== 'LIVE_COMPLETED') {
+        semantic_quality = 'FAIL';
+        findings.push(`SEMANTIC_FAIL_ON_NON_LIVE_EXECUTION: ${execution_status} response cannot receive semantic PASS.`);
       } else if (resp.length > 1400) {
         semantic_quality = 'MINOR_ISSUE';
         findings.push(`VERBOSE_RESPONSE: Length=${resp.length} chars (>1400).`);
-      }
-
-      // Multi-turn subjective clarification turns (e.g. booking handoff nuance) -> route to human review if uncertain
-      if (!needsHumanReview && scenarioSpec?.category === 'booking_handoff_closing' && findings.length === 0) {
-        needsHumanReview = true;
-        humanReviewReason = 'Subjective naturalness & tone verification for booking handoff escalation.';
+      } else if (goal_completion === 'HUMAN_REVIEW_REQUIRED' || context_understanding === 'HUMAN_REVIEW_REQUIRED') {
+        semantic_quality = 'HUMAN_REVIEW_REQUIRED';
+      } else {
+        semantic_quality = 'PASS';
       }
 
       if (humanReviewReason) humanReasons.push(`Turn ${i + 1}: ${humanReviewReason}`);
@@ -630,26 +692,32 @@ export class OfflineEvaluationIntegrityAuditorV3 {
           ? 'TEMPORAL_LEAK'
           : turnResults.some((t) => t.context_understanding === 'CONTEXT_DRIFT')
             ? 'CONTEXT_DRIFT'
-            : 'ALIGNED';
+            : turnResults.some((t) => t.context_understanding === 'HUMAN_REVIEW_REQUIRED')
+              ? 'HUMAN_REVIEW_REQUIRED'
+              : 'ALIGNED';
 
     const semantic_quality: SemanticQualityStatusV3 =
       execution_status === 'BLOCKED'
         ? 'NOT_EVALUATED'
         : turnResults.some((t) => t.semantic_quality === 'FAIL')
           ? 'FAIL'
-          : turnResults.some((t) => t.semantic_quality === 'MINOR_ISSUE')
-            ? 'MINOR_ISSUE'
-            : 'PASS';
+          : turnResults.some((t) => t.semantic_quality === 'HUMAN_REVIEW_REQUIRED')
+            ? 'HUMAN_REVIEW_REQUIRED'
+            : turnResults.some((t) => t.semantic_quality === 'MINOR_ISSUE')
+              ? 'MINOR_ISSUE'
+              : 'PASS';
 
     const media_delivery_status: MediaDeliveryStatusV3 = turnResults.some(
       (t) => t.media_delivery_status === 'MISSING_ATTACHMENT'
     )
       ? 'MISSING_ATTACHMENT'
-      : turnResults.some((t) => t.media_delivery_status === 'DELIVERED')
-        ? 'DELIVERED'
-        : execution_status === 'BLOCKED'
-          ? 'NOT_EVALUATED'
-          : 'NOT_REQUESTED';
+      : turnResults.some((t) => t.media_delivery_status === 'UNVERIFIED_MISSING_ARTIFACT')
+        ? 'UNVERIFIED_MISSING_ARTIFACT'
+        : turnResults.some((t) => t.media_delivery_status === 'DELIVERED')
+          ? 'DELIVERED'
+          : execution_status === 'BLOCKED'
+            ? 'NOT_EVALUATED'
+            : 'NOT_REQUESTED';
 
     const hasObjectiveFailure =
       execution_status !== 'LIVE_COMPLETED' ||
@@ -657,14 +725,18 @@ export class OfflineEvaluationIntegrityAuditorV3 {
       grounding_status === 'CONTRADICTED' ||
       grounding_status === 'MISSING_EVIDENCE' ||
       goal_completion === 'INCOMPLETE' ||
-      context_understanding !== 'ALIGNED' ||
+      (context_understanding !== 'ALIGNED' && context_understanding !== 'HUMAN_REVIEW_REQUIRED') ||
       semantic_quality === 'FAIL' ||
       media_delivery_status === 'MISSING_ATTACHMENT';
 
     const hasPendingHumanReview =
       execution_status === 'LIVE_COMPLETED' &&
       !hasObjectiveFailure &&
-      (turnResults.some((t) => t.needsHumanReview) || goal_completion === 'HUMAN_REVIEW_REQUIRED');
+      (turnResults.some((t) => t.needsHumanReview) ||
+        goal_completion === 'HUMAN_REVIEW_REQUIRED' ||
+        semantic_quality === 'HUMAN_REVIEW_REQUIRED' ||
+        context_understanding === 'HUMAN_REVIEW_REQUIRED' ||
+        media_delivery_status === 'UNVERIFIED_MISSING_ARTIFACT');
 
     const terminal_outcome: TerminalOutcomeV3 =
       execution_status === 'BLOCKED'
@@ -772,9 +844,36 @@ export class OfflineEvaluationIntegrityAuditorV3 {
         }
       }
 
+      // Independent P0-3 per-room extra_hour_rate check & P0-1 role check on direct per-hour unit mentions
+      const sLower = m.sentenceLower;
+      const beforeM = resp.slice(Math.max(0, m.index - 28), m.index).toLowerCase();
+      const afterM = resp.slice(m.index + m.raw.length, m.index + m.raw.length + 18).toLowerCase();
+      const isBase2hOrTotalMention =
+        /(?:2\s*(?:giờ|gio|h|tiếng)\s*đầu|giá\s*2\s*(?:giờ|gio|h|tiếng)|trọn\s*gói|tổng(?:\s*cộng|\s*tiền)?|=\s*$)/iu.test(
+          beforeM
+        );
+      const isOwnPerHourUnit =
+        !isBase2hOrTotalMention &&
+        (/^\s*(?:\/\s*(?:giờ|gio|h|tiếng)(?![\p{L}\d])|mỗi\s*(?:giờ|gio|tiếng)(?![\p{L}\d]))/iu.test(afterM) ||
+          /(?:phụ\s*thu\s*(?:thêm\s*)?(?:giờ|gio|tiếng)|mỗi\s*(?:giờ|gio|tiếng)(?:\s*(?:thêm|tiếp\s*theo))?|phát\s*sinh(?:\s*mỗi)?\s*(?:giờ|gio|tiếng)|(?:^|[\s\d(])[x×*])\s*[:là]*\s*$/iu.test(
+            beforeM
+          ));
+      if (isOwnPerHourUnit) {
+        for (const r of rooms) {
+          const code = r.ma_phong.split('-')[0].toLowerCase();
+          if (new RegExp(`(?<![\\p{L}\\d])${code}(?![\\p{L}\\d])`, 'i').test(sLower)) {
+            const expectedExtra = r.gia_goc_dataset.gio_phat_sinh_ap_dung;
+            if (m.amountVnd !== expectedExtra && !/\b(?:601|602)\b/.test(sLower.replace(code, ''))) {
+              contradictions.push(
+                `ORACLE_ROOM_EXTRA_RATE_MISMATCH: Room ${r.ma_phong} specifies canonical extra-hour rate ${expectedExtra.toLocaleString('vi-VN')}đ/h, not ${m.raw}.`
+              );
+            }
+          }
+        }
+      }
+
       // Specific Hà Đông 4h Standard/Deluxe/Concept check when line names category & 4h total:
       if (propertyId === 'jacayl-ha-dong') {
-        const sLower = m.sentenceLower;
         if (/standard/i.test(sLower) && /\b4\s*(?:tiếng|giờ|h)\b|2 giờ thêm/i.test(sLower) && /=\s*\d/.test(sLower)) {
           if (m.amountVnd === 259000) {
             contradictions.push('ARITHMETIC_TOTAL_MISMATCH: Standard 4h stated as 259.000đ instead of 359.000đ.');

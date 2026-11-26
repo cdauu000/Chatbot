@@ -1,5 +1,5 @@
 {
-  "audited_at": "2026-11-26T11:40:08.297Z",
+  "audited_at": "2026-11-26T14:49:34.824Z",
   "source_artifact": "artifacts/eval-integrity/gate3-stratified-results.json",
   "source_git_commit": "1365f33",
   "denominator_breakdown": {
@@ -79,7 +79,7 @@
     "grounding_blocks": 1
   },
   "post_audit_8axis_summary": {
-    "evaluated_at": "2026-11-26T11:40:08.297Z",
+    "evaluated_at": "2026-11-26T14:49:34.824Z",
     "total_scenarios": 18,
     "total_turns": 31,
     "by_execution_status": {
@@ -153,7 +153,10 @@
       "historicalPassedFlag": true,
       "terminal_outcome": "CONFIRMED_FAIL",
       "isFalsePass": true,
-      "findings": []
+      "findings": [
+        "T1: INCOMPLETE_DEGRADED_EXECUTION: Execution status is DEGRADED, cannot mark goal COMPLETE.",
+        "T1: SEMANTIC_FAIL_ON_NON_LIVE_EXECUTION: DEGRADED response cannot receive semantic PASS."
+      ]
     },
     {
       "scenarioId": "SCENARIO-270",
@@ -923,16 +926,19 @@
       "execution_status": "DEGRADED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
+      "goal_completion": "INCOMPLETE",
       "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "semantic_quality": "FAIL",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
       "humanReviewReasons": [],
-      "findings": [],
+      "findings": [
+        "T1: INCOMPLETE_DEGRADED_EXECUTION: Execution status is DEGRADED, cannot mark goal COMPLETE.",
+        "T1: SEMANTIC_FAIL_ON_NON_LIVE_EXECUTION: DEGRADED response cannot receive semantic PASS."
+      ],
       "operational_metrics": {
         "turnCount": 1,
         "totalLatencyMs": 14298,
@@ -957,13 +963,16 @@
           "execution_status": "DEGRADED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
+          "goal_completion": "INCOMPLETE",
           "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "semantic_quality": "FAIL",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 14298,
           "totalTokens": 10859,
-          "findings": [],
+          "findings": [
+            "INCOMPLETE_DEGRADED_EXECUTION: Execution status is DEGRADED, cannot mark goal COMPLETE.",
+            "SEMANTIC_FAIL_ON_NON_LIVE_EXECUTION: DEGRADED response cannot receive semantic PASS."
+          ],
           "needsHumanReview": false
         }
       ]

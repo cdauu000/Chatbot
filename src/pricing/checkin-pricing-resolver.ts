@@ -157,7 +157,7 @@ export class CheckinPricingResolver {
         status: 'INVALID_ROOM_OR_BRANCH',
         co_so_ma: input.co_so_ma,
         ma_phong: input.ma_phong,
-        extra_hour_rate: 100000,
+        extra_hour_rate: 0,
         reason_code: 'ROOM_NOT_FOUND',
         missing_information_or_unresolved_policy: `Phòng ${input.ma_phong} không tồn tại tại cơ sở ${input.co_so_ma}.`,
         base_2h_price: undefined,

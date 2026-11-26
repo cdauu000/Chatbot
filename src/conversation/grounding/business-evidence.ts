@@ -9,6 +9,14 @@ import {
   ScopedRateFact,
   ToolResult,
 } from '../../agent/agent-contracts.js';
+import {
+  computePolicyContentHash,
+  loadActivePricingPolicyConfig,
+  loadOwnerPolicyAddendums,
+  OwnerPolicyAddendum,
+  PricingPolicyConfig,
+} from '../../data-loader/pricing-policy-loader.js';
+import { parseVietnamDateTime } from '../../pricing/checkin-pricing-resolver.js';
 
 export interface ParsedVndMention {
   raw: string;
@@ -19,12 +27,47 @@ export interface ParsedVndMention {
 }
 
 /**
- * Computes a concise deterministic version/hash identifier for the active canonical dataset.
+ * Computes an authoritative SHA-256 content hash covering canonical room prices, amenities,
+ * property metadata, and active policy/addendum configuration. Any mutation in rates, rooms,
+ * amenities, or active policy deterministically produces a different revision hash.
  */
-export function computeDatasetVersionHash(dataset: NormalizedDataset): string {
-  const sig = `${dataset.quy_dinh_goc?.nguon || 'canonical'}:${dataset.co_so.length}:${dataset.phong.length}:${dataset.phong.map((p) => p.ma_phong).join(',')}`;
-  const digest = createHash('sha256').update(sig).digest('hex').slice(0, 8);
-  return `canonical#${digest}`;
+export function computeDatasetVersionHash(
+  dataset: NormalizedDataset,
+  policyConfig?: PricingPolicyConfig | null,
+  policyAddendum?: OwnerPolicyAddendum | null
+): string {
+  const roomsCanonical = [...dataset.phong]
+    .sort((a, b) => `${a.co_so_ma}::${a.ma_phong}`.localeCompare(`${b.co_so_ma}::${b.ma_phong}`))
+    .map((p) => ({
+      co_so_ma: p.co_so_ma,
+      ma_phong: p.ma_phong,
+      ten_phong: p.ten_phong,
+      hang: p.hang,
+      gia_goc_dataset: p.gia_goc_dataset,
+      tien_nghi: {
+        bon_tam: p.tien_nghi?.bon_tam?.status,
+        ghe_tinh_yeu: p.tien_nghi?.ghe_tinh_yeu?.status,
+        thang_may: p.tien_nghi?.thang_may?.status,
+      },
+      link_phong: p.link_phong,
+      anh_count: p.anh?.length ?? 0,
+      anh_urls: (p.anh || []).map((a) => a.url),
+    }));
+  const facilitiesCanonical = [...dataset.co_so]
+    .sort((a, b) => a.ma.localeCompare(b.ma))
+    .map((c) => ({ ...c }));
+  const policyHash = computePolicyContentHash(
+    policyConfig ?? loadActivePricingPolicyConfig(),
+    policyAddendum === undefined ? loadOwnerPolicyAddendums() : policyAddendum
+  );
+  const canonicalPayload = JSON.stringify({
+    quy_dinh_goc: dataset.quy_dinh_goc,
+    co_so: facilitiesCanonical,
+    phong: roomsCanonical,
+    policyHash,
+  });
+  const digest = createHash('sha256').update(canonicalPayload).digest('hex').slice(0, 12);
+  return `rev#${digest}`;
 }
 
 /**
@@ -81,9 +124,19 @@ export function extractVndMentions(text: string): ParsedVndMention[] {
   return results;
 }
 
+function classifyCheckinTimeBucket(iso?: string): string | null {
+  if (!iso || iso === 'UNSPECIFIED' || iso.startsWith('CHECKIN_') || iso.startsWith('UNSPECIFIED')) return null;
+  const parts = parseVietnamDateTime(iso);
+  if (!parts) return null;
+  const isWknd = parts.dayOfWeekIso === 6 || parts.dayOfWeekIso === 7;
+  const mins = parts.hour * 60 + parts.minute;
+  const slot = mins < 480 ? 'early_before_08' : mins < 1080 ? 'day_08_18' : mins < 1300 ? 'eve_18_2140' : 'overnight_2140_plus';
+  return `${isWknd ? 'wknd' : 'wkd'}::${slot}`;
+}
+
 /**
  * Marks previously gathered quote evidence invalid when constraints materially change
- * (stay package, duration, check-in, checkout, or property).
+ * (stay package, duration, check-in/window, checkout, dataset/policy revision, or property).
  */
 export function invalidateStaleBusinessEvidence(
   state: AgentState,
@@ -94,6 +147,7 @@ export function invalidateStaleBusinessEvidence(
     checkinDatetime?: string;
     checkoutDatetime?: string;
     effectivePolicyVersion: string;
+    datasetVersion?: string;
   }
 ): void {
   const list = state.verifiedBusinessEvidence;
@@ -111,6 +165,12 @@ export function invalidateStaleBusinessEvidence(
     if (ev.effectivePolicyVersion !== currentConstraints.effectivePolicyVersion) {
       ev.isValid = false;
       ev.invalidatedReason = `POLICY_VERSION_CHANGED (${ev.effectivePolicyVersion} -> ${currentConstraints.effectivePolicyVersion})`;
+      continue;
+    }
+
+    if (currentConstraints.datasetVersion && ev.datasetVersion !== currentConstraints.datasetVersion) {
+      ev.isValid = false;
+      ev.invalidatedReason = `DATASET_HASH_CHANGED (${ev.datasetVersion} -> ${currentConstraints.datasetVersion})`;
       continue;
     }
 
@@ -137,15 +197,20 @@ export function invalidateStaleBusinessEvidence(
         ev.invalidatedReason = `DURATION_CHANGED (${ev.durationHours}h -> ${currentConstraints.durationHours}h)`;
         continue;
       }
-      // If guest explicitly updates check-in or checkout timestamp away from quote's exact timestamp
+      // If guest explicitly updates check-in or crosses weekday/weekend or time-window tier
       if (
         currentConstraints.checkinDatetime &&
         ev.checkinDatetime &&
         ev.checkinDatetime !== 'UNSPECIFIED' &&
         currentConstraints.checkinDatetime !== ev.checkinDatetime
       ) {
+        const prevBucket = classifyCheckinTimeBucket(ev.checkinDatetime);
+        const nextBucket = classifyCheckinTimeBucket(currentConstraints.checkinDatetime);
         ev.isValid = false;
-        ev.invalidatedReason = `CHECKIN_CHANGED (${ev.checkinDatetime} -> ${currentConstraints.checkinDatetime})`;
+        ev.invalidatedReason =
+          prevBucket && nextBucket && prevBucket !== nextBucket
+            ? `CHECKIN_WINDOW_SHIFTED (${prevBucket} -> ${nextBucket})`
+            : `CHECKIN_CHANGED (${ev.checkinDatetime} -> ${currentConstraints.checkinDatetime})`;
         continue;
       }
       if (
@@ -272,7 +337,16 @@ export function recordToolResultAsEvidence(
       };
 
       if (typeof q.total_price_vnd === 'number') {
-        pushRate({ amountVnd: q.total_price_vnd, role: 'TOTAL', roomId: q.room_id, category: q.category, stayPackage: q.stay_type, durationHours: durHours });
+        pushRate({
+          amountVnd: q.total_price_vnd,
+          role: 'TOTAL',
+          roomId: q.room_id,
+          category: q.category,
+          stayPackage: q.stay_type,
+          durationHours: durHours,
+          timeCondition: q.checkin_conditions?.checkin_datetime,
+          eligible: true,
+        });
       }
       const primaryBase = q.base_package_price_vnd ?? q.base_price_vnd;
       if (typeof primaryBase === 'number') {
@@ -283,32 +357,48 @@ export function recordToolResultAsEvidence(
           category: q.category,
           stayPackage: q.stay_type,
           durationHours: q.stay_type === 'nghi_gio' ? 2 : durHours,
+          timeCondition: q.checkin_conditions?.checkin_datetime,
+          eligible: true,
         });
       }
       const primaryExtraRate = q.extra_hour_rate_vnd ?? q.extra_hour_rate;
-      if (typeof primaryExtraRate === 'number') {
-        pushRate({ amountVnd: primaryExtraRate, role: 'EXTRA_HOUR_RATE', roomId: q.room_id, category: q.category, stayPackage: 'EXTRA_HOUR' });
+      if (typeof primaryExtraRate === 'number' && primaryExtraRate > 0) {
+        pushRate({ amountVnd: primaryExtraRate, role: 'EXTRA_HOUR_RATE', roomId: q.room_id, category: q.category, stayPackage: 'EXTRA_HOUR', eligible: true });
       }
       if (typeof q.extra_hour_subtotal_vnd === 'number') {
-        pushRate({ amountVnd: q.extra_hour_subtotal_vnd, role: 'EXTRA_HOUR_SUBTOTAL', roomId: q.room_id, category: q.category, stayPackage: q.stay_type, durationHours: durHours });
+        pushRate({
+          amountVnd: q.extra_hour_subtotal_vnd,
+          role: 'EXTRA_HOUR_SUBTOTAL',
+          roomId: q.room_id,
+          category: q.category,
+          stayPackage: q.stay_type,
+          durationHours: durHours,
+          timeCondition: q.checkin_conditions?.checkin_datetime,
+          eligible: true,
+        });
       }
 
       if (Array.isArray(q.conditional_quotes)) {
         for (const cq of q.conditional_quotes) {
-          const condLabel = String(cq.checkin_window || cq.condition || 'conditional');
+          const rawLabel = String(cq.condition_label || cq.checkin_window || cq.condition || 'conditional');
+          const condTag = /cuối tuần|t7|chủ nhật|weekend/iu.test(rawLabel)
+            ? 'weekend_daytime'
+            : /ngày thường|sau 18|trước 08|weekday/iu.test(rawLabel)
+              ? 'weekday_or_after_18'
+              : rawLabel;
           if (typeof cq.total_price_vnd === 'number') {
-            pushRate({ amountVnd: cq.total_price_vnd, role: 'TOTAL', roomId: q.room_id, category: q.category, stayPackage: q.stay_type, durationHours: durHours, timeCondition: condLabel });
+            pushRate({ amountVnd: cq.total_price_vnd, role: 'TOTAL', roomId: q.room_id, category: q.category, stayPackage: q.stay_type, durationHours: durHours, timeCondition: condTag, eligible: true });
           }
           if (typeof cq.base_2h_vnd === 'number') {
-            pushRate({ amountVnd: cq.base_2h_vnd, role: 'BASE_2H', roomId: q.room_id, category: q.category, stayPackage: q.stay_type, durationHours: 2, timeCondition: condLabel });
+            pushRate({ amountVnd: cq.base_2h_vnd, role: 'BASE_2H', roomId: q.room_id, category: q.category, stayPackage: q.stay_type, durationHours: 2, timeCondition: condTag, eligible: true });
           }
-          if (typeof cq.extra_hour_rate === 'number') {
-            pushRate({ amountVnd: cq.extra_hour_rate, role: 'EXTRA_HOUR_RATE', roomId: q.room_id, category: q.category, stayPackage: 'EXTRA_HOUR', timeCondition: condLabel });
+          if (typeof cq.extra_hour_rate === 'number' && cq.extra_hour_rate > 0) {
+            pushRate({ amountVnd: cq.extra_hour_rate, role: 'EXTRA_HOUR_RATE', roomId: q.room_id, category: q.category, stayPackage: 'EXTRA_HOUR', timeCondition: condTag, eligible: true });
           }
           if (typeof cq.extra_hours === 'number' && typeof cq.extra_hour_rate === 'number') {
-            pushRate({ amountVnd: cq.extra_hours * cq.extra_hour_rate, role: 'EXTRA_HOUR_SUBTOTAL', roomId: q.room_id, category: q.category, stayPackage: q.stay_type, durationHours: durHours, timeCondition: condLabel });
+            pushRate({ amountVnd: cq.extra_hours * cq.extra_hour_rate, role: 'EXTRA_HOUR_SUBTOTAL', roomId: q.room_id, category: q.category, stayPackage: q.stay_type, durationHours: durHours, timeCondition: condTag, eligible: true });
           } else if (typeof cq.total_price_vnd === 'number' && typeof cq.base_2h_vnd === 'number') {
-            pushRate({ amountVnd: Math.max(0, cq.total_price_vnd - cq.base_2h_vnd), role: 'EXTRA_HOUR_SUBTOTAL', roomId: q.room_id, category: q.category, stayPackage: q.stay_type, durationHours: durHours, timeCondition: condLabel });
+            pushRate({ amountVnd: Math.max(0, cq.total_price_vnd - cq.base_2h_vnd), role: 'EXTRA_HOUR_SUBTOTAL', roomId: q.room_id, category: q.category, stayPackage: q.stay_type, durationHours: durHours, timeCondition: condTag, eligible: true });
           }
         }
       }
@@ -317,12 +407,45 @@ export function recordToolResultAsEvidence(
         const eligibleList = (elig.eligible_packages || []).map((p: any) => ({ ...p, _elig: true }));
         const ineligibleList = (elig.ineligible_packages || []).map((p: any) => ({ ...p, _elig: false }));
         for (const pkg of [...eligibleList, ...ineligibleList]) {
-          const pkgType = (pkg.stay_type as StayType | undefined) ?? q.stay_type;
+          const rawPkgType = String(pkg.stay_type ?? q.stay_type);
+          const pkgType = (rawPkgType.startsWith('ngay_dem') ? 'ngay_dem' : rawPkgType) as StayType;
+          const pkgCond = pkg.applicable_window || (pkg.requires_reception_confirmation_for_early_checkin ? 'early_before_14_requires_reception' : undefined);
           if (typeof pkg.total_price_vnd === 'number') {
-            pushRate({ amountVnd: pkg.total_price_vnd, role: 'TOTAL', roomId: q.room_id, category: q.category, stayPackage: pkgType, durationHours: pkg.duration_hours ?? durHours, eligible: pkg._elig });
+            pushRate({
+              amountVnd: pkg.total_price_vnd,
+              role: 'TOTAL',
+              roomId: q.room_id,
+              category: q.category,
+              stayPackage: pkgType,
+              durationHours: pkg.duration_hours ?? durHours,
+              timeCondition: pkgCond,
+              eligible: pkg._elig,
+              ineligibilityReason: pkg._elig ? undefined : String(pkg.reason || elig.business_reason || ''),
+            });
           }
           if (typeof pkg.base_package_price_vnd === 'number') {
-            pushRate({ amountVnd: pkg.base_package_price_vnd, role: 'PACKAGE_RATE', roomId: q.room_id, category: q.category, stayPackage: pkgType, eligible: pkg._elig });
+            pushRate({
+              amountVnd: pkg.base_package_price_vnd,
+              role: 'PACKAGE_RATE',
+              roomId: q.room_id,
+              category: q.category,
+              stayPackage: pkgType,
+              timeCondition: pkgCond,
+              eligible: pkg._elig,
+              ineligibilityReason: pkg._elig ? undefined : String(pkg.reason || elig.business_reason || ''),
+            });
+          }
+          if (typeof pkg.extra_hour_subtotal_vnd === 'number' && pkg.extra_hour_subtotal_vnd > 0) {
+            pushRate({
+              amountVnd: pkg.extra_hour_subtotal_vnd,
+              role: 'EXTRA_HOUR_SUBTOTAL',
+              roomId: q.room_id,
+              category: q.category,
+              stayPackage: pkgType,
+              durationHours: pkg.duration_hours ?? durHours,
+              timeCondition: pkgCond,
+              eligible: pkg._elig,
+            });
           }
           if (typeof pkg.alternative_if_delayed_to_21_40_vnd === 'number') {
             pushRate({ amountVnd: pkg.alternative_if_delayed_to_21_40_vnd, role: 'ALT_21_40', roomId: q.room_id, category: q.category, stayPackage: 'qua_dem', timeCondition: 'delayed_to_21_40', eligible: true });
@@ -334,6 +457,7 @@ export function recordToolResultAsEvidence(
       if (q.pricing_status) conditions.push(String(q.pricing_status));
       if (q.checkin_conditions?.assumption_type) conditions.push(String(q.checkin_conditions.assumption_type));
       if (q.late_checkout_applied) conditions.push('LATE_CHECKOUT_APPLIED');
+      const isOverallEligible = !elig || (elig.eligible_packages && elig.eligible_packages.length > 0 && elig.requested_package === elig.recommended_package);
 
       created.push({
         evidenceId: `ev_quote_${q.room_id}_t${state.turnCount}_${nextIdx()}`,
@@ -351,6 +475,18 @@ export function recordToolResultAsEvidence(
         extraHourSubtotalVnd: q.extra_hour_subtotal_vnd,
         alternateAmountsVnd: Array.from(altSet),
         scopedRates,
+        fieldRefs: {
+          total: typeof q.total_price_vnd === 'number' ? q.total_price_vnd : null,
+          base_2h: q.stay_type === 'nghi_gio' ? (q.base_package_price_vnd ?? q.base_price_vnd ?? null) : null,
+          package_rate: q.stay_type !== 'nghi_gio' ? (q.base_package_price_vnd ?? q.base_price_vnd ?? null) : null,
+          extra_hour_rate: q.extra_hour_rate_vnd ?? q.extra_hour_rate ?? q.conditional_quotes?.[0]?.extra_hour_rate ?? null,
+          extra_hour_subtotal: q.extra_hour_subtotal_vnd ?? null,
+          checkin_window: q.confirmed_checkin ?? q.checkin_conditions?.checkin_datetime ?? null,
+          eligible: isOverallEligible,
+        },
+        eligible: isOverallEligible,
+        timeCondition: classifyCheckinTimeBucket(q.confirmed_checkin ?? q.checkin_conditions?.checkin_datetime) ?? undefined,
+        ineligibilityReason: elig?.ineligible_packages?.[0]?.reason,
         checkinDatetime: q.confirmed_checkin ?? q.checkin_conditions?.checkin_datetime,
         checkoutDatetime: q.confirmed_checkout ?? undefined,
         durationHours: typeof q.duration_hours === 'number' ? q.duration_hours : undefined,
@@ -478,7 +614,12 @@ export function recordToolResultAsEvidence(
     const scopedRates: ScopedRateFact[] = [];
     if (typeof struct?.default_extra_hour_rate_vnd === 'number') {
       altSet.add(struct.default_extra_hour_rate_vnd);
-      scopedRates.push({ amountVnd: struct.default_extra_hour_rate_vnd, role: 'POLICY_RATE', stayPackage: 'EXTRA_HOUR' });
+      scopedRates.push({
+        amountVnd: struct.default_extra_hour_rate_vnd,
+        role: 'POLICY_RATE',
+        stayPackage: 'EXTRA_HOUR',
+        isDefaultPolicyRate: true,
+      });
     }
     if (struct?.room_specific_extra_hour_rates_vnd) {
       for (const [roomKey, v] of Object.entries(struct.room_specific_extra_hour_rates_vnd)) {
@@ -589,8 +730,14 @@ export function formatValidEvidenceForPrompt(state: AgentState): string {
 
   for (const ev of Array.from(dedupedQuotes.values()).slice(-6)) {
     const amt = typeof ev.amountVnd === 'number' ? `${ev.amountVnd.toLocaleString('vi-VN')}đ` : `alts=[${(ev.alternateAmountsVnd || []).join(',')}]`;
+    const eligTag = ev.eligible === false ? `INELIGIBLE(${ev.ineligibilityReason || 'window_mismatch'})` : 'ELIGIBLE';
+    const roleHints = (ev.scopedRates || [])
+      .filter((r) => r.eligible !== false)
+      .slice(0, 4)
+      .map((r) => `${r.role}=${r.amountVnd}${r.timeCondition ? `@${r.timeCondition}` : ''}`)
+      .join(', ');
     lines.push(
-      `[${ev.evidenceId} QUOTE]: ${ev.roomName || ev.roomId} (${ev.stayPackage || 'pkg'}, ${ev.durationHours ?? '?'}h, checkin=${ev.checkinDatetime || 'UNSPECIFIED'}) => ${amt}`
+      `[${ev.evidenceId} QUOTE | rev=${ev.datasetVersion} | ${eligTag}]: ${ev.roomName || ev.roomId} (${ev.stayPackage || 'pkg'}, ${ev.durationHours ?? '?'}h, checkin=${ev.checkinDatetime || 'UNSPECIFIED'}) => ${amt}${roleHints ? ` [roles: ${roleHints}]` : ''}`
     );
   }
 
