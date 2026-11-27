@@ -1,6 +1,6 @@
 {
   "summary": {
-    "evaluated_at": "2026-11-26T14:49:34.785Z",
+    "evaluated_at": "2026-11-27T05:30:19.868Z",
     "total_scenarios": 54,
     "total_turns": 96,
     "by_execution_status": {
@@ -10,24 +10,24 @@
       "FAILED_FALLBACK": 0
     },
     "historical_businessPassed_true": 52,
-    "strict_quality_passed_true": 27,
+    "strict_quality_passed_true": 19,
     "by_terminal_outcome": {
-      "CONFIRMED_PASS": 27,
+      "CONFIRMED_PASS": 19,
       "CONFIRMED_FAIL": 19,
-      "PENDING_HUMAN_REVIEW": 6,
+      "PENDING_HUMAN_REVIEW": 14,
       "BLOCKED": 2
     },
     "false_pass_count": 19,
-    "human_review_queue_count": 6,
+    "human_review_queue_count": 14,
     "reconciliation_check_overlap_count": 0,
     "breakdown_by_commit": {
       "pre_dc11876": {
         "total": 42,
         "live_completed": 42,
-        "confirmed_pass": 25,
+        "confirmed_pass": 17,
         "confirmed_fail": 12,
-        "pending_human_review": 5,
-        "quality_passed": 25,
+        "pending_human_review": 13,
+        "quality_passed": 17,
         "false_pass": 12
       },
       "commit_dc11876": {
@@ -53,7 +53,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
@@ -70,7 +70,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept.",
@@ -87,8 +87,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
@@ -103,8 +103,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T2: REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:qua_dem:ANY rates in active evidence.",
@@ -123,7 +123,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
@@ -140,7 +140,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals.",
@@ -157,7 +157,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Category Concept has multiple 4h rates [599000, 649000, 799000, 849000] across rooms; stating sole rate 599.000đ omits sibling room tier.",
@@ -173,8 +173,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
@@ -196,7 +196,7 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
       "context_understanding": "TEMPORAL_LEAK",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
@@ -213,8 +213,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T2: REJECTED_PRICE_MISMATCH: Amount 100.000đ (100.000đ) contradicts verified 601-50-sac-thai:EXTRA_HOUR:EXTRA_HOUR_RATE rates in active evidence."
@@ -246,7 +246,7 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
@@ -262,7 +262,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong.",
@@ -278,8 +278,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "MISSING_ATTACHMENT",
       "findings": [
         "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
@@ -299,8 +299,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "MISSING_ATTACHMENT",
       "findings": [
         "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
@@ -319,8 +319,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "MISSING_ATTACHMENT",
       "findings": [
         "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
@@ -339,8 +339,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-sapphire has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
@@ -358,8 +358,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T2: REJECTED_PRICE_MISMATCH: Amount 1.000.000đ (1.000.000đ) contradicts verified Concept:qua_dem:ANY rates in active evidence."
@@ -374,8 +374,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-sapphire has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
@@ -387,6 +387,16 @@
   ],
   "humanReviewQueue": [
     {
+      "scenarioId": "SCENARIO-006",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
+      "findings": []
+    },
+    {
       "scenarioId": "SCENARIO-007",
       "propertyId": "jacayl-ha-dong",
       "gitCommit": "pre-dc11876",
@@ -397,12 +407,54 @@
       "findings": []
     },
     {
+      "scenarioId": "SCENARIO-012",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
+      "findings": []
+    },
+    {
       "scenarioId": "SCENARIO-014",
       "propertyId": "jacayl-ha-dong",
       "gitCommit": "pre-dc11876",
       "category": "pricing_time_packages",
       "reasons": [
-        "Turn 2: Guest asked overnight surcharge/calculation; model gave time/grace policy without quoting rates."
+        "Turn 2: Guest asked overnight surcharge/calculation; model gave time/grace policy without quoting rates.",
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-024",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-028",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-030",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
       ],
       "findings": []
     },
@@ -412,7 +464,37 @@
       "gitCommit": "dc11876",
       "category": "pricing_time_packages",
       "reasons": [
-        "Turn 3: Response lacks objective tool/pricing/policy evidence markers for automated goal sign-off."
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-060",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-070",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-090",
+      "propertyId": "jacayl-ha-dong",
+      "gitCommit": "pre-dc11876",
+      "category": "pricing_time_packages",
+      "reasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
       ],
       "findings": []
     },
@@ -713,14 +795,16 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline."
+      ],
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
@@ -752,8 +836,8 @@
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
           "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 32406,
           "totalTokens": 10436,
@@ -761,7 +845,8 @@
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         }
       ]
     },
@@ -776,15 +861,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 3,
@@ -858,14 +945,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 9969,
           "totalTokens": 4925,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -881,7 +969,7 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "HUMAN_REVIEW_REQUIRED",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "PENDING_HUMAN_REVIEW",
@@ -941,7 +1029,7 @@
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
           "goal_completion": "HUMAN_REVIEW_REQUIRED",
-          "context_understanding": "ALIGNED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 24441,
@@ -1020,14 +1108,16 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline."
+      ],
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept.",
         "T1: ARITHMETIC_TOTAL_MISMATCH: Standard 4h stated as 259.000đ instead of 359.000đ.",
@@ -1060,8 +1150,8 @@
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
           "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 12545,
           "totalTokens": 7164,
@@ -1070,7 +1160,8 @@
             "ARITHMETIC_TOTAL_MISMATCH: Standard 4h stated as 259.000đ instead of 359.000đ.",
             "ARITHMETIC_TOTAL_MISMATCH: Deluxe 4h stated as 379.000đ instead of 479.000đ."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         },
         {
           "scenarioId": "SCENARIO-009",
@@ -1220,15 +1311,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 3,
@@ -1305,14 +1398,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 7121,
           "totalTokens": 4833,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -1385,7 +1479,7 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "HUMAN_REVIEW_REQUIRED",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "PENDING_HUMAN_REVIEW",
@@ -1393,7 +1487,8 @@
       "isFalsePass": false,
       "needsHumanReview": true,
       "humanReviewReasons": [
-        "Turn 2: Guest asked overnight surcharge/calculation; model gave time/grace policy without quoting rates."
+        "Turn 2: Guest asked overnight surcharge/calculation; model gave time/grace policy without quoting rates.",
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
       ],
       "findings": [],
       "operational_metrics": {
@@ -1445,7 +1540,7 @@
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
           "goal_completion": "HUMAN_REVIEW_REQUIRED",
-          "context_understanding": "ALIGNED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 12982,
@@ -1466,14 +1561,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 7845,
           "totalTokens": 4673,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -1488,15 +1584,18 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
       ],
@@ -1527,15 +1626,16 @@
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
           "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 6717,
           "totalTokens": 9208,
           "findings": [
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         },
         {
           "scenarioId": "SCENARIO-015",
@@ -1549,14 +1649,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 5377,
           "totalTokens": 4873,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -1684,15 +1785,18 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T2: REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:qua_dem:ANY rates in active evidence.",
         "T2: REJECTED_PRICE_MISMATCH: Amount 700 đ (700đ) contradicts verified Concept:any:ANY rates in active evidence.",
@@ -1749,9 +1853,9 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 27882,
           "totalTokens": 8108,
@@ -1761,7 +1865,8 @@
             "CANONICAL_RATE_MISMATCH: Amount 560 đ (560đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
             "CANONICAL_RATE_MISMATCH: Amount 700 đ (700đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-018",
@@ -1775,14 +1880,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 3033,
           "totalTokens": 4789,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -2051,14 +2157,16 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline."
+      ],
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
@@ -2090,8 +2198,8 @@
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
           "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 49241,
           "totalTokens": 13769,
@@ -2099,7 +2207,8 @@
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         }
       ]
     },
@@ -2114,15 +2223,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 3,
@@ -2194,14 +2305,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 23710,
           "totalTokens": 4732,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -2330,14 +2442,17 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals.",
         "T2: POLICY_RULE_VIOLATION: Claimed 18:00/20:00 arrival transitioning to overnight uses hourly + overnight instead of ngay_dem (14:00-21:39 rule)."
@@ -2368,15 +2483,16 @@
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
           "goal_completion": "INCOMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 10452,
           "totalTokens": 5066,
           "findings": [
             "INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         },
         {
           "scenarioId": "SCENARIO-027",
@@ -2393,16 +2509,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 16236,
           "totalTokens": 8354,
           "findings": [
             "POLICY_RULE_VIOLATION: Claimed 18:00/20:00 arrival transitioning to overnight uses hourly + overnight instead of ngay_dem (14:00-21:39 rule)."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -2417,15 +2534,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 3,
@@ -2496,14 +2615,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 3718,
           "totalTokens": 4760,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -2574,15 +2694,18 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 3,
@@ -2631,14 +2754,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 23220,
           "totalTokens": 4572,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-030",
@@ -2652,14 +2776,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 19663,
           "totalTokens": 4537,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -2675,14 +2800,16 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline."
+      ],
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Category Concept has multiple 4h rates [599000, 649000, 799000, 849000] across rooms; stating sole rate 599.000đ omits sibling room tier.",
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Category Concept has multiple 4h rates [599000, 649000, 799000, 849000] across rooms; stating sole rate 649.000đ omits sibling room tier."
@@ -2714,8 +2841,8 @@
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
           "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 23846,
           "totalTokens": 11285,
@@ -2723,7 +2850,8 @@
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Category Concept has multiple 4h rates [599000, 649000, 799000, 849000] across rooms; stating sole rate 599.000đ omits sibling room tier.",
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Category Concept has multiple 4h rates [599000, 649000, 799000, 849000] across rooms; stating sole rate 649.000đ omits sibling room tier."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         }
       ]
     },
@@ -2796,15 +2924,18 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
@@ -2844,8 +2975,8 @@
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
           "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 7611,
           "totalTokens": 12533,
@@ -2853,7 +2984,8 @@
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         },
         {
           "scenarioId": "SCENARIO-033",
@@ -2865,9 +2997,9 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 3996,
           "totalTokens": 3191,
@@ -2879,7 +3011,8 @@
             "CANONICAL_RATE_MISMATCH: Amount 590.000đ (590.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong.",
             "CANONICAL_RATE_MISMATCH: Amount 750.000đ (750.000đ) is not a valid canonical rate or valid hourly sum for jacayl-ha-dong."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -2949,15 +3082,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
       "context_understanding": "TEMPORAL_LEAK",
-      "semantic_quality": "PASS",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: REJECTED_UNCONFIRMED_REFERENCE_CLOCK_ASSERTION: Response locked unconfirmed reference clock (14:00) as guest arrival time without user specifying 14:00.",
         "T1: REJECTED_UNCONFIRMED_REFERENCE_CLOCK_ASSERTION: Response locked unconfirmed reference clock (14:00) as guest arrival time without user specifying 14:00."
@@ -3013,14 +3148,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 6142,
           "totalTokens": 6294,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -3035,15 +3171,18 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T2: REJECTED_PRICE_MISMATCH: Amount 100.000đ (100.000đ) contradicts verified 601-50-sac-thai:EXTRA_HOUR:EXTRA_HOUR_RATE rates in active evidence."
       ],
@@ -3093,16 +3232,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 9700,
           "totalTokens": 6135,
           "findings": [
             "REJECTED_PRICE_MISMATCH: Amount 100.000đ (100.000đ) contradicts verified 601-50-sac-thai:EXTRA_HOUR:EXTRA_HOUR_RATE rates in active evidence."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-036",
@@ -3114,14 +3254,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 17545,
           "totalTokens": 2968,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -3254,14 +3395,16 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline."
+      ],
       "findings": [
         "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
       ],
@@ -3290,15 +3433,16 @@
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
           "goal_completion": "INCOMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 3610,
           "totalTokens": 6704,
           "findings": [
             "INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         },
         {
           "scenarioId": "SCENARIO-039",
@@ -3394,14 +3538,16 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline."
+      ],
       "findings": [
         "T1: REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong.",
         "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
@@ -3428,8 +3574,8 @@
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
           "goal_completion": "INCOMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 5029,
           "totalTokens": 2526,
@@ -3437,7 +3583,8 @@
             "REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong.",
             "INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         }
       ]
     },
@@ -3453,7 +3600,7 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "HUMAN_REVIEW_REQUIRED",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "PENDING_HUMAN_REVIEW",
@@ -3461,7 +3608,7 @@
       "isFalsePass": false,
       "needsHumanReview": true,
       "humanReviewReasons": [
-        "Turn 3: Response lacks objective tool/pricing/policy evidence markers for automated goal sign-off."
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
       ],
       "findings": [],
       "operational_metrics": {
@@ -3530,14 +3677,14 @@
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
           "goal_completion": "HUMAN_REVIEW_REQUIRED",
-          "context_understanding": "ALIGNED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 7404,
           "totalTokens": 2888,
           "findings": [],
           "needsHumanReview": true,
-          "humanReviewReason": "Response lacks objective tool/pricing/policy evidence markers for automated goal sign-off."
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -3552,15 +3699,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 3,
@@ -3630,14 +3779,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 5683,
           "totalTokens": 8035,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -3652,15 +3802,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 3,
@@ -3729,14 +3881,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 1412,
           "totalTokens": 4443,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -3751,15 +3904,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 3,
@@ -3829,14 +3984,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 2451,
           "totalTokens": 7790,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -3851,15 +4007,19 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "FAIL",
       "media_delivery_status": "MISSING_ATTACHMENT",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
         "T2: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
@@ -3893,16 +4053,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 1861,
           "totalTokens": 4781,
           "findings": [
             "REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock)."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-120",
@@ -3917,8 +4078,8 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "MINOR_ISSUE",
           "media_delivery_status": "DELIVERED",
           "latencyMs": 2701,
@@ -3927,7 +4088,8 @@
             "REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
             "VERBOSE_RESPONSE: Length=1422 chars (>1400)."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-120",
@@ -3939,8 +4101,8 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "FAIL",
           "media_delivery_status": "MISSING_ATTACHMENT",
           "latencyMs": 1395,
@@ -3950,7 +4112,8 @@
             "MISSING_MEDIA_ATTACHMENT: Guest requested room photos, yet deliveredMedia is empty.",
             "RAW_IMAGE_URL_WITHOUT_ATTACHMENT: Response pasted raw .webp gallery links into prose."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -3965,15 +4128,19 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "FAIL",
       "media_delivery_status": "MISSING_ATTACHMENT",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
         "T2: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
@@ -4006,16 +4173,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 2189,
           "totalTokens": 4770,
           "findings": [
             "REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock)."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-140",
@@ -4030,16 +4198,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "DELIVERED",
           "latencyMs": 2418,
           "totalTokens": 7054,
           "findings": [
             "REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock)."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-140",
@@ -4051,8 +4220,8 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "FAIL",
           "media_delivery_status": "MISSING_ATTACHMENT",
           "latencyMs": 1235,
@@ -4062,7 +4231,8 @@
             "MISSING_MEDIA_ATTACHMENT: Guest requested room photos, yet deliveredMedia is empty.",
             "RAW_IMAGE_URL_WITHOUT_ATTACHMENT: Response pasted raw .webp gallery links into prose."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -4077,15 +4247,19 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "FAIL",
       "media_delivery_status": "MISSING_ATTACHMENT",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
         "T2: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
@@ -4118,16 +4292,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 1814,
           "totalTokens": 4782,
           "findings": [
             "REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock)."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-150",
@@ -4142,16 +4317,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "DELIVERED",
           "latencyMs": 2615,
           "totalTokens": 7319,
           "findings": [
             "REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock)."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-150",
@@ -4163,8 +4339,8 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "FAIL",
           "media_delivery_status": "MISSING_ATTACHMENT",
           "latencyMs": 1400,
@@ -4174,7 +4350,8 @@
             "MISSING_MEDIA_ATTACHMENT: Guest requested room photos, yet deliveredMedia is empty.",
             "RAW_IMAGE_URL_WITHOUT_ATTACHMENT: Response pasted raw .webp gallery links into prose."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -4189,15 +4366,18 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-sapphire has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 301-ivory has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
@@ -4229,14 +4409,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 1881,
           "totalTokens": 4677,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-330",
@@ -4248,9 +4429,9 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 1144,
           "totalTokens": 3179,
@@ -4260,7 +4441,8 @@
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 401-blush has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 501-onyx has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -4275,15 +4457,18 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T2: REJECTED_PRICE_MISMATCH: Amount 1.000.000đ (1.000.000đ) contradicts verified Concept:qua_dem:ANY rates in active evidence."
       ],
@@ -4311,14 +4496,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 3300,
           "totalTokens": 3858,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-345",
@@ -4333,16 +4519,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 3596,
           "totalTokens": 5664,
           "findings": [
             "REJECTED_PRICE_MISMATCH: Amount 1.000.000đ (1.000.000đ) contradicts verified Concept:qua_dem:ANY rates in active evidence."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -4357,15 +4544,18 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-sapphire has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 301-ivory has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
@@ -4396,14 +4586,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 1842,
           "totalTokens": 4644,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-350",
@@ -4415,9 +4606,9 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 2032,
           "totalTokens": 3255,
@@ -4427,7 +4618,8 @@
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 401-blush has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 501-onyx has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -4443,7 +4635,7 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "HUMAN_REVIEW_REQUIRED",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "PENDING_HUMAN_REVIEW",
@@ -4478,7 +4670,7 @@
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
           "goal_completion": "HUMAN_REVIEW_REQUIRED",
-          "context_understanding": "ALIGNED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 1587,
@@ -4501,7 +4693,7 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "HUMAN_REVIEW_REQUIRED",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "DELIVERED",
       "terminal_outcome": "PENDING_HUMAN_REVIEW",
@@ -4537,7 +4729,7 @@
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
           "goal_completion": "HUMAN_REVIEW_REQUIRED",
-          "context_understanding": "ALIGNED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "DELIVERED",
           "latencyMs": 5082,
@@ -4560,7 +4752,7 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "HUMAN_REVIEW_REQUIRED",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "PENDING_HUMAN_REVIEW",
@@ -4595,7 +4787,7 @@
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
           "goal_completion": "HUMAN_REVIEW_REQUIRED",
-          "context_understanding": "ALIGNED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 3178,

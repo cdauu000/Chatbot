@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T14:49:34.790Z",
+  "generated_at": "2026-11-27T05:30:19.872Z",
   "total_false_pass": 19,
   "cases": [
     {
@@ -12,7 +12,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
@@ -29,7 +29,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept.",
@@ -46,8 +46,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
@@ -62,8 +62,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T2: REJECTED_PRICE_MISMATCH: Amount 560 đ (560đ) contradicts verified Deluxe:qua_dem:ANY rates in active evidence.",
@@ -82,7 +82,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
@@ -99,7 +99,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals.",
@@ -116,7 +116,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Category Concept has multiple 4h rates [599000, 649000, 799000, 849000] across rooms; stating sole rate 599.000đ omits sibling room tier.",
@@ -132,8 +132,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
@@ -155,7 +155,7 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
       "context_understanding": "TEMPORAL_LEAK",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
@@ -172,8 +172,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T2: REJECTED_PRICE_MISMATCH: Amount 100.000đ (100.000đ) contradicts verified 601-50-sac-thai:EXTRA_HOUR:EXTRA_HOUR_RATE rates in active evidence."
@@ -205,7 +205,7 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: INCOMPLETE_GOAL_4H_QUOTE: Guest asked for 4-hour price, but AI omitted computed 4h totals."
@@ -221,7 +221,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T1: REJECTED_NON_EXISTENT_ROOM_ASSERTION: Room 301 does not exist in canonical catalog of jacayl-ha-dong.",
@@ -237,8 +237,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "MISSING_ATTACHMENT",
       "findings": [
         "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
@@ -258,8 +258,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "MISSING_ATTACHMENT",
       "findings": [
         "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
@@ -278,8 +278,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "MISSING_ATTACHMENT",
       "findings": [
         "T1: REJECTED_UNVERIFIED_VACANCY_CLAIM: Affirmative real-time room vacancy claim is forbidden without live PMS check (disclaimers do not allow asserting stock).",
@@ -298,8 +298,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-sapphire has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
@@ -317,8 +317,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T2: REJECTED_PRICE_MISMATCH: Amount 1.000.000đ (1.000.000đ) contradicts verified Concept:qua_dem:ANY rates in active evidence."
@@ -333,8 +333,8 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "findings": [
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-sapphire has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",

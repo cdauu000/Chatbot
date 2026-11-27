@@ -13,12 +13,19 @@ import {
 import {
   BusinessEvidenceRecord,
   GroundingStatus,
+  RenderedStructuredRefBinding,
   RoomPresentationBlock,
   RoomPresentationImage,
   ScopedRateFact,
 } from '../../agent/agent-contracts.js';
 import { resolveTriStateAmenity } from '../../agent/agent-tools.js';
-import { computeDatasetVersionHash, extractVndMentions, ParsedVndMention } from './business-evidence.js';
+import {
+  computeDatasetVersionHash,
+  enrichEvidenceScopedFacts,
+  extractVndMentions,
+  ParsedVndMention,
+  resolveStructuredRateSelector,
+} from './business-evidence.js';
 
 export interface ClaimValidationConfig {
   allowedBookingDomainOverride?: string; // e.g. "jcollection.vn" only if explicitly configured
@@ -60,6 +67,9 @@ export interface ClaimValidationContext {
   checkinConfidence?: string;
   structuredClaimRefs?: string[];
   structuredMediaRefs?: string[];
+  renderedRefBindings?: RenderedStructuredRefBinding[];
+  renderedRefErrors?: string[];
+  activeDatasetHash?: string;
   policyConfig?: PricingPolicyConfig;
 }
 
@@ -229,8 +239,8 @@ export class ClaimLevelValidator {
     // 8. Scoped Monetary & Quote Evidence Validation (uses expectedQuotes + validEvidence)
     this.validateMonetaryAndQuoteClaims(text, context, verifiedClaims, evidenceCitations, recordCheck);
 
-    // 9. Structured Claim Reference Verification (when model outputs claim_refs)
-    this.validateStructuredClaimRefs(text, context, recordCheck);
+    // 9. Structured Claim Reference Verification (when model outputs claim_refs or backend rendered {{ref:...}})
+    this.validateStructuredClaimRefs(text, context, recordCheck, claimChecks);
 
     // 10. Media Attachment Consistency
     this.validateMediaAttachments(text, urlMatches, context, verifiedClaims, evidenceCitations, recordCheck);
@@ -746,7 +756,10 @@ export class ClaimLevelValidator {
 
     const addendum = loadOwnerPolicyAddendums();
     const activeEffectivePolicy = context.effectivePolicyVersion ?? '1.4.6';
-    const activeDatasetHash = computeDatasetVersionHash(this.dataset, context.policyConfig ?? null, addendum);
+    const activeDatasetHash =
+      context.activeDatasetHash && !context.policyConfig
+        ? context.activeDatasetHash
+        : computeDatasetVersionHash(this.dataset, context.policyConfig ?? null, addendum);
 
     // Collect valid active evidence & expectedQuotes for THIS facility
     const rawExpected = context.expectedQuotes || [];
@@ -909,37 +922,40 @@ export class ClaimLevelValidator {
             eligible: eligFlag,
           });
         }
-        return {
-          evidenceId: `expected_quote_${q.roomId}_${idx}`,
-          propertyId: (q.propertyId ?? context.facility ?? 'jacayl-ha-dong') as CoSoMa,
-          roomId: resolvedRoomId,
-          roomCode: q.roomCode ?? resolvedRoomId.split('-')[0],
-          roomName: q.roomName ?? roomMeta?.ten_phong,
-          category: resolvedCat,
-          evidenceType: 'QUOTE' as const,
-          toolSource: 'quote_price',
-          stayPackage: q.stayType,
-          amountVnd: q.totalVnd,
-          basePriceVnd: q.baseVnd,
-          extraHourRateVnd: q.extraHourRateVnd,
-          extraHourSubtotalVnd: q.extraHourSubtotalVnd,
-          alternateAmountsVnd: Array.from(alts),
-          scopedRates,
-          eligible: eligFlag,
-          timeCondition: cond,
-          ineligibilityReason: q.ineligibilityReason,
-          durationHours: q.durationHours,
-          checkinDatetime: q.checkinCondition,
-          effectivePolicyVersion: q.policyVersion ?? activeEffectivePolicy,
-          datasetVersion: activeDatasetHash,
-          validityScope: 'SESSION_WHILE_VALID' as const,
-          isValid: true,
-          recordedTurn: 0,
-        };
+        return enrichEvidenceScopedFacts(
+          {
+            evidenceId: `expected_quote_${q.roomId}_${idx}`,
+            propertyId: (q.propertyId ?? context.facility ?? 'jacayl-ha-dong') as CoSoMa,
+            roomId: resolvedRoomId,
+            roomCode: q.roomCode ?? resolvedRoomId.split('-')[0],
+            roomName: q.roomName ?? roomMeta?.ten_phong,
+            category: resolvedCat,
+            evidenceType: 'QUOTE' as const,
+            toolSource: 'quote_price',
+            stayPackage: q.stayType,
+            amountVnd: q.totalVnd,
+            basePriceVnd: q.baseVnd,
+            extraHourRateVnd: q.extraHourRateVnd,
+            extraHourSubtotalVnd: q.extraHourSubtotalVnd,
+            alternateAmountsVnd: Array.from(alts),
+            scopedRates,
+            eligible: eligFlag,
+            timeCondition: cond,
+            ineligibilityReason: q.ineligibilityReason,
+            durationHours: q.durationHours,
+            checkinDatetime: q.checkinCondition,
+            effectivePolicyVersion: q.policyVersion ?? activeEffectivePolicy,
+            datasetVersion: activeDatasetHash,
+            validityScope: 'SESSION_WHILE_VALID' as const,
+            isValid: true,
+            recordedTurn: 0,
+          },
+          activeDatasetHash
+        );
       });
 
     // Combine deduplicated active price evidence (prefer full validPriceEntries + expectedQuotes)
-    const activeEntries = [...validPriceEntries];
+    const activeEntries = validPriceEntries.map((ev) => enrichEvidenceScopedFacts(ev, activeDatasetHash));
     for (const b of bridgedFromExpected) {
       const dup = activeEntries.some(
         (e) =>
@@ -956,25 +972,14 @@ export class ClaimLevelValidator {
       ? this.dataset.phong.filter((p) => p.co_so_ma === context.facility)
       : [];
 
+    const renderedBindingsQueue = [...(context.renderedRefBindings || [])];
     const userMsgLower = (context.userMessage || '').toLowerCase();
 
     for (const mention of mentions) {
       const localPre = text.slice(Math.max(0, mention.index - 55), mention.index).toLowerCase();
-      const localAround = text
-        .slice(Math.max(0, mention.index - 50), Math.min(text.length, mention.index + mention.raw.length + 40))
-        .toLowerCase();
 
       // 1) Distinguish guest budget / echoed user figures -> NOT_APPLICABLE
-      const isBudgetPhrase =
-        /(?:ngân sách|tầm giá|tầm tiền|trong tầm|tài chính|mức trần|tối đa|dưới mức|dưới\s*$|trên\s*$|bạn đưa ra|bạn vừa nêu|bạn hỏi|anh\/chị nêu|khách nêu|với mức)\s*[^.\n:]*$/i.test(
-          localPre
-        ) ||
-        /(?:của anh\/chị|của bạn|vượt ngân sách|nằm trong ngân sách)/i.test(localAround) ||
-        (typeof context.guestBudgetVnd === 'number' &&
-          mention.amountVnd === context.guestBudgetVnd &&
-          /(?:ngân sách|tầm|khoảng|dưới|tối đa|vượt)/i.test(mention.sentenceLower));
-
-      if (isBudgetPhrase) {
+      if (this.isBudgetOrEchoMention(text, mention, context.guestBudgetVnd)) {
         recordCheck({
           claim_type: 'PRICE',
           raw_text: mention.raw,
@@ -987,6 +992,9 @@ export class ClaimLevelValidator {
 
       // 2) Zero-fee (0đ) policy validation (strictly check Owner-approved provenance for holiday vs grace evidence)
       if (mention.amountVnd === 0) {
+        const localAround = text
+          .slice(Math.max(0, mention.index - 50), Math.min(text.length, mention.index + mention.raw.length + 40))
+          .toLowerCase();
         const isHolidayZero = /(?:ngày lễ|lễ|tết|phụ thu lễ|tăng giá.*lễ)/i.test(mention.sentenceLower);
         const isGraceZero = /(?:phát sinh|trễ|muộn|ân hạn|quá giờ|miễn phí giờ)/i.test(mention.sentenceLower) ||
           /(?:0đ phát sinh|phát sinh\s*0đ)/i.test(localAround);
@@ -1077,6 +1085,60 @@ export class ClaimLevelValidator {
       const precedingHeader = /^[-*•]/.test(curLineTrim) || !curLineTrim.includes(':') ? prevHeaderCandidate : undefined;
       const clauseScope = this.detectClauseEntityScope(mention, localPre, facilityRooms, precedingHeader);
 
+      // Direct verification when this mention was deterministically rendered from a verified backend {{ref:...}} binding
+      const boundIdx = renderedBindingsQueue.findIndex((b) => b.amountVnd === mention.amountVnd);
+      if (boundIdx !== -1) {
+        const binding = renderedBindingsQueue[boundIdx];
+        // Still reject if surrounding prose explicitly mislabels the rendered role (e.g. EXTRA_HOUR_SUBTOTAL labeled /giờ)
+        const roleConflict =
+          binding.role !== 'FIELD' &&
+          clauseScope.monetaryRole !== 'ANY' &&
+          clauseScope.monetaryRole !== binding.role &&
+          !(binding.role === 'BASE_2H' && clauseScope.monetaryRole === 'TOTAL' && binding.durationHours === 2) &&
+          !(binding.role === 'TOTAL' && clauseScope.monetaryRole === 'BASE_2H' && binding.durationHours === 2);
+        if (roleConflict) {
+          renderedBindingsQueue.splice(boundIdx, 1);
+          recordCheck({
+            claim_type: 'PRICE',
+            raw_text: mention.raw,
+            normalized_value: mention.amountVnd,
+            status: 'CONTRADICTED',
+            reason: `REJECTED_RENDERED_ROLE_CONFLICT: Rendered ref "${binding.ref}" (${binding.role}) contradicts surrounding clause framing (${clauseScope.monetaryRole}).`,
+          });
+          continue;
+        }
+        const catIncompleteReason = this.checkHeterogeneousCategoryCompleteness(
+          text,
+          mention,
+          clauseScope,
+          facilityRooms,
+          precedingHeader
+        );
+        if (catIncompleteReason) {
+          renderedBindingsQueue.splice(boundIdx, 1);
+          recordCheck({
+            claim_type: 'PRICE',
+            raw_text: mention.raw,
+            normalized_value: mention.amountVnd,
+            status: 'CONTRADICTED',
+            reason: catIncompleteReason,
+          });
+          continue;
+        }
+        renderedBindingsQueue.splice(boundIdx, 1);
+        verifiedClaims.push(`VERIFIED_STRUCTURED_RENDER: ${mention.raw} rendered via ${binding.ref}.`);
+        evidenceCitations.push(binding.evidenceId);
+        recordCheck({
+          claim_type: 'PRICE',
+          raw_text: mention.raw,
+          normalized_value: mention.amountVnd,
+          status: 'VERIFIED',
+          reason: `Grounded monetary value ${mention.raw} via structured ref ${binding.ref}.`,
+          matched_evidence_id: binding.evidenceId,
+        });
+        continue;
+      }
+
       // Filter entries applicable to this clause's entity/package
       const quoteEntries = activeEntries.filter((e) => e.evidenceType === 'QUOTE');
       const catalogOrFactsEntries = activeEntries.filter(
@@ -1157,6 +1219,22 @@ export class ClaimLevelValidator {
       }
     }
     void userMsgLower;
+  }
+
+  private isBudgetOrEchoMention(text: string, mention: ParsedVndMention, guestBudgetVnd?: number): boolean {
+    const localPre = text.slice(Math.max(0, mention.index - 55), mention.index).toLowerCase();
+    const localAround = text
+      .slice(Math.max(0, mention.index - 50), Math.min(text.length, mention.index + mention.raw.length + 40))
+      .toLowerCase();
+    return (
+      /(?:ngân sách|tầm giá|tầm tiền|trong tầm|tài chính|mức trần|tối đa|dưới mức|dưới\s*$|trên\s*$|bạn đưa ra|bạn vừa nêu|bạn hỏi|anh\/chị nêu|khách nêu|với mức)\s*[^.\n:]*$/i.test(
+        localPre
+      ) ||
+      /(?:của anh\/chị|của bạn|vượt ngân sách|nằm trong ngân sách)/i.test(localAround) ||
+      (typeof guestBudgetVnd === 'number' &&
+        mention.amountVnd === guestBudgetVnd &&
+        /(?:ngân sách|tầm|khoảng|dưới|tối đa|vượt)/i.test(mention.sentenceLower))
+    );
   }
 
   private detectClauseEntityScope(
@@ -1304,7 +1382,7 @@ export class ClaimLevelValidator {
       monetaryRole = 'EXTRA_HOUR_RATE';
     } else if (isBase2hOnly) {
       monetaryRole = 'BASE_2H';
-    } else if (/(?:đợi|chờ|lùi|nếu nhận)\s*(?:đến|tới|từ)?\s*21[:h]40/iu.test(s) && /qua đêm|420|560|700/iu.test(subClause)) {
+    } else if (/(?:đợi|chờ|lùi|nếu nhận)\s*(?:đến|tới|từ)?\s*21[:h]40/iu.test(s) && /qua đêm|qua dem|sau 21[:h]40|gói đêm/iu.test(subClause)) {
       monetaryRole = 'ALT_21_40';
     } else if (stayPackage === 'nghi_gio' && explicitTotalHours && explicitTotalHours >= 3) {
       monetaryRole = 'TOTAL';
@@ -1446,24 +1524,49 @@ export class ClaimLevelValidator {
 
   private roleMatchesFact(
     expectedRole: ReturnType<ClaimLevelValidator['detectClauseEntityScope']>['monetaryRole'],
-    factRole: ScopedRateFact['role'],
-    factDurationHours: number | undefined,
+    fact: ScopedRateFact,
     clauseDurationHours: number | undefined
   ): boolean {
+    const factRole = fact.role;
+    const factDurationHours = fact.durationHours;
     if (expectedRole === 'EXTRA_HOUR_RATE') return factRole === 'EXTRA_HOUR_RATE' || factRole === 'POLICY_RATE';
     if (expectedRole === 'EXTRA_HOUR_SUBTOTAL') return factRole === 'EXTRA_HOUR_SUBTOTAL';
-    if (expectedRole === 'BASE_2H') return factRole === 'BASE_2H' || (factRole === 'TOTAL' && factDurationHours === 2);
+    if (expectedRole === 'BASE_2H') {
+      return factRole === 'BASE_2H' || (factRole === 'TOTAL' && fact.stayPackage === 'nghi_gio' && factDurationHours === 2);
+    }
     if (expectedRole === 'ALT_21_40') return factRole === 'ALT_21_40';
     if (expectedRole === 'TOTAL') {
       if (factRole !== 'TOTAL') return false;
-      if (clauseDurationHours && clauseDurationHours >= 3 && factDurationHours && factDurationHours !== clauseDurationHours) {
+      // Multi-hour hourly totals (>= 3h) require matching explicit duration in the clause/header context
+      if (fact.stayPackage === 'nghi_gio' && factDurationHours && factDurationHours >= 3) {
+        return clauseDurationHours === factDurationHours;
+      }
+      if (clauseDurationHours && factDurationHours && factDurationHours !== clauseDurationHours) {
         return false;
       }
       return true;
     }
-    if (expectedRole === 'PACKAGE_RATE') return factRole === 'PACKAGE_RATE' || factRole === 'TOTAL';
-    // 'ANY': still NEVER allow EXTRA_HOUR_SUBTOTAL or EXTRA_HOUR_RATE or ALT_21_40 to impersonate a primary quote
-    return factRole !== 'EXTRA_HOUR_SUBTOTAL' && factRole !== 'ALT_21_40';
+    if (expectedRole === 'PACKAGE_RATE') {
+      return (
+        factRole === 'PACKAGE_RATE' ||
+        (factRole === 'TOTAL' &&
+          (fact.stayPackage === 'qua_dem' || fact.stayPackage === 'ngay_dem') &&
+          fact.isBaseEquivalent === true)
+      );
+    }
+    // 'ANY': NEVER allow EXTRA_HOUR_SUBTOTAL, EXTRA_HOUR_RATE, POLICY_RATE, or ALT_21_40 to impersonate a primary quote
+    if (
+      factRole === 'EXTRA_HOUR_SUBTOTAL' ||
+      factRole === 'ALT_21_40' ||
+      factRole === 'EXTRA_HOUR_RATE' ||
+      factRole === 'POLICY_RATE'
+    ) {
+      return false;
+    }
+    if (clauseDurationHours && factDurationHours && factDurationHours !== clauseDurationHours) {
+      return false;
+    }
+    return true;
   }
 
   private findMatchingEvidenceForMention(
@@ -1581,7 +1684,7 @@ export class ClaimLevelValidator {
             if (scope.stayPackage && r.stayPackage && r.stayPackage !== 'ALL' && r.stayPackage !== scope.stayPackage) {
               continue;
             }
-            if (!this.roleMatchesFact(scope.monetaryRole, r.role, r.durationHours, scope.explicitTotalHours)) {
+            if (!this.roleMatchesFact(scope.monetaryRole, r, scope.explicitTotalHours)) {
               continue;
             }
             // P0-2a: Enforce eligibility across evidence lifecycle
@@ -1704,23 +1807,57 @@ export class ClaimLevelValidator {
   private validateStructuredClaimRefs(
     text: string,
     context: ClaimValidationContext,
-    recordCheck: (c: DetailedClaimCheck) => void
+    recordCheck: (c: DetailedClaimCheck) => void,
+    claimChecks: DetailedClaimCheck[]
   ): void {
+    // 1) Propagate any errors caught during deterministic backend {{ref:...}} rendering
+    for (const renderErr of context.renderedRefErrors || []) {
+      recordCheck({
+        claim_type: 'PRICE',
+        raw_text: 'structured_placeholder',
+        status: 'CONTRADICTED',
+        reason: renderErr,
+      });
+    }
+
     const refs = context.structuredClaimRefs;
     if (!refs || refs.length === 0) return;
+
+    const addendum = loadOwnerPolicyAddendums();
+    const activeEffectivePolicy = context.effectivePolicyVersion ?? '1.4.6';
+    const activeDatasetHash =
+      context.activeDatasetHash && !context.policyConfig
+        ? context.activeDatasetHash
+        : computeDatasetVersionHash(this.dataset, context.policyConfig ?? null, addendum);
+
     const allEvidence = context.validEvidence || [];
     const activeValid = allEvidence.filter((e) => e.isValid);
     const evidenceMap = new Map<string, BusinessEvidenceRecord>();
     for (const ev of allEvidence) {
       evidenceMap.set(ev.evidenceId, ev);
     }
-    const textPrices = new Set(extractVndMentions(text).map((m) => m.amountVnd));
+
+    // Collect ONLY non-budget VND mentions (or VERIFIED non-budget claims) so budget echoes never satisfy a rate ref!
+    const allMentions = extractVndMentions(text);
+    const nonBudgetMentions = allMentions.filter(
+      (m) => !this.isBudgetOrEchoMention(text, m, context.guestBudgetVnd)
+    );
+    const nonBudgetAmounts = new Set(nonBudgetMentions.map((m) => m.amountVnd));
+    const verifiedAmountsByRole = new Map<number, Set<string>>();
+    for (const m of nonBudgetMentions) {
+      const check = claimChecks.find(
+        (c) => c.claim_type === 'PRICE' && c.status === 'VERIFIED' && c.raw_text === m.raw && c.normalized_value === m.amountVnd
+      );
+      if (check) {
+        const set = verifiedAmountsByRole.get(m.amountVnd) || new Set<string>();
+        set.add(check.matched_evidence_id || '');
+        verifiedAmountsByRole.set(m.amountVnd, set);
+      }
+    }
 
     for (const rawRef of refs) {
-      // Structured role or field reference: <evId>::<ROLE> or <evId>#<field>
-      const roleSplit = rawRef.match(/^([^:#]+)::([A-Z0-9_]+)$/);
-      const fieldSplit = rawRef.match(/^([^:#]+)#([a-zA-Z0-9_]+)$/);
-      const baseId = roleSplit ? roleSplit[1] : fieldSplit ? fieldSplit[1] : rawRef;
+      const roleOrFieldMatch = rawRef.match(/^([^:#]+)(?:::|#)([a-zA-Z0-9_@/\-]+)$/);
+      const baseId = roleOrFieldMatch ? roleOrFieldMatch[1] : rawRef;
       const exactEv = evidenceMap.get(baseId);
 
       if (exactEv) {
@@ -1733,58 +1870,100 @@ export class ClaimLevelValidator {
           });
           continue;
         }
-        if (roleSplit) {
-          const targetRole = roleSplit[2];
-          const fact = (exactEv.scopedRates || []).find((r) => r.role === targetRole);
-          if (!fact) {
+        if (context.facility && exactEv.propertyId !== context.facility) {
+          recordCheck({
+            claim_type: 'POLICY',
+            raw_text: rawRef,
+            status: 'CONTRADICTED',
+            reason: `REJECTED_INVALID_CLAIM_REF: Structured claim_ref "${rawRef}" belongs to property "${exactEv.propertyId}", not "${context.facility}".`,
+          });
+          continue;
+        }
+        if (exactEv.effectivePolicyVersion !== activeEffectivePolicy) {
+          recordCheck({
+            claim_type: 'POLICY',
+            raw_text: rawRef,
+            status: 'CONTRADICTED',
+            reason: `REJECTED_POLICY_VERSION_MISMATCH: Structured claim_ref "${rawRef}" uses policy "${exactEv.effectivePolicyVersion}", not "${activeEffectivePolicy}".`,
+          });
+          continue;
+        }
+        if (exactEv.datasetVersion && exactEv.datasetVersion !== activeDatasetHash) {
+          recordCheck({
+            claim_type: 'POLICY',
+            raw_text: rawRef,
+            status: 'CONTRADICTED',
+            reason: `REJECTED_STALE_DATASET_REVISION: Structured claim_ref "${rawRef}" uses revision "${exactEv.datasetVersion}", not active "${activeDatasetHash}".`,
+          });
+          continue;
+        }
+
+        if (roleOrFieldMatch) {
+          const resolved = resolveStructuredRateSelector(exactEv, rawRef);
+          if (resolved.status === 'MISSING_FIELD') {
             recordCheck({
               claim_type: 'PRICE',
               raw_text: rawRef,
               status: 'CONTRADICTED',
-              reason: `REJECTED_MISSING_SCOPED_ROLE_REF: Role "${targetRole}" does not exist in evidence "${baseId}".`,
+              reason: `REJECTED_MISSING_FIELD_REF: ${resolved.reason}`,
             });
-          } else if (fact.eligible === false && !/(?:không\s+(?:áp dụng|đủ điều kiện)|ngoài khung)/iu.test(text)) {
+            continue;
+          }
+          if (resolved.status === 'AMBIGUOUS') {
+            recordCheck({
+              claim_type: 'PRICE',
+              raw_text: rawRef,
+              status: 'CONTRADICTED',
+              reason: `REJECTED_AMBIGUOUS_CLAIM_REF: ${resolved.reason}`,
+            });
+            continue;
+          }
+          if (resolved.status !== 'MATCHED') {
+            recordCheck({
+              claim_type: 'PRICE',
+              raw_text: rawRef,
+              status: 'CONTRADICTED',
+              reason: `REJECTED_MISSING_SCOPED_ROLE_REF: ${resolved.reason}`,
+            });
+            continue;
+          }
+          if (resolved.fact.eligible === false && !/(?:không\s+(?:áp dụng|đủ điều kiện)|ngoài khung|nếu\s+(?:đợi|chờ|lùi)\s*(?:đến|tới)?\s*21[:h]40)/iu.test(text)) {
             recordCheck({
               claim_type: 'POLICY',
               raw_text: rawRef,
               status: 'CONTRADICTED',
-              reason: `REJECTED_INELIGIBLE_CLAIM_REF: Referenced rate ${rawRef} is marked INELIGIBLE (${fact.ineligibilityReason || 'window_mismatch'}).`,
+              reason: `REJECTED_INELIGIBLE_CLAIM_REF: Referenced rate ${rawRef} is marked INELIGIBLE (${resolved.fact.ineligibilityReason || 'window_mismatch'}).`,
             });
-          } else if (textPrices.size > 0 && !textPrices.has(fact.amountVnd)) {
+            continue;
+          }
+          // Every referenced monetary role/field MUST appear as a VERIFIED non-budget amount in final text (no textPrices.size > 0 bypass!)
+          const isRoleVerifiedInText =
+            nonBudgetAmounts.has(resolved.amountVnd) &&
+            (verifiedAmountsByRole.get(resolved.amountVnd)?.size ?? 0) > 0;
+          if (!isRoleVerifiedInText) {
             recordCheck({
               claim_type: 'PRICE',
               raw_text: rawRef,
-              normalized_value: fact.amountVnd,
+              normalized_value: resolved.amountVnd,
               status: 'CONTRADICTED',
-              reason: `REJECTED_CLAIM_REF_TEXT_MISMATCH: Role ref "${rawRef}" expects ${fact.amountVnd.toLocaleString('vi-VN')}đ, missing from final text.`,
+              reason: `REJECTED_CLAIM_REF_TEXT_MISMATCH: Structured ref "${rawRef}" expects ${resolved.amountVnd.toLocaleString('vi-VN')}đ as a verified non-budget hotel claim in final text, but it is missing or unverified.`,
             });
+            continue;
           }
           continue;
         }
-        if (fieldSplit) {
-          const fieldKey = fieldSplit[2];
-          const fieldVal = exactEv.fieldRefs?.[fieldKey];
-          if (typeof fieldVal === 'number' && textPrices.size > 0 && !textPrices.has(fieldVal)) {
-            recordCheck({
-              claim_type: 'PRICE',
-              raw_text: rawRef,
-              normalized_value: fieldVal,
-              status: 'CONTRADICTED',
-              reason: `REJECTED_CLAIM_REF_TEXT_MISMATCH: Field ref "${rawRef}" expects ${fieldVal.toLocaleString('vi-VN')}đ, missing from final text.`,
-            });
-          }
-          continue;
-        }
-        if (exactEv.evidenceType === 'QUOTE' && typeof exactEv.amountVnd === 'number' && textPrices.size > 0) {
+
+        // Plain evidenceId ref (without ::ROLE or #field) on QUOTE: require exact quote amount in non-budget text
+        if (exactEv.evidenceType === 'QUOTE' && typeof exactEv.amountVnd === 'number') {
           const expectedSet = new Set<number>([exactEv.amountVnd, ...(exactEv.alternateAmountsVnd || [])]);
-          const hasAnyExpected = Array.from(textPrices).some((p) => expectedSet.has(p));
+          const hasAnyExpected = Array.from(nonBudgetAmounts).some((p) => expectedSet.has(p));
           if (!hasAnyExpected) {
             recordCheck({
               claim_type: 'PRICE',
               raw_text: rawRef,
               normalized_value: exactEv.amountVnd,
               status: 'CONTRADICTED',
-              reason: `REJECTED_CLAIM_REF_TEXT_MISMATCH: Structured claim_ref "${rawRef}" expects ${exactEv.amountVnd.toLocaleString('vi-VN')}đ, which mismatches final text prices [${Array.from(textPrices).join(', ')}].`,
+              reason: `REJECTED_CLAIM_REF_TEXT_MISMATCH: Structured claim_ref "${rawRef}" expects ${exactEv.amountVnd.toLocaleString('vi-VN')}đ in final text, which is missing or mismatched ([${Array.from(nonBudgetAmounts).join(', ')}]).`,
             });
           }
         }

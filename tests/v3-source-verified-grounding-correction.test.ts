@@ -435,5 +435,257 @@ describe('J COLLECTION V3.0 FINAL — Source-Verified Grounding Correction & Sim
     expect(degradedRec.semantic_quality).toBe('FAIL');
     expect(degradedRec.goal_completion).toBe('INCOMPLETE');
     expect(degradedRec.findings.some((f) => f.includes('ORACLE_ROOM_EXTRA_RATE_MISMATCH'))).toBe(true);
+
+    // Non-empty hotline/VND text without canonical tool verification NEVER defaults to COMPLETE or ALIGNED
+    const ungroundedHotlineAudit = auditor.evaluateCheckpointRecords(
+      [
+        {
+          scenarioId: 'TEST-NO-KEYWORD-DEFAULT-PASS',
+          propertyId: 'jacayl-ha-dong',
+          category: 'faq_policies',
+          split: 'held_out',
+          status: 'live_completed',
+          businessPassed: true,
+          turns: [
+            {
+              turnIndex: 1,
+              userMessage: 'Cho mình hỏi bên mình có xuất hóa đơn đỏ VAT hay nhận thanh toán thẻ không?',
+              deliveredResponse: 'Dạ anh/chị vui lòng liên hệ trực tiếp quầy lễ tân hoặc hotline 0522 464 646 để được hỗ trợ ạ.',
+              toolsExecuted: [],
+              verificationStatus: 'LIVE_LLM_DECISION_VERIFIED',
+            },
+          ],
+        },
+      ],
+      new Map()
+    );
+    const hotlineRec = ungroundedHotlineAudit.evaluatedRecords[0];
+    expect(hotlineRec.goal_completion).toBe('HUMAN_REVIEW_REQUIRED');
+    expect(hotlineRec.context_understanding).toBe('HUMAN_REVIEW_REQUIRED');
+    expect(hotlineRec.terminal_outcome).toBe('PENDING_HUMAN_REVIEW');
+  });
+
+  it('Final Contract Completion: Enforces strict roleMatchesFact, full hash sensitivity (caption/description/provenance), missing/null/budget/ambiguous claim_refs, and {{ref:...}} backend rendering', async () => {
+    // 1. roleMatchesFact: 'ANY' rejects EXTRA_HOUR_RATE (200k on 601 without per-hour framing);
+    //    TOTAL missing duration rejects 4h hourly total; PACKAGE_RATE rejects surcharged TOTAL (520k)
+    const lateOvernightEv = [
+      {
+        evidenceId: 'ev_q601_overnight',
+        propertyId: 'jacayl-ha-dong' as const,
+        roomId: '601-50-sac-thai',
+        category: 'Concept',
+        evidenceType: 'QUOTE' as const,
+        toolSource: 'quote_price',
+        stayPackage: 'qua_dem' as const,
+        amountVnd: 900000, // 700k base + 200k 1h late checkout
+        basePriceVnd: 700000,
+        extraHourRateVnd: 200000,
+        extraHourSubtotalVnd: 200000,
+        scopedRates: [
+          { amountVnd: 900000, role: 'TOTAL' as const, roomId: '601-50-sac-thai', stayPackage: 'qua_dem' as const, eligible: true, isBaseEquivalent: false },
+          { amountVnd: 700000, role: 'PACKAGE_RATE' as const, roomId: '601-50-sac-thai', stayPackage: 'qua_dem' as const, eligible: true, isBaseEquivalent: true },
+          { amountVnd: 200000, role: 'EXTRA_HOUR_RATE' as const, roomId: '601-50-sac-thai', stayPackage: 'EXTRA_HOUR' as const, eligible: true },
+          { amountVnd: 200000, role: 'EXTRA_HOUR_SUBTOTAL' as const, roomId: '601-50-sac-thai', stayPackage: 'qua_dem' as const, eligible: true },
+        ],
+        fieldRefs: { total: 900000, package_rate: 700000, extra_hour_subtotal: 200000 },
+        effectivePolicyVersion: '1.4.6',
+        datasetVersion: activeHash,
+        validityScope: 'SESSION_WHILE_VALID' as const,
+        isValid: true,
+        recordedTurn: 1,
+      },
+    ];
+    // 'ANY' must reject 200k EXTRA_HOUR_RATE masquerading as package quote
+    const anyVsExtraRate = validator.validate('Dạ phòng 601 giá 200.000đ ạ.', {
+      facility: 'jacayl-ha-dong',
+      validEvidence: lateOvernightEv,
+      effectivePolicyVersion: '1.4.6',
+    });
+    expect(anyVsExtraRate.rejected_claims.length).toBeGreaterThan(0);
+
+    // 'PACKAGE_RATE' must reject non-equivalent surcharged TOTAL (900k labeled "giá gói")
+    const pkgVsSurchargedTotal = validator.validate('Dạ phòng 601 giá gói qua đêm gốc là 900.000đ ạ.', {
+      facility: 'jacayl-ha-dong',
+      validEvidence: lateOvernightEv,
+      effectivePolicyVersion: '1.4.6',
+    });
+    expect(pkgVsSurchargedTotal.rejected_claims.some((r) => r.includes('REJECTED_PRICE_MISMATCH'))).toBe(true);
+
+    // 'TOTAL' missing duration must reject 4h hourly total when "4 tiếng" is omitted
+    const ev4h = [
+      {
+        evidenceId: 'ev_101_4h',
+        propertyId: 'jacayl-ha-dong' as const,
+        roomId: '101-long-chim',
+        category: 'Concept',
+        evidenceType: 'QUOTE' as const,
+        toolSource: 'quote_price',
+        stayPackage: 'nghi_gio' as const,
+        durationHours: 4,
+        amountVnd: 599000,
+        scopedRates: [
+          { amountVnd: 599000, role: 'TOTAL' as const, roomId: '101-long-chim', stayPackage: 'nghi_gio' as const, durationHours: 4, eligible: true },
+        ],
+        fieldRefs: { total: 599000, extra_hour_subtotal: null },
+        effectivePolicyVersion: '1.4.6',
+        datasetVersion: activeHash,
+        validityScope: 'SESSION_WHILE_VALID' as const,
+        isValid: true,
+        recordedTurn: 1,
+      },
+    ];
+    const totalWithoutDuration = validator.validate('Dạ phòng 101 tổng chi phí là 599.000đ ạ.', {
+      facility: 'jacayl-ha-dong',
+      validEvidence: ev4h,
+      effectivePolicyVersion: '1.4.6',
+    });
+    expect(totalWithoutDuration.rejected_claims.some((r) => r.includes('REJECTED_PRICE_MISMATCH'))).toBe(true);
+
+    // 2. Claim_refs negative edges: missing #field, null #field (-> NEVER 0đ), missing amount in text, budget-only echo, ambiguous multi-condition role
+    const missingField = validator.validate('Dạ phòng 101 nghỉ 4 tiếng tổng 599.000đ ạ.', {
+      facility: 'jacayl-ha-dong',
+      validEvidence: ev4h,
+      structuredClaimRefs: ['ev_101_4h#does_not_exist'],
+      effectivePolicyVersion: '1.4.6',
+    });
+    expect(missingField.rejected_claims.some((c) => c.includes('REJECTED_MISSING_FIELD_REF'))).toBe(true);
+
+    const nullFieldZeroCheck = validator.validate('Dạ phòng 101 phụ thu 0đ ạ.', {
+      facility: 'jacayl-ha-dong',
+      validEvidence: ev4h,
+      structuredClaimRefs: ['ev_101_4h#extra_hour_subtotal'],
+      effectivePolicyVersion: '1.4.6',
+    });
+    expect(nullFieldZeroCheck.rejected_claims.some((c) => c.includes('REJECTED_MISSING_FIELD_REF'))).toBe(true);
+
+    const refMissingFromText = validator.validate('Dạ em xin kiểm tra lại giúp anh ạ.', {
+      facility: 'jacayl-ha-dong',
+      validEvidence: ev4h,
+      structuredClaimRefs: ['ev_101_4h::TOTAL'],
+      effectivePolicyVersion: '1.4.6',
+    });
+    expect(refMissingFromText.rejected_claims.some((c) => c.includes('REJECTED_CLAIM_REF_TEXT_MISMATCH'))).toBe(true);
+
+    const budgetBypassAttempt = validator.validate('Với ngân sách 599.000đ của anh, phòng 101 là lựa chọn đẹp nhất ạ.', {
+      facility: 'jacayl-ha-dong',
+      guestBudgetVnd: 599000,
+      validEvidence: ev4h,
+      structuredClaimRefs: ['ev_101_4h::TOTAL'],
+      effectivePolicyVersion: '1.4.6',
+    });
+    expect(budgetBypassAttempt.rejected_claims.some((c) => c.includes('REJECTED_CLAIM_REF_TEXT_MISMATCH'))).toBe(true);
+
+    const condMultiEv = [
+      {
+        evidenceId: 'ev_cond_201',
+        propertyId: 'jacayl-ha-dong' as const,
+        roomId: '201-la-casta',
+        category: 'Standard',
+        evidenceType: 'QUOTE' as const,
+        toolSource: 'quote_price',
+        stayPackage: 'nghi_gio' as const,
+        durationHours: 2,
+        scopedRates: [
+          { amountVnd: 159000, role: 'TOTAL' as const, roomId: '201-la-casta', stayPackage: 'nghi_gio' as const, durationHours: 2, timeCondition: 'weekday_or_after_18', eligible: true },
+          { amountVnd: 180000, role: 'TOTAL' as const, roomId: '201-la-casta', stayPackage: 'nghi_gio' as const, durationHours: 2, timeCondition: 'weekend_daytime', eligible: true },
+        ],
+        effectivePolicyVersion: '1.4.6',
+        datasetVersion: activeHash,
+        validityScope: 'CONDITIONAL' as const,
+        isValid: true,
+        recordedTurn: 1,
+      },
+    ];
+    const ambiguousRefRes = validator.validate('Dạ phòng 201 giá 159.000đ ạ.', {
+      facility: 'jacayl-ha-dong',
+      validEvidence: condMultiEv,
+      structuredClaimRefs: ['ev_cond_201::TOTAL'],
+      effectivePolicyVersion: '1.4.6',
+    });
+    expect(ambiguousRefRes.rejected_claims.some((c) => c.includes('REJECTED_AMBIGUOUS_CLAIM_REF'))).toBe(true);
+
+    const disambiguatedRefRes = validator.validate('Dạ phòng 201 ban ngày cuối tuần giá 180.000đ ạ.', {
+      facility: 'jacayl-ha-dong',
+      validEvidence: condMultiEv,
+      structuredClaimRefs: ['ev_cond_201::TOTAL@weekend_daytime'],
+      effectivePolicyVersion: '1.4.6',
+    });
+    expect(disambiguatedRefRes.rejected_claims).toEqual([]);
+
+    // 3. Full Content Hash Sensitivity: caption, meta_description, and amenity provenance mutations ALL alter dataset hash
+    const captionMutated = {
+      ...dataset,
+      phong: dataset.phong.map((p, idx) =>
+        idx === 0 && p.anh.length > 0
+          ? { ...p, anh: p.anh.map((a, aIdx) => (aIdx === 0 ? { ...a, nhan: `${a.nhan}_MODIFIED` } : a)) }
+          : p
+      ),
+    };
+    const descMutated = {
+      ...dataset,
+      phong: dataset.phong.map((p, idx) => (idx === 0 ? { ...p, meta_description: 'Modified canonical description' } : p)),
+    };
+    const amenityProvMutated = {
+      ...dataset,
+      phong: dataset.phong.map((p, idx) =>
+        idx === 0
+          ? {
+              ...p,
+              tien_nghi: {
+                ...p.tien_nghi,
+                bon_tam: { ...p.tien_nghi.bon_tam, source: 'MODIFIED_PROVENANCE' },
+              },
+            }
+          : p
+      ),
+    };
+    expect(computeDatasetVersionHash(captionMutated)).not.toBe(activeHash);
+    expect(computeDatasetVersionHash(descMutated)).not.toBe(activeHash);
+    expect(computeDatasetVersionHash(amenityProvMutated)).not.toBe(activeHash);
+
+    // 4. Full Mock Runtime {{ref:...}} Backend Rendering:
+    //    Invalid/ambiguous placeholder is caught by GROUNDING_GATE and valid qualified placeholder renders exact canonical VND!
+    const runtimeRefAdapter = makeMockSequenceAdapter([
+      {
+        action: 'CALL_TOOLS',
+        thought_summary: 'Tra cứu báo giá điều kiện cho phòng 201 nghỉ 2 giờ.',
+        tool_calls: [{ tool_name: 'quote_price', arguments: { property_id: 'jacayl-ha-dong', room_id: '201-la-casta', stay_type: 'nghi_gio', duration_hours: 2 } }],
+      },
+      // Attempt 1 tries an ambiguous {{ref:ev_quote_201-la-casta_t1_1::TOTAL}} across weekday & weekend quotes -> blocked by Grounding Gate!
+      {
+        action: 'RESPOND_DIRECTLY',
+        thought_summary: 'Dùng placeholder mơ hồ không chỉ rõ khung giờ.',
+        final_response: 'Dạ phòng 201 — La Casta gói 2 tiếng giá {{ref:ev_quote_201-la-casta_t1_1::TOTAL}} ạ.',
+      },
+      // Attempt 2 uses exact disambiguated structured refs so backend renders 159.000đ and 180.000đ cleanly!
+      {
+        action: 'RESPOND_DIRECTLY',
+        thought_summary: 'Dùng placeholder phân biệt rõ ngày thường và cuối tuần.',
+        final_response:
+          'Dạ phòng 201 — La Casta nghỉ 2 tiếng có giá ngày thường / sau 18:00 là {{ref:ev_quote_201-la-casta_t1_1::TOTAL@weekday_or_after_18}} và ban ngày cuối tuần là {{ref:ev_quote_201-la-casta_t1_1::TOTAL@weekend_daytime}} ạ.',
+      },
+    ]);
+
+    const runtimeAgent = new JCollectionAgent(dataset, 'jacayl-ha-dong', {
+      llmAdapter: runtimeRefAdapter,
+      strictLiveOnly: true,
+    });
+    const prevEnvCommit = process.env.IMMUTABLE_BUILD_COMMIT;
+    process.env.IMMUTABLE_BUILD_COMMIT = 'immutable-test-sha-123';
+    try {
+      const rtRes = await runtimeAgent.processTurn('s-structured-render', 'Phòng 201 nghỉ 2 tiếng giá sao em?');
+      expect(rtRes.decision_trace.verificationStatus).toBe('LIVE_LLM_DECISION_VERIFIED');
+      expect(rtRes.decision_trace.decisionSteps.some((s) => s.phase === 'REVISE' && s.thoughtSummary.includes('REJECTED_AMBIGUOUS_CLAIM_REF'))).toBe(true);
+      expect(rtRes.customer_visible_response).toContain('159.000đ');
+      expect(rtRes.customer_visible_response).toContain('180.000đ');
+      expect(rtRes.customer_visible_response).not.toContain('{{ref:');
+      expect(rtRes.claim_validation.rejected_claims).toEqual([]);
+      expect(rtRes.claim_validation.grounding_status).toBe('VERIFIED');
+      expect(rtRes.decision_trace.llmTelemetry?.buildIdentity?.commit).toBe('immutable-test-sha-123');
+      expect(rtRes.decision_trace.llmTelemetry?.buildIdentity?.isImmutableStamp).toBe(true);
+    } finally {
+      if (prevEnvCommit === undefined) delete process.env.IMMUTABLE_BUILD_COMMIT;
+      else process.env.IMMUTABLE_BUILD_COMMIT = prevEnvCommit;
+    }
   });
 });

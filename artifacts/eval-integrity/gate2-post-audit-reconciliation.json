@@ -1,5 +1,5 @@
 {
-  "audited_at": "2026-11-26T14:49:34.806Z",
+  "audited_at": "2026-11-27T05:30:19.922Z",
   "source_artifact": "artifacts/eval-integrity/gate2-critical-replay.json",
   "source_git_commit": "1365f33",
   "historical_summary": {
@@ -26,7 +26,7 @@
     "grounding_blocks": 2
   },
   "post_audit_8axis_summary": {
-    "evaluated_at": "2026-11-26T14:49:34.806Z",
+    "evaluated_at": "2026-11-27T05:30:19.922Z",
     "total_scenarios": 9,
     "total_turns": 17,
     "by_execution_status": {
@@ -159,14 +159,16 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "FAIL",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": false,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline."
+      ],
       "findings": [
         "T1: INCOMPLETE_DEGRADED_EXECUTION: Execution status is DEGRADED, cannot mark goal COMPLETE.",
         "T1: SEMANTIC_FAIL_ON_NON_LIVE_EXECUTION: DEGRADED response cannot receive semantic PASS."
@@ -197,7 +199,7 @@
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
           "goal_completion": "INCOMPLETE",
-          "context_understanding": "ALIGNED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "FAIL",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 16919,
@@ -206,7 +208,8 @@
             "INCOMPLETE_DEGRADED_EXECUTION: Execution status is DEGRADED, cannot mark goal COMPLETE.",
             "SEMANTIC_FAIL_ON_NON_LIVE_EXECUTION: DEGRADED response cannot receive semantic PASS."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         },
         {
           "scenarioId": "REPLAY-SCENARIO-033",
@@ -244,14 +247,17 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "FAIL",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": false,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: INCOMPLETE_DEGRADED_EXECUTION: Execution status is DEGRADED, cannot mark goal COMPLETE.",
         "T1: SEMANTIC_FAIL_ON_NON_LIVE_EXECUTION: DEGRADED response cannot receive semantic PASS."
@@ -284,7 +290,7 @@
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
           "goal_completion": "INCOMPLETE",
-          "context_understanding": "ALIGNED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "FAIL",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 13124,
@@ -293,7 +299,8 @@
             "INCOMPLETE_DEGRADED_EXECUTION: Execution status is DEGRADED, cannot mark goal COMPLETE.",
             "SEMANTIC_FAIL_ON_NON_LIVE_EXECUTION: DEGRADED response cannot receive semantic PASS."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         },
         {
           "scenarioId": "REPLAY-SCENARIO-035",
@@ -307,14 +314,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 3143,
           "totalTokens": 7054,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -330,14 +338,16 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline."
+      ],
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept.",
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept."
@@ -370,8 +380,8 @@
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
           "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 7504,
           "totalTokens": 11907,
@@ -379,7 +389,8 @@
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept.",
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái] in heterogeneous category Concept."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         },
         {
           "scenarioId": "REPLAY-SCENARIO-039",
@@ -416,14 +427,16 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline."
+      ],
       "findings": [
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
         "T1: REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
@@ -456,8 +469,8 @@
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
           "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 11877,
           "totalTokens": 11640,
@@ -465,7 +478,8 @@
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 599.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept.",
             "REJECTED_INCOMPLETE_CATEGORY_PRICING: Single 4h amount 649.000đ contradicts distinct extra-hour tiers for cited rooms [50 — Sắc Thái, 602 — Playboy] in heterogeneous category Concept."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         },
         {
           "scenarioId": "REPLAY-SCENARIO-041",
@@ -501,15 +515,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-la-casta has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
       ],
@@ -538,16 +554,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 7165,
           "totalTokens": 5798,
           "findings": [
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 201-la-casta has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "REPLAY-QUOTE-REUSE-RETRACT",
@@ -662,7 +679,7 @@
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
       "goal_completion": "HUMAN_REVIEW_REQUIRED",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "UNVERIFIED_MISSING_ARTIFACT",
       "terminal_outcome": "CONFIRMED_FAIL",
@@ -671,7 +688,8 @@
       "needsHumanReview": false,
       "humanReviewReasons": [
         "Turn 1: Media artifact deliveredMedia[] omitted from log (recorded count=3); cannot independently verify canonical URLs.",
-        "Turn 3: Response lacks objective tool/pricing/policy evidence markers for automated goal sign-off."
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 3: Media artifact deliveredMedia[] omitted from log (recorded count=3); cannot independently verify canonical URLs."
       ],
       "findings": [
         "T1: UNVERIFIED_MEDIA_ARTIFACT: Compact log records count=3 without deliveredMedia[].",
@@ -703,9 +721,9 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "INSUFFICIENT_EVIDENCE",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "UNVERIFIED_MISSING_ARTIFACT",
           "latencyMs": 6034,
           "totalTokens": 5413,
@@ -727,16 +745,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 7583,
           "totalTokens": 5613,
           "findings": [
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 202-neon has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "REPLAY-MEDIA-CACHE",
@@ -749,7 +768,7 @@
           "grounding_status": "INSUFFICIENT_EVIDENCE",
           "business_accuracy": "ACCURATE",
           "goal_completion": "HUMAN_REVIEW_REQUIRED",
-          "context_understanding": "ALIGNED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "UNVERIFIED_MISSING_ARTIFACT",
           "latencyMs": 2183,
@@ -758,7 +777,7 @@
             "UNVERIFIED_MEDIA_ARTIFACT: Compact log records count=3 without deliveredMedia[]."
           ],
           "needsHumanReview": true,
-          "humanReviewReason": "Response lacks objective tool/pricing/policy evidence markers for automated goal sign-off."
+          "humanReviewReason": "Media artifact deliveredMedia[] omitted from log (recorded count=3); cannot independently verify canonical URLs."
         }
       ]
     },

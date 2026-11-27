@@ -156,11 +156,12 @@ describe('J Collection — Agentic V2.0 Live LLM Multi-Turn Tracing & Verificati
 
     capturedTraces.push(sanitizedTrace);
 
-    // Export artifact
-    if (!fs.existsSync(path.dirname(artifactPath))) {
-      fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
+    if (process.env.EXPORT_TEST_ARTIFACTS === 'true') {
+      if (!fs.existsSync(path.dirname(artifactPath))) {
+        fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
+      }
+      fs.writeFileSync(artifactPath, JSON.stringify({ traces: capturedTraces }, null, 2), 'utf8');
+      console.log(`Live traces exported successfully to: ${artifactPath}`);
     }
-    fs.writeFileSync(artifactPath, JSON.stringify({ traces: capturedTraces }, null, 2), 'utf8');
-    console.log(`Live traces exported successfully to: ${artifactPath}`);
   });
 });

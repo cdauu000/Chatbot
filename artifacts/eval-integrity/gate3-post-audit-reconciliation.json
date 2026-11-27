@@ -1,5 +1,5 @@
 {
-  "audited_at": "2026-11-26T14:49:34.824Z",
+  "audited_at": "2026-11-27T05:30:19.996Z",
   "source_artifact": "artifacts/eval-integrity/gate3-stratified-results.json",
   "source_git_commit": "1365f33",
   "denominator_breakdown": {
@@ -79,7 +79,7 @@
     "grounding_blocks": 1
   },
   "post_audit_8axis_summary": {
-    "evaluated_at": "2026-11-26T14:49:34.824Z",
+    "evaluated_at": "2026-11-27T05:30:19.996Z",
     "total_scenarios": 18,
     "total_turns": 31,
     "by_execution_status": {
@@ -89,24 +89,24 @@
       "FAILED_FALLBACK": 0
     },
     "historical_businessPassed_true": 18,
-    "strict_quality_passed_true": 14,
+    "strict_quality_passed_true": 10,
     "by_terminal_outcome": {
-      "CONFIRMED_PASS": 14,
+      "CONFIRMED_PASS": 10,
       "CONFIRMED_FAIL": 4,
-      "PENDING_HUMAN_REVIEW": 0,
+      "PENDING_HUMAN_REVIEW": 4,
       "BLOCKED": 0
     },
     "false_pass_count": 4,
-    "human_review_queue_count": 0,
+    "human_review_queue_count": 4,
     "reconciliation_check_overlap_count": 0,
     "breakdown_by_commit": {
       "pre_dc11876": {
         "total": 18,
         "live_completed": 17,
-        "confirmed_pass": 14,
+        "confirmed_pass": 10,
         "confirmed_fail": 4,
-        "pending_human_review": 0,
-        "quality_passed": 14,
+        "pending_human_review": 4,
+        "quality_passed": 10,
         "false_pass": 4
       },
       "commit_dc11876": {
@@ -159,6 +159,24 @@
       ]
     },
     {
+      "scenarioId": "SCENARIO-045",
+      "propertyId": "jacayl-ha-dong",
+      "source": "immutable_500_catalog",
+      "historicalPassedFlag": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "isFalsePass": false,
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-048",
+      "propertyId": "jacayl-ha-dong",
+      "source": "immutable_500_catalog",
+      "historicalPassedFlag": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "isFalsePass": false,
+      "findings": []
+    },
+    {
       "scenarioId": "SCENARIO-270",
       "propertyId": "jacayl-tran-khat-chan",
       "source": "immutable_500_catalog",
@@ -169,6 +187,24 @@
         "T1: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 503-long-chim has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 503-long-chim has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
       ]
+    },
+    {
+      "scenarioId": "PILOT-TKC-FAQ-001",
+      "propertyId": "jacayl-tran-khat-chan",
+      "source": "supplementary_tkc_faq",
+      "historicalPassedFlag": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "isFalsePass": false,
+      "findings": []
+    },
+    {
+      "scenarioId": "SCENARIO-431",
+      "propertyId": "j-village",
+      "source": "immutable_500_catalog",
+      "historicalPassedFlag": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "isFalsePass": false,
+      "findings": []
     }
   ],
   "evaluatedRecords": [
@@ -758,15 +794,18 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 302-kimochi has UNKNOWN ghe_tinh_yeu status in catalog; website omission cannot be stated as \"không có\".",
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 302-kimochi has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
@@ -795,16 +834,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 6453,
           "totalTokens": 5601,
           "findings": [
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 302-kimochi has UNKNOWN ghe_tinh_yeu status in catalog; website omission cannot be stated as \"không có\"."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-255",
@@ -818,16 +858,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 4557,
           "totalTokens": 5866,
           "findings": [
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 302-kimochi has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -842,15 +883,18 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 701-50-sac-thai has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 701-50-sac-thai has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
@@ -879,16 +923,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 5655,
           "totalTokens": 5488,
           "findings": [
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 701-50-sac-thai has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-258",
@@ -902,16 +947,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 8642,
           "totalTokens": 5733,
           "findings": [
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 701-50-sac-thai has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -927,14 +973,16 @@
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
       "goal_completion": "INCOMPLETE",
-      "context_understanding": "ALIGNED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
       "semantic_quality": "FAIL",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Context alignment across intent/constraints could not be objectively verified offline."
+      ],
       "findings": [
         "T1: INCOMPLETE_DEGRADED_EXECUTION: Execution status is DEGRADED, cannot mark goal COMPLETE.",
         "T1: SEMANTIC_FAIL_ON_NON_LIVE_EXECUTION: DEGRADED response cannot receive semantic PASS."
@@ -964,7 +1012,7 @@
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
           "goal_completion": "INCOMPLETE",
-          "context_understanding": "ALIGNED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
           "semantic_quality": "FAIL",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 14298,
@@ -973,7 +1021,8 @@
             "INCOMPLETE_DEGRADED_EXECUTION: Execution status is DEGRADED, cannot mark goal COMPLETE.",
             "SEMANTIC_FAIL_ON_NON_LIVE_EXECUTION: DEGRADED response cannot receive semantic PASS."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Context alignment across intent/constraints could not be objectively verified offline."
         }
       ]
     },
@@ -1044,15 +1093,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 2,
@@ -1102,14 +1153,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 9743,
           "totalTokens": 7206,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -1124,15 +1176,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 3: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 3,
@@ -1202,14 +1256,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 8127,
           "totalTokens": 9740,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -1224,15 +1279,18 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "CONTRADICTED",
       "business_accuracy": "CONTRADICTED",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
       "terminal_outcome": "CONFIRMED_FAIL",
       "quality_passed": false,
       "isFalsePass": true,
       "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "humanReviewReasons": [
+        "Turn 1: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.",
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [
         "T1: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 503-long-chim has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\".",
         "T2: REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 503-long-chim has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
@@ -1261,16 +1319,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 7033,
           "totalTokens": 5556,
           "findings": [
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 503-long-chim has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         },
         {
           "scenarioId": "SCENARIO-270",
@@ -1282,16 +1341,17 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "CONTRADICTED",
           "business_accuracy": "CONTRADICTED",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 5396,
           "totalTokens": 2877,
           "findings": [
             "REJECTED_UNVERIFIED_AMENITY_ABSENCE: Room 503-long-chim has UNKNOWN bon_tam status in catalog; website omission cannot be stated as \"không có\"."
           ],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -1306,15 +1366,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 2: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 2,
@@ -1362,14 +1424,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 8829,
           "totalTokens": 6195,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     },
@@ -1440,15 +1503,17 @@
       "execution_status": "LIVE_COMPLETED",
       "grounding_status": "VERIFIED",
       "business_accuracy": "ACCURATE",
-      "goal_completion": "COMPLETE",
-      "context_understanding": "ALIGNED",
-      "semantic_quality": "PASS",
+      "goal_completion": "HUMAN_REVIEW_REQUIRED",
+      "context_understanding": "HUMAN_REVIEW_REQUIRED",
+      "semantic_quality": "HUMAN_REVIEW_REQUIRED",
       "media_delivery_status": "NOT_REQUESTED",
-      "terminal_outcome": "CONFIRMED_PASS",
-      "quality_passed": true,
+      "terminal_outcome": "PENDING_HUMAN_REVIEW",
+      "quality_passed": false,
       "isFalsePass": false,
-      "needsHumanReview": false,
-      "humanReviewReasons": [],
+      "needsHumanReview": true,
+      "humanReviewReasons": [
+        "Turn 1: Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
+      ],
       "findings": [],
       "operational_metrics": {
         "turnCount": 1,
@@ -1473,14 +1538,15 @@
           "execution_status": "LIVE_COMPLETED",
           "grounding_status": "VERIFIED",
           "business_accuracy": "ACCURATE",
-          "goal_completion": "COMPLETE",
-          "context_understanding": "ALIGNED",
-          "semantic_quality": "PASS",
+          "goal_completion": "HUMAN_REVIEW_REQUIRED",
+          "context_understanding": "HUMAN_REVIEW_REQUIRED",
+          "semantic_quality": "HUMAN_REVIEW_REQUIRED",
           "media_delivery_status": "NOT_REQUESTED",
           "latencyMs": 4939,
           "totalTokens": 5704,
           "findings": [],
-          "needsHumanReview": false
+          "needsHumanReview": true,
+          "humanReviewReason": "Response cannot be objectively certified as COMPLETE offline without semantic human evaluation."
         }
       ]
     }

@@ -497,11 +497,38 @@ export class OfflineEvaluationIntegrityAuditorV3 {
         );
       }
 
-      // 2) Independent Goal Completion evaluation (NEVER blank-default COMPLETE!)
-      let goal_completion: GoalCompletionStatusV3 = 'HUMAN_REVIEW_REQUIRED';
       let needsHumanReview = false;
       let humanReviewReason: string | undefined;
 
+      // 2) Media Delivery Status (NEVER treat unverified compact counts as DELIVERED canonical proof!)
+      let media_delivery_status: MediaDeliveryStatusV3 = 'NOT_REQUESTED';
+      const userRequestedPhotos =
+        /xem\s*(?:hình|ảnh)|gửi.*ảnh|album\s*ảnh|ảnh chụp thực tế|photo/i.test(userMsg) ||
+        scenarioSpec?.turnSpecs?.[i]?.expectedGoal === 'VIEW_ROOM_PHOTOS' ||
+        scenarioSpec?.turnSpecs?.[i]?.expectedGoal === 'PROACTIVE_ROOM_PHOTO_INQUIRY';
+      const rawDeliveredCount = Array.isArray(t.deliveredMedia) ? t.deliveredMedia.length : 0;
+      const compactCountOnly = !Array.isArray(t.deliveredMedia) && typeof t.deliveredMediaCount === 'number' ? t.deliveredMediaCount : 0;
+
+      if (userRequestedPhotos) {
+        if (rawDeliveredCount > 0) {
+          media_delivery_status = 'DELIVERED';
+        } else if (compactCountOnly > 0) {
+          media_delivery_status = 'UNVERIFIED_MISSING_ARTIFACT';
+          needsHumanReview = true;
+          humanReviewReason =
+            humanReviewReason ||
+            `Media artifact deliveredMedia[] omitted from log (recorded count=${compactCountOnly}); cannot independently verify canonical URLs.`;
+          findings.push(`UNVERIFIED_MEDIA_ARTIFACT: Compact log records count=${compactCountOnly} without deliveredMedia[].`);
+        } else {
+          media_delivery_status = 'MISSING_ATTACHMENT';
+          findings.push('MISSING_MEDIA_ATTACHMENT: Guest requested room photos, yet deliveredMedia is empty.');
+        }
+      } else if (rawDeliveredCount > 0) {
+        media_delivery_status = 'DELIVERED';
+      }
+
+      // 3) Independent Goal Completion evaluation (NEVER blank-default COMPLETE!)
+      let goal_completion: GoalCompletionStatusV3 = 'HUMAN_REVIEW_REQUIRED';
       const userAsks4h = /\b4\s*(?:tiếng|tieng|giờ|gio|h)\b/i.test(userMsg);
       const userAsksOvernightPrice = /qua đêm.*(?:phụ thu|tính thế nào|bao nhiêu)/i.test(userMsg);
       const isDegradedOrBlockedText =
@@ -534,19 +561,40 @@ export class OfflineEvaluationIntegrityAuditorV3 {
         needsHumanReview = true;
         humanReviewReason = 'Subjective naturalness & tone verification for booking handoff escalation.';
       } else {
-        // Require positive observable goal satisfaction (relevant pricing/fact/policy/escalation content)
-        const hasSubstantiveAnswer =
-          vndMentions.length > 0 ||
-          toolsExecuted.length > 0 ||
-          /(?:lễ tân|hotline|liên hệ|cơ sở|địa chỉ|bồn tắm|ghế tình yêu|không phục vụ|ân hạn)/iu.test(resp);
-        goal_completion = hasSubstantiveAnswer ? 'COMPLETE' : 'HUMAN_REVIEW_REQUIRED';
-        if (goal_completion === 'HUMAN_REVIEW_REQUIRED') {
+        // Goal satisfaction cannot be assumed solely from VND digits, tool presence, or hotline keywords.
+        // Automated COMPLETE requires explicit verified canonical claim grounding (and delivered media if requested),
+        // excluding subjective open-ended advice or requirement-change turns that need human semantic verification.
+        const hasVerifiedDomainContent =
+          (claimAuditAgainstRuntimeTools.claim_checks || []).some((c) => c.status === 'VERIFIED') ||
+          (claimAuditAgainstRuntimeTools.verified_claims || []).some(
+            (vc) =>
+              !vc.startsWith('VERIFIED_NO_FAKE_BOOKING_CONFIRMATION') &&
+              !vc.startsWith('VERIFIED_HOTLINE') &&
+              !vc.startsWith('VERIFIED_BOOKING_URL')
+          );
+        const isSubjectiveCategory =
+          scenarioSpec?.category === 'advice_preferences_budget' ||
+          scenarioSpec?.category === 'requirement_context_changes';
+        const isObjectivelyVerified =
+          !isSubjectiveCategory &&
+          hasVerifiedDomainContent &&
+          claimAuditAgainstRuntimeTools.grounding_status === 'VERIFIED' &&
+          business_accuracy === 'ACCURATE' &&
+          (!userRequestedPhotos || media_delivery_status === 'DELIVERED') &&
+          media_delivery_status !== 'UNVERIFIED_MISSING_ARTIFACT';
+
+        if (isObjectivelyVerified) {
+          goal_completion = 'COMPLETE';
+        } else {
+          goal_completion = 'HUMAN_REVIEW_REQUIRED';
           needsHumanReview = true;
-          humanReviewReason = 'Response lacks objective tool/pricing/policy evidence markers for automated goal sign-off.';
+          humanReviewReason =
+            humanReviewReason ||
+            'Response cannot be objectively certified as COMPLETE offline without semantic human evaluation.';
         }
       }
 
-      // 3) Context Understanding & Temporal Hygiene (NO blind ALIGNED default)
+      // 4) Context Understanding & Temporal Hygiene (NEVER auto-ALIGNED merely because response is non-empty!)
       let context_understanding: ContextUnderstandingStatusV3 = 'HUMAN_REVIEW_REQUIRED';
       const tempViolations = (claimAuditAgainstRuntimeTools.claim_checks || []).filter(
         (c) => c.claim_type === 'TEMPORAL' && c.status === 'CONTRADICTED'
@@ -570,35 +618,18 @@ export class OfflineEvaluationIntegrityAuditorV3 {
       ) {
         context_understanding = 'TEMPORAL_LEAK';
         findings.push('TEMPORAL_FIXTURE_BIAS: Locked generic Ha Dong inquiry onto weekend daytime rate (Saturday fixture) without mentioning weekday/evening rate.');
-      } else if (resp.trim().length > 0) {
+      } else if (
+        execution_status === 'LIVE_COMPLETED' &&
+        goal_completion === 'COMPLETE' &&
+        claimAuditAgainstRuntimeTools.grounding_status === 'VERIFIED'
+      ) {
         context_understanding = 'ALIGNED';
-      }
-
-      // 4) Media Delivery Status (NEVER treat unverified compact counts as DELIVEREĐ canonical proof!)
-      let media_delivery_status: MediaDeliveryStatusV3 = 'NOT_REQUESTED';
-      const userRequestedPhotos =
-        /xem\s*(?:hình|ảnh)|gửi.*ảnh|album\s*ảnh|ảnh chụp thực tế|photo/i.test(userMsg) ||
-        scenarioSpec?.turnSpecs?.[i]?.expectedGoal === 'VIEW_ROOM_PHOTOS' ||
-        scenarioSpec?.turnSpecs?.[i]?.expectedGoal === 'PROACTIVE_ROOM_PHOTO_INQUIRY';
-      const rawDeliveredCount = Array.isArray(t.deliveredMedia) ? t.deliveredMedia.length : 0;
-      const compactCountOnly = !Array.isArray(t.deliveredMedia) && typeof t.deliveredMediaCount === 'number' ? t.deliveredMediaCount : 0;
-
-      if (userRequestedPhotos) {
-        if (rawDeliveredCount > 0) {
-          media_delivery_status = 'DELIVERED';
-        } else if (compactCountOnly > 0) {
-          media_delivery_status = 'UNVERIFIED_MISSING_ARTIFACT';
-          needsHumanReview = true;
-          humanReviewReason =
-            humanReviewReason ||
-            `Media artifact deliveredMedia[] omitted from log (recorded count=${compactCountOnly}); cannot independently verify canonical URLs.`;
-          findings.push(`UNVERIFIED_MEDIA_ARTIFACT: Compact log records count=${compactCountOnly} without deliveredMedia[].`);
-        } else {
-          media_delivery_status = 'MISSING_ATTACHMENT';
-          findings.push('MISSING_MEDIA_ATTACHMENT: Guest requested room photos, yet deliveredMedia is empty.');
-        }
-      } else if (rawDeliveredCount > 0) {
-        media_delivery_status = 'DELIVERED';
+      } else {
+        context_understanding = 'HUMAN_REVIEW_REQUIRED';
+        needsHumanReview = true;
+        humanReviewReason =
+          humanReviewReason ||
+          'Context alignment across intent/constraints could not be objectively verified offline.';
       }
 
       // 5) Independent Semantic Quality Evaluation (NEVER blind PASS on degraded/empty/leaked replies)

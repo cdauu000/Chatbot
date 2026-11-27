@@ -1,4 +1,3 @@
-import { execSync } from 'node:child_process';
 import { createServer, IncomingMessage, ServerResponse, Server } from 'node:http';
 import { SqliteStore } from '../persistence/sqlite-store.js';
 import { AuthManager, AuthenticationError, ForbiddenError } from '../auth/access-control.js';
@@ -6,7 +5,8 @@ import { TakeoverCoordinator, DuplicateMessageError, InvalidStateTransitionError
 import { getDashboardHtml } from './dashboard-html.js';
 import { PropertyId, StaffUser } from '../staff-types.js';
 import { FreeLLMGateway } from '../../conversation/adapters/free-llm-gateway.js';
-import { getEffectivePolicyMetadata } from '../../data-loader/pricing-policy-loader.js';
+import { getEffectivePolicyMetadata, getImmutableBuildIdentity } from '../../data-loader/pricing-policy-loader.js';
+import { ImmutableBuildIdentity } from '../../agent/agent-contracts.js';
 
 export interface DashboardServerOptions {
   port?: number;
@@ -25,6 +25,7 @@ export class DashboardServer {
   private authManager: AuthManager;
   private takeoverCoordinator: TakeoverCoordinator;
   private llmGateway?: FreeLLMGateway;
+  private buildIdentity: ImmutableBuildIdentity;
   private resolvedGitCommit: string;
 
   constructor(options: DashboardServerOptions) {
@@ -34,15 +35,8 @@ export class DashboardServer {
     this.authManager = options.authManager;
     this.takeoverCoordinator = options.takeoverCoordinator;
     this.llmGateway = options.llmGateway;
-    let commit = process.env.CANDIDATE_COMMIT || 'unknown';
-    if (commit === 'unknown') {
-      try {
-        commit = execSync('git rev-parse --short HEAD', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() || 'unknown';
-      } catch {
-        commit = 'unknown';
-      }
-    }
-    this.resolvedGitCommit = commit;
+    this.buildIdentity = getImmutableBuildIdentity();
+    this.resolvedGitCommit = this.buildIdentity.commit;
 
     this.server = createServer((req, res) => this.handleRequest(req, res));
   }
@@ -158,7 +152,8 @@ export class DashboardServer {
           ...status,
           engine,
           gitCommit: this.resolvedGitCommit,
-          buildVersion: '3.0.0-llm-native-final',
+          buildIdentity: this.buildIdentity,
+          buildVersion: this.buildIdentity.buildVersion,
           effectivePolicyVersion: policyMeta.effectivePolicyVersion,
           basePolicyVersion: policyMeta.basePolicyVersion,
           activeAddendumId: policyMeta.activeAddendumId,

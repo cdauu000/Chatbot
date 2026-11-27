@@ -13,6 +13,8 @@ import {
   LLMVerificationStatus,
   LLMTelemetryTrace,
   AgentLLMDecision,
+  BusinessEvidenceRecord,
+  RenderedStructuredRefBinding,
   PropertyContext,
   RoomPresentationBlock,
   RoomPresentationImage,
@@ -24,13 +26,14 @@ import {
   formatValidEvidenceForPrompt,
   invalidateStaleBusinessEvidence,
   recordToolResultAsEvidence,
+  renderStructuredMonetaryPlaceholders,
 } from '../conversation/grounding/business-evidence.js';
 import { ConversationTurnResult } from '../conversation/conversation-types.js';
 import { LLMAdapter } from '../conversation/adapters/llm-adapter.interface.js';
 import { removeDiacritics } from '../conversation/nlu-engine.js';
 import { StructuredStateManager, GenericConstraintSolver } from './generic-constraint-solver.js';
 import { getVietnamTemporalContext, VietnamTemporalContext } from '../pricing/checkin-pricing-resolver.js';
-import { getEffectivePolicyMetadata } from '../data-loader/pricing-policy-loader.js';
+import { getEffectivePolicyMetadata, getImmutableBuildIdentity } from '../data-loader/pricing-policy-loader.js';
 
 export const AgentDecisionOutputSchema = z.object({
   action: z.preprocess((val) => {
@@ -193,6 +196,27 @@ export class JCollectionAgent {
 
   // In-memory conversation state by sessionId
   protected sessions: Map<string, AgentState> = new Map();
+  private cachedDatasetHashInfo?: { datasetRef: NormalizedDataset; phongRef: any; policyVer: string; hash: string };
+
+  private getCachedDatasetHash(): string {
+    const policyVer = getEffectivePolicyMetadata().effectivePolicyVersion;
+    if (
+      this.cachedDatasetHashInfo &&
+      this.cachedDatasetHashInfo.datasetRef === this.dataset &&
+      this.cachedDatasetHashInfo.phongRef === this.dataset.phong &&
+      this.cachedDatasetHashInfo.policyVer === policyVer
+    ) {
+      return this.cachedDatasetHashInfo.hash;
+    }
+    const hash = computeDatasetVersionHash(this.dataset);
+    this.cachedDatasetHashInfo = {
+      datasetRef: this.dataset,
+      phongRef: this.dataset.phong,
+      policyVer,
+      hash,
+    };
+    return hash;
+  }
 
   constructor(
     dataset: NormalizedDataset,
@@ -957,7 +981,10 @@ export class JCollectionAgent {
     let finalModelResponse: string | undefined = undefined;
     let usedModelResponse = false;
     let groundingBlocked = false;
+    let lastRenderedBindings: RenderedStructuredRefBinding[] = [];
+    let lastRenderedErrors: string[] = [];
     const activePolicyVersion = getEffectivePolicyMetadata().effectivePolicyVersion;
+    const activeDatasetHash = this.getCachedDatasetHash();
 
     // =========================================================================
     // BUSINESS SAFETY & ACCESS CONTROL GUARDS (ALWAYS ACTIVE)
@@ -1315,13 +1342,26 @@ export class JCollectionAgent {
             }
           }
 
-          // Section V & VI: Evidence-grounded output check on ALL text-emitting LLM actions
+          // Section V & VI: Render structured {{ref:...}} monetary placeholders deterministically & verify output
           if (
             (currentStepAction === 'RESPOND_DIRECTLY' ||
               currentStepAction === 'CLARIFY' ||
               currentStepAction === 'ESCALATE') &&
             finalCustomerResponse
           ) {
+            const renderedResult = renderStructuredMonetaryPlaceholders(
+              finalCustomerResponse,
+              state.verifiedBusinessEvidence || [],
+              {
+                propertyId: this.propertyId,
+                effectivePolicyVersion: activePolicyVersion,
+                activeDatasetHash,
+              }
+            );
+            finalCustomerResponse = renderedResult.renderedText;
+            lastRenderedBindings = renderedResult.bindings;
+            lastRenderedErrors = renderedResult.errors;
+
             const precheck = this.claimValidator.validate(finalCustomerResponse, {
               facility: this.propertyId,
               focusedRoomKey: state.focusedRoomId,
@@ -1336,6 +1376,9 @@ export class JCollectionAgent {
               checkinConfidence: state.conditionalAssumptions?.checkinConfidence,
               structuredClaimRefs: llmDecision.claim_refs ?? undefined,
               structuredMediaRefs: llmDecision.media_refs ?? undefined,
+              renderedRefBindings: lastRenderedBindings,
+              renderedRefErrors: lastRenderedErrors,
+              activeDatasetHash,
             });
 
             if (precheck.grounding_status === 'CONTRADICTED' || precheck.grounding_status === 'MISSING_EVIDENCE') {
@@ -1364,6 +1407,8 @@ export class JCollectionAgent {
                 finalCustomerResponse = '';
                 finalModelResponse = undefined;
                 usedModelResponse = false;
+                lastRenderedBindings = [];
+                lastRenderedErrors = [];
                 continue;
               } else {
                 // Retry budget exhausted: NEVER release unverified or contradicted business facts
@@ -1422,6 +1467,7 @@ export class JCollectionAgent {
 
         // 3. ACT: Execute validated tool calls via Backend Security Gate
         const toolResults: ToolResult[] = [];
+        const recordedRefsByToolCall = new Map<string, string[]>();
         for (const tc of toolCallsToExecute) {
           executedToolsList.push(tc.toolName);
           const res = await this.toolGateway.executeTool(tc);
@@ -1468,7 +1514,7 @@ export class JCollectionAgent {
               checkinDatetime: firstQ?.checkin_conditions?.checkin_datetime ?? state.hardConstraints.checkinDatetime,
               checkoutDatetime: firstQ?.confirmed_checkout ?? state.conditionalAssumptions?.checkoutDatetime,
               effectivePolicyVersion: activePolicyVersion,
-              datasetVersion: computeDatasetVersionHash(this.dataset),
+              datasetVersion: activeDatasetHash,
             });
           } else if (tc.toolName === 'get_room_facts' && res.status === 'SUCCESS') {
             factsResultRecord = res.data;
@@ -1502,7 +1548,13 @@ export class JCollectionAgent {
           }
 
           if (res.status === 'SUCCESS') {
-            recordToolResultAsEvidence(state, tc.toolName, res, this.dataset, activePolicyVersion);
+            const createdEvs = recordToolResultAsEvidence(state, tc.toolName, res, this.dataset, activePolicyVersion, activeDatasetHash);
+            const refs = createdEvs.flatMap((ev) =>
+              (ev.scopedRates || []).filter((sr) => sr.eligible !== false).slice(0, 6).map((sr) => sr.ref || `${ev.evidenceId}::${sr.role}`)
+            );
+            if (refs.length > 0) {
+              recordedRefsByToolCall.set(tc.toolCallId, refs);
+            }
           }
         }
 
@@ -1602,7 +1654,11 @@ export class JCollectionAgent {
                     : '';
                   return `quote_price for ${qd.room_name} (${qd.room_id}) [${qd.pricing_status}, policy=V${qd.effective_policy_version || '1.4.6'}]: TOTAL ${priceStr} (${qd.price_breakdown_text}${lateFallback})`;
                 })
-                .join('\n') + variationNote;
+                .join('\n') +
+                variationNote +
+                ((recordedRefsByToolCall.get(r.toolCallId)?.length ?? 0) > 0
+                  ? `\n[STRUCTURED_REFS (use in claim_refs or {{ref:...}}): ${recordedRefsByToolCall.get(r.toolCallId)!.join(' | ')}]`
+                  : '');
             }
             if (r.toolName === 'get_room_facts') {
               if (r.status !== 'SUCCESS') return `get_room_facts ${r.status}: ${r.errorMessage || 'not found'}`;
@@ -1731,6 +1787,9 @@ export class JCollectionAgent {
       checkinConfidence: state.conditionalAssumptions?.checkinConfidence,
       structuredClaimRefs: structuredDecisions[structuredDecisions.length - 1]?.claim_refs ?? undefined,
       structuredMediaRefs: structuredDecisions[structuredDecisions.length - 1]?.media_refs ?? undefined,
+      renderedRefBindings: lastRenderedBindings,
+      renderedRefErrors: lastRenderedErrors,
+      activeDatasetHash,
     });
 
     const latencyMs = Math.max(1, Math.round(performance.now() - startTime));
@@ -1760,6 +1819,7 @@ export class JCollectionAgent {
         callCount: liveLLMCalls,
         decisionType: executionMode,
         effectivePolicyVersion: getEffectivePolicyMetadata().effectivePolicyVersion,
+        buildIdentity: getImmutableBuildIdentity(),
         promptTokens: totalPromptTokens,
         completionTokens: totalCompletionTokens,
         totalTokens: totalPromptTokens + totalCompletionTokens,
@@ -2689,7 +2749,7 @@ INVARIANTS (POLICY V1.4.3 + OWNER ADDENDUM V1.4.6):
    - Classify timing honestly: CONFIRMED | INFERRED | CONDITIONAL | UNKNOWN. Ask 1 short clarifying question only if missing timing materially alters the answer.
    - Package & Late Checkout rules: Overnight ('qua_dem') = 22:00 (grace from 21:40) to 12:00 next day; Day-Night ('ngay_dem') = 14:00 to 12:00 next day. Arriving 14:00-21:39 staying until next day applies 'ngay_dem'. For checkout past 12:00 on 'qua_dem'/'ngay_dem': 10-minute grace applies to EVERY extra-hour boundary (12:00-12:10 = 0h; 12:11-13:10 = 1h; 13:11-14:10 = 2h; 14:11-15:10 = 3h...), billed via 'quote_price' at that room's canonical extra_hour_rate. Pass checkin_datetime, checkout_datetime (when stated), stay_type/stay_intent to 'quote_price' and follow returned calculations strictly. Never treat prior-turn assistant prose as price truth if the requested package/duration/room was not verified by tool evidence.
 4. Pricing, Media & Natural UX:
-   - Quote strictly from active 'quote_price'/'get_room_facts' evidence. Call 'search_rooms' first if exact room_id slugs are not yet in Valid Evidence/observations. When guest asks a duration (e.g. 4h), compute/quote the total for that duration via 'quote_price'.
+   - Quote strictly from active 'quote_price'/'get_room_facts' evidence (may embed {{ref:<ref_id>}} in final_response for backend canonical VND rendering). Call 'search_rooms' first if exact room_id slugs are not yet in Valid Evidence/observations. When guest asks a duration (e.g. 4h), compute/quote the total for that duration via 'quote_price'.
    - Only call 'get_room_media' (or list cached composite keys/room IDs in "media_refs" to re-send cached albums) when photos are requested or clearly desired. Align reply room order with albums. NEVER paste raw image URLs (.webp/.jpg) into "final_response" text. Honor preferences (photo-only -> skip prices; no-photos -> skip get_room_media/media_refs).
    - Natural concise Vietnamese: Answer directly! Do NOT mechanically append address, hotline, full room rate tables, or trailing generic questions on every turn.
 5. Output JSON ONLY (when action="CALL_TOOLS", final_response=null; Vietnamese guest reply ONLY in "final_response", no <think>/JSON/tool names):

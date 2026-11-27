@@ -80,9 +80,11 @@ describe('AGENTIC V1.2.1 — 100-Scenario Fresh Held-Out Benchmark', () => {
       failures: metrics.failures,
       scenarios: benchmarkResults,
     };
-    fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
-    fs.writeFileSync(artifactPath, JSON.stringify(summary, null, 2), 'utf8');
-    console.log(`\n=== HELD-OUT BENCHMARK COMPLETE ===\nReport written to: ${artifactPath}`);
+    if (process.env.EXPORT_TEST_ARTIFACTS === 'true') {
+      fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
+      fs.writeFileSync(artifactPath, JSON.stringify(summary, null, 2), 'utf8');
+      console.log(`\n=== HELD-OUT BENCHMARK COMPLETE ===\nReport written to: ${artifactPath}`);
+    }
   });
 
   // 100 DIVERSE HELD-OUT SCENARIOS

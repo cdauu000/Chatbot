@@ -29,8 +29,10 @@ export interface ToolObservation {
 export type GroundingStatus = 'VERIFIED' | 'CONTRADICTED' | 'MISSING_EVIDENCE' | 'NOT_APPLICABLE';
 
 export interface ScopedRateFact {
+  ref?: string;
   amountVnd: number;
   role: 'TOTAL' | 'BASE_2H' | 'EXTRA_HOUR_RATE' | 'EXTRA_HOUR_SUBTOTAL' | 'PACKAGE_RATE' | 'ALT_21_40' | 'POLICY_RATE';
+  propertyId?: CoSoMa;
   roomId?: string;
   category?: string;
   stayPackage?: StayType | 'EXTRA_HOUR' | 'ALL';
@@ -39,6 +41,37 @@ export interface ScopedRateFact {
   eligible?: boolean;
   isDefaultPolicyRate?: boolean;
   ineligibilityReason?: string;
+  isBaseEquivalent?: boolean;
+  datasetVersion?: string;
+  policyVersion?: string;
+}
+
+export interface ImmutableBuildIdentity {
+  commit: string;
+  branch?: string;
+  builtAt?: string;
+  buildVersion: string;
+  policyVersion?: string;
+  binaryRoot?: string;
+  isImmutableStamp: boolean;
+}
+
+export interface RenderedStructuredRefBinding {
+  rawPlaceholder: string;
+  ref: string;
+  evidenceId: string;
+  propertyId: CoSoMa;
+  roomId?: string;
+  category?: string;
+  role: ScopedRateFact['role'] | 'FIELD';
+  stayPackage?: StayType | 'EXTRA_HOUR' | 'ALL';
+  durationHours?: number;
+  timeCondition?: string;
+  eligible: boolean;
+  datasetVersion: string;
+  policyVersion: string;
+  amountVnd: number;
+  renderedText: string;
 }
 
 export interface BusinessEvidenceRecord {
@@ -137,6 +170,7 @@ export interface LLMTelemetryTrace {
   callCount: number;
   decisionType: string;
   effectivePolicyVersion?: string;
+  buildIdentity?: ImmutableBuildIdentity;
   promptTokens: number;
   completionTokens: number;
   totalTokens: number;

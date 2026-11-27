@@ -86,10 +86,12 @@ describe('AGENTIC V1.2 — 100-Scenario Blind Generalization Benchmark', () => {
       scenarios: benchmarkResults,
     };
 
-    if (!fs.existsSync(path.dirname(artifactPath))) {
-      fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
+    if (process.env.EXPORT_TEST_ARTIFACTS === 'true') {
+      if (!fs.existsSync(path.dirname(artifactPath))) {
+        fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
+      }
+      fs.writeFileSync(artifactPath, JSON.stringify(summary, null, 2), 'utf8');
     }
-    fs.writeFileSync(artifactPath, JSON.stringify(summary, null, 2), 'utf8');
     console.log(`\n=== 100-SCENARIO BENCHMARK COMPLETE ===`);
     console.log(`Report written to: ${artifactPath}`);
     console.log(`Total Scenarios: ${summary.totalScenarios}`);

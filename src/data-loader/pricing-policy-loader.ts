@@ -1,9 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import { FACILITY_CATEGORY_CONFIGS, FacilityCategoryConfig } from '../pricing/category-mapper.js';
 import { CoSoMa } from '../domain/types.js';
+import { ImmutableBuildIdentity } from '../agent/agent-contracts.js';
 
 /**
  * J Collection AI Concierge - Pricing Policy Configuration Loader (V1.4.3)
@@ -189,6 +191,25 @@ export function getHolidayPolicyProvenance(config?: PricingPolicyConfig | null):
   };
 }
 
+function canonicalJsonStringify(value: unknown): string {
+  if (value === null || typeof value !== 'object') {
+    return JSON.stringify(value);
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map((item) => canonicalJsonStringify(item)).join(',')}]`;
+  }
+  const obj = value as Record<string, unknown>;
+  const sortedKeys = Object.keys(obj).sort();
+  return `{${sortedKeys
+    .filter((k) => obj[k] !== undefined)
+    .map((k) => `${JSON.stringify(k)}:${canonicalJsonStringify(obj[k])}`)
+    .join(',')}}`;
+}
+
+let cachedDefaultPolicyHash: string | null = null;
+let cachedDefaultPolicyCfgRef: PricingPolicyConfig | null = null;
+let cachedDefaultPolicyAddRef: OwnerPolicyAddendum | null = null;
+
 /**
  * Computes a deterministic SHA-256 content hash over the active pricing policy config and owner addendums.
  */
@@ -198,8 +219,74 @@ export function computePolicyContentHash(
 ): string {
   const cfg = config ?? loadActivePricingPolicyConfig();
   const add = addendum === undefined ? loadOwnerPolicyAddendums() : addendum;
-  const payload = JSON.stringify({ cfg, add });
-  return createHash('sha256').update(payload).digest('hex').slice(0, 12);
+  if (
+    !config &&
+    addendum === undefined &&
+    cachedDefaultPolicyHash &&
+    cfg === cachedDefaultPolicyCfgRef &&
+    add === cachedDefaultPolicyAddRef
+  ) {
+    return cachedDefaultPolicyHash;
+  }
+  const payload = canonicalJsonStringify({ cfg, add });
+  const hash = createHash('sha256').update(payload).digest('hex').slice(0, 12);
+  if (!config && addendum === undefined) {
+    cachedDefaultPolicyCfgRef = cfg;
+    cachedDefaultPolicyAddRef = add;
+    cachedDefaultPolicyHash = hash;
+  }
+  return hash;
+}
+
+let cachedImmutableBuildIdentity: ImmutableBuildIdentity | null = null;
+
+/**
+ * Resolves immutable compile-time build identity co-located with the running binary (build-identity.json),
+ * falling back only to explicit IMMUTABLE_BUILD_COMMIT env or SOURCE_TS_RUNTIME — never shelling out to mutable `git HEAD`.
+ */
+export function getImmutableBuildIdentity(): ImmutableBuildIdentity {
+  if (cachedImmutableBuildIdentity && !process.env.IMMUTABLE_BUILD_COMMIT) {
+    return cachedImmutableBuildIdentity;
+  }
+  const envCommit = process.env.IMMUTABLE_BUILD_COMMIT?.trim();
+  if (envCommit) {
+    return {
+      commit: envCommit,
+      buildVersion: '3.0.0-llm-native-final',
+      isImmutableStamp: true,
+    };
+  }
+  try {
+    const here = path.dirname(fileURLToPath(import.meta.url));
+    const candidates = [
+      path.resolve(here, '..', 'build-identity.json'),
+      path.resolve(here, '..', '..', 'build-identity.json'),
+    ];
+    for (const stampPath of candidates) {
+      if (fs.existsSync(stampPath)) {
+        const parsed = JSON.parse(fs.readFileSync(stampPath, 'utf8'));
+        if (parsed && typeof parsed.commit === 'string' && parsed.commit.trim().length > 0) {
+          cachedImmutableBuildIdentity = {
+            commit: parsed.commit.trim(),
+            branch: typeof parsed.branch === 'string' ? parsed.branch : undefined,
+            builtAt: typeof parsed.builtAt === 'string' ? parsed.builtAt : undefined,
+            buildVersion: typeof parsed.buildVersion === 'string' ? parsed.buildVersion : '3.0.0-llm-native-final',
+            policyVersion: typeof parsed.policyVersion === 'string' ? parsed.policyVersion : undefined,
+            binaryRoot: typeof parsed.binaryRoot === 'string' ? parsed.binaryRoot : undefined,
+            isImmutableStamp: true,
+          };
+          return cachedImmutableBuildIdentity;
+        }
+      }
+    }
+  } catch {
+    // Fall through to unstamped descriptor cleanly
+  }
+  return {
+    commit: 'UNSTAMPED_SOURCE_RUNTIME',
+    buildVersion: '3.0.0-llm-native-final',
+    isImmutableStamp: false,
+  };
 }
 
 let cachedActivePricingPolicyConfig: PricingPolicyConfig | null = null;

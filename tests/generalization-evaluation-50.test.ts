@@ -792,14 +792,16 @@ describe('J COLLECTION — GENERALIZATION EVALUATION: 50 CONTRASTIVE SCENARIOS',
         turns: turnResults,
       });
 
-      // Save summary artifact
-      const artifactsDir = path.resolve('artifacts');
-      if (!fs.existsSync(artifactsDir)) fs.mkdirSync(artifactsDir, { recursive: true });
-      fs.writeFileSync(
-        path.join(artifactsDir, 'generalization-evaluation-50-results.json'),
-        JSON.stringify({ evaluated_at: new Date().toISOString(), total_scenarios: 50, scenarios: results }, null, 2),
-        'utf-8'
-      );
+      // Preserve committed historical benchmark artifacts during automated test runs unless explicitly requested
+      if (process.env.EXPORT_TEST_ARTIFACTS === 'true') {
+        const artifactsDir = path.resolve('artifacts');
+        if (!fs.existsSync(artifactsDir)) fs.mkdirSync(artifactsDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(artifactsDir, 'generalization-evaluation-50-results.json'),
+          JSON.stringify({ evaluated_at: new Date().toISOString(), total_scenarios: 50, scenarios: results }, null, 2),
+          'utf-8'
+        );
+      }
     });
   }
 });

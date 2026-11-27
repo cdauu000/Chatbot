@@ -111,7 +111,9 @@ describe('J Collection — Agentic V2.1 Multi-Property Tracing & Verification', 
       timestamp: new Date().toISOString(),
     });
 
-    fs.writeFileSync(artifactPath, JSON.stringify({ traces: capturedTraces }, null, 2), 'utf-8');
-    console.log(`Multi-property traces exported successfully to: ${artifactPath}`);
+    if (process.env.EXPORT_TEST_ARTIFACTS === 'true') {
+      fs.writeFileSync(artifactPath, JSON.stringify({ traces: capturedTraces }, null, 2), 'utf-8');
+      console.log(`Multi-property traces exported successfully to: ${artifactPath}`);
+    }
   });
 });
