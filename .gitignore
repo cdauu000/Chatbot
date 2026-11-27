@@ -31,3 +31,5 @@ artifacts/candidate-runtime/
 .DS_Store
 Thumbs.db
 
+# Heavy benchmark & evaluation outputs
+artifacts/
