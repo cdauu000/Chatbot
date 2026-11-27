@@ -294,6 +294,7 @@ export interface StructuredRefLookupOptions {
   effectivePolicyVersion?: string;
   activeDatasetHash?: string;
   allowIneligibleContext?: boolean;
+  enforceMandatoryScope?: boolean;
 }
 
 export type StructuredRefLookupResult =
@@ -357,6 +358,13 @@ export function lookupStructuredReference(
       };
     }
     const factSessionId = fact.sessionId ?? ev.sessionId;
+    if (options.enforceMandatoryScope && (!factSessionId || !options.sessionId || factSessionId !== options.sessionId)) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_CROSS_SESSION_CLAIM_REF',
+        reason: `Structured ref "${trimmed}" has missing or mismatched session scope ("${factSessionId || 'MISSING'}" vs "${options.sessionId || 'MISSING'}").`,
+      };
+    }
     if (options.sessionId && factSessionId && factSessionId !== options.sessionId) {
       return {
         status: 'REJECTED',
@@ -365,6 +373,13 @@ export function lookupStructuredReference(
       };
     }
     const factPropId = fact.propertyId ?? ev.propertyId;
+    if (options.enforceMandatoryScope && (!factPropId || !options.propertyId || factPropId !== options.propertyId)) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_CROSS_PROPERTY_CLAIM_REF',
+        reason: `Structured ref "${trimmed}" has missing or mismatched property ("${factPropId || 'MISSING'}" vs "${options.propertyId || 'MISSING'}").`,
+      };
+    }
     if (options.propertyId && factPropId !== options.propertyId) {
       return {
         status: 'REJECTED',
@@ -373,6 +388,13 @@ export function lookupStructuredReference(
       };
     }
     const factPolicy = fact.policyVersion ?? ev.effectivePolicyVersion;
+    if (options.enforceMandatoryScope && (!factPolicy || !options.effectivePolicyVersion || factPolicy !== options.effectivePolicyVersion)) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_STALE_POLICY_RENDER_REF',
+        reason: `Structured ref "${trimmed}" has missing or mismatched policy ("${factPolicy || 'MISSING'}" vs "${options.effectivePolicyVersion || 'MISSING'}").`,
+      };
+    }
     if (options.effectivePolicyVersion && factPolicy !== options.effectivePolicyVersion) {
       return {
         status: 'REJECTED',
@@ -381,6 +403,13 @@ export function lookupStructuredReference(
       };
     }
     const factDataset = fact.datasetVersion ?? ev.datasetVersion;
+    if (options.enforceMandatoryScope && (!factDataset || !options.activeDatasetHash || factDataset !== options.activeDatasetHash)) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_STALE_DATASET_REVISION',
+        reason: `Structured ref "${trimmed}" has missing or mismatched dataset revision ("${factDataset || 'MISSING'}" vs "${options.activeDatasetHash || 'MISSING'}").`,
+      };
+    }
     if (options.activeDatasetHash && factDataset && factDataset !== options.activeDatasetHash) {
       return {
         status: 'REJECTED',
@@ -464,11 +493,25 @@ export function lookupStructuredReference(
         reason: `Structured ref "${trimmed}" references invalidated evidence "${ev.evidenceId}".`,
       };
     }
+    if (options.enforceMandatoryScope && (!ev.sessionId || !options.sessionId || ev.sessionId !== options.sessionId)) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_CROSS_SESSION_CLAIM_REF',
+        reason: `Structured ref "${trimmed}" has missing or mismatched session scope ("${ev.sessionId || 'MISSING'}" vs "${options.sessionId || 'MISSING'}").`,
+      };
+    }
     if (options.sessionId && ev.sessionId && ev.sessionId !== options.sessionId) {
       return {
         status: 'REJECTED',
         code: 'REJECTED_CROSS_SESSION_CLAIM_REF',
         reason: `Structured ref "${trimmed}" belongs to session "${ev.sessionId}", not "${options.sessionId}".`,
+      };
+    }
+    if (options.enforceMandatoryScope && (!ev.propertyId || !options.propertyId || ev.propertyId !== options.propertyId)) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_CROSS_PROPERTY_CLAIM_REF',
+        reason: `Structured ref "${trimmed}" has missing or mismatched property ("${ev.propertyId || 'MISSING'}" vs "${options.propertyId || 'MISSING'}").`,
       };
     }
     if (options.propertyId && ev.propertyId !== options.propertyId) {
@@ -478,11 +521,25 @@ export function lookupStructuredReference(
         reason: `Structured ref "${trimmed}" belongs to property "${ev.propertyId}", not "${options.propertyId}".`,
       };
     }
+    if (options.enforceMandatoryScope && (!ev.effectivePolicyVersion || !options.effectivePolicyVersion || ev.effectivePolicyVersion !== options.effectivePolicyVersion)) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_STALE_POLICY_RENDER_REF',
+        reason: `Structured ref "${trimmed}" has missing or mismatched policy ("${ev.effectivePolicyVersion || 'MISSING'}" vs "${options.effectivePolicyVersion || 'MISSING'}").`,
+      };
+    }
     if (options.effectivePolicyVersion && ev.effectivePolicyVersion !== options.effectivePolicyVersion) {
       return {
         status: 'REJECTED',
         code: 'REJECTED_STALE_POLICY_RENDER_REF',
         reason: `Structured ref "${trimmed}" uses policy "${ev.effectivePolicyVersion}", not "${options.effectivePolicyVersion}".`,
+      };
+    }
+    if (options.enforceMandatoryScope && (!ev.datasetVersion || !options.activeDatasetHash || ev.datasetVersion !== options.activeDatasetHash)) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_STALE_DATASET_REVISION',
+        reason: `Structured ref "${trimmed}" has missing or mismatched dataset revision ("${ev.datasetVersion || 'MISSING'}" vs "${options.activeDatasetHash || 'MISSING'}").`,
       };
     }
     if (options.activeDatasetHash && ev.datasetVersion && ev.datasetVersion !== options.activeDatasetHash) {
@@ -1207,10 +1264,21 @@ export function recordToolResultAsEvidence(
     });
   }
 
+  let maxFactSeq = state.nextFactSeq ?? 0;
+  for (const existingEv of state.verifiedBusinessEvidence) {
+    for (const r of existingEv.scopedRates || []) {
+      const m = r.factId?.match(/^[a-z](\d+)_f\d+$/i);
+      if (m) {
+        maxFactSeq = Math.max(maxFactSeq, parseInt(m[1], 10));
+      }
+    }
+  }
+
   const finalizedCreated = created.map((ev) => {
-    state.nextFactSeq = (state.nextFactSeq ?? 0) + 1;
+    maxFactSeq += 1;
+    state.nextFactSeq = maxFactSeq;
     const withSession: BusinessEvidenceRecord = { ...ev, sessionId: ev.sessionId ?? state.sessionId };
-    return enrichEvidenceScopedFacts(withSession, datasetVersion, { evSeq: state.nextFactSeq });
+    return enrichEvidenceScopedFacts(withSession, datasetVersion, { evSeq: maxFactSeq });
   });
   state.verifiedBusinessEvidence.push(...finalizedCreated);
   // Keep session evidence bounded to avoid unbounded growth across long multi-turn dialogs

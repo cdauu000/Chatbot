@@ -1381,9 +1381,11 @@ export class JCollectionAgent {
               finalCustomerResponse,
               state.verifiedBusinessEvidence || [],
               {
+                sessionId: state.sessionId,
                 propertyId: this.propertyId,
                 effectivePolicyVersion: activePolicyVersion,
                 activeDatasetHash,
+                enforceMandatoryScope: true,
               }
             );
             finalCustomerResponse = renderedResult.renderedText;
@@ -1408,6 +1410,7 @@ export class JCollectionAgent {
               renderedRefBindings: lastRenderedBindings,
               renderedRefErrors: lastRenderedErrors,
               activeDatasetHash,
+              enforceMandatoryScope: true,
             });
 
             if (precheck.grounding_status === 'CONTRADICTED' || precheck.grounding_status === 'MISSING_EVIDENCE') {
@@ -1830,6 +1833,7 @@ export class JCollectionAgent {
       renderedRefBindings: lastRenderedBindings,
       renderedRefErrors: lastRenderedErrors,
       activeDatasetHash,
+      enforceMandatoryScope: true,
     });
 
     const latencyMs = Math.max(1, Math.round(performance.now() - startTime));

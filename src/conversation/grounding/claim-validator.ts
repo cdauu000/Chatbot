@@ -74,6 +74,7 @@ export interface ClaimValidationContext {
   renderedRefErrors?: string[];
   activeDatasetHash?: string;
   policyConfig?: PricingPolicyConfig;
+  enforceMandatoryScope?: boolean;
 }
 
 export class ClaimLevelValidator {
@@ -789,18 +790,51 @@ export class ClaimLevelValidator {
       }
     }
 
-    // Enforce authoritative dataset/policy content hash: stale hashes cannot validate monetary claims
+    // Enforce authoritative dataset/policy content hash & mandatory live scope metadata
     const staleRevisionEntries = rawEvidence.filter(
-      (ev) => ev.isValid && ev.datasetVersion && ev.datasetVersion !== activeDatasetHash
+      (ev) =>
+        ev.isValid &&
+        ((ev.datasetVersion && ev.datasetVersion !== activeDatasetHash) ||
+          (context.enforceMandatoryScope && !ev.datasetVersion))
     );
     if (staleRevisionEntries.length > 0) {
       for (const stale of staleRevisionEntries) {
         recordCheck({
           claim_type: 'POLICY',
-          raw_text: stale.datasetVersion,
+          raw_text: stale.datasetVersion || 'MISSING_DATASET_REVISION',
           status: 'CONTRADICTED',
-          reason: `REJECTED_STALE_DATASET_REVISION: Evidence ${stale.evidenceId} has revision "${stale.datasetVersion}", which mismatches active authoritative revision "${activeDatasetHash}".`,
+          reason: `REJECTED_STALE_DATASET_REVISION: Evidence ${stale.evidenceId} has revision "${stale.datasetVersion || 'MISSING'}", which mismatches active authoritative revision "${activeDatasetHash}".`,
         });
+      }
+    }
+
+    if (context.enforceMandatoryScope) {
+      for (const ev of rawEvidence) {
+        if (!ev.isValid) continue;
+        if (!ev.sessionId || !context.sessionId || ev.sessionId !== context.sessionId) {
+          recordCheck({
+            claim_type: 'POLICY',
+            raw_text: ev.sessionId || 'MISSING_SESSION_ID',
+            status: 'CONTRADICTED',
+            reason: `REJECTED_CROSS_SESSION_CLAIM_REF: Evidence ${ev.evidenceId} has missing or mismatched sessionId ("${ev.sessionId || 'MISSING'}" vs "${context.sessionId || 'MISSING'}").`,
+          });
+        }
+        if (!ev.propertyId || !context.facility || ev.propertyId !== context.facility) {
+          recordCheck({
+            claim_type: 'POLICY',
+            raw_text: ev.propertyId || 'MISSING_PROPERTY_ID',
+            status: 'CONTRADICTED',
+            reason: `REJECTED_CROSS_PROPERTY_CLAIM_REF: Evidence ${ev.evidenceId} has missing or mismatched propertyId ("${ev.propertyId || 'MISSING'}" vs "${context.facility || 'MISSING'}").`,
+          });
+        }
+        if (!ev.effectivePolicyVersion || ev.effectivePolicyVersion !== activeEffectivePolicy) {
+          recordCheck({
+            claim_type: 'POLICY',
+            raw_text: ev.effectivePolicyVersion || 'MISSING_POLICY_VERSION',
+            status: 'CONTRADICTED',
+            reason: `REJECTED_POLICY_VERSION_MISMATCH: Evidence ${ev.evidenceId} has policy "${ev.effectivePolicyVersion || 'MISSING'}", expected "${activeEffectivePolicy}".`,
+          });
+        }
       }
     }
 
@@ -808,9 +842,15 @@ export class ClaimLevelValidator {
       .filter(
         (ev) =>
           ev.isValid &&
-          (!context.facility || ev.propertyId === context.facility) &&
-          ev.effectivePolicyVersion === activeEffectivePolicy &&
-          (!ev.datasetVersion || ev.datasetVersion === activeDatasetHash) &&
+          (context.enforceMandatoryScope
+            ? Boolean(ev.sessionId && context.sessionId && ev.sessionId === context.sessionId) &&
+              Boolean(ev.propertyId && context.facility && ev.propertyId === context.facility) &&
+              ev.effectivePolicyVersion === activeEffectivePolicy &&
+              Boolean(ev.datasetVersion && ev.datasetVersion === activeDatasetHash)
+            : (!context.facility || ev.propertyId === context.facility) &&
+              (!context.sessionId || !ev.sessionId || ev.sessionId === context.sessionId) &&
+              ev.effectivePolicyVersion === activeEffectivePolicy &&
+              (!ev.datasetVersion || ev.datasetVersion === activeDatasetHash)) &&
           (ev.evidenceType === 'QUOTE' ||
             ev.evidenceType === 'CATALOG_SEARCH' ||
             ev.evidenceType === 'ROOM_FACTS' ||
@@ -980,8 +1020,13 @@ export class ClaimLevelValidator {
 
     for (const mention of mentions) {
       const localPre = text.slice(Math.max(0, mention.index - 55), mention.index).toLowerCase();
+      const localPreDelta = text.slice(Math.max(0, mention.index - 120), mention.index).toLowerCase();
+      const localAfterDeltaCheck = text
+        .slice(mention.index + mention.raw.length, mention.index + mention.raw.length + 20)
+        .toLowerCase();
       const immediateBudgetPre = text.slice(Math.max(0, mention.index - 24), mention.index).toLowerCase();
 
+      const isRhsComparisonOperand = /^\s*(?:là|bằng|=)\s*\d/iu.test(localAfterDeltaCheck);
       const isReferenceBudgetTarget =
         typeof context.guestBudgetVnd === 'number' &&
         mention.amountVnd === context.guestBudgetVnd &&
@@ -989,8 +1034,9 @@ export class ClaimLevelValidator {
 
       const isDeltaPhrase =
         !isReferenceBudgetTarget &&
-        (/(?:(?<![\p{L}\d])(?:vượt(?:\s+ngân sách)?|chênh(?:\s*lệch|\s*nhau)?|cao hơn|thấp hơn|rẻ hơn|tiết kiệm|ít hơn|đắt hơn|thiếu|dư|còn dư|nhỉnh hơn|cố thêm)(?![\p{L}\d]))\s*[^.\n:]*$/iu.test(
-          localPre
+        !isRhsComparisonOperand &&
+        (/(?:(?<![\p{L}\d])(?:vượt(?:\s+ngân sách)?|chênh(?:\s*lệch|\s*nhau)?|cao hơn|thấp hơn|rẻ hơn|tiết kiệm|ít hơn|đắt hơn|thiếu|dư|còn dư|nhỉnh hơn|cố thêm)(?![\p{L}\d]))\s*(?:(?![.:]\s|\n)[\s\S])*$/iu.test(
+          localPreDelta
         ) ||
           /\((?:thiếu|còn\s+dư|(?<![\p{L}\d])dư(?![\p{L}\d])|chênh|vượt)[^)]*$/iu.test(localPre) ||
           (typeof context.guestBudgetVnd === 'number' &&
@@ -1060,20 +1106,41 @@ export class ClaimLevelValidator {
         continue;
       }
 
-      // 3) Explicit delta validation: BUDGET_DELTA vs QUOTE_COMPARISON_DELTA (never random subtraction across an unstructured pool)
+      // 3) Explicit directional delta validation: BUDGET_DELTA vs operand-linked QUOTE_COMPARISON_DELTA
       if (isDeltaPhrase) {
-        const eligiblePrimaryRates: Array<{ amountVnd: number; evidenceId: string; role: string }> = [];
+        const eligiblePrimaryRates: Array<{
+          amountVnd: number;
+          evidenceId: string;
+          role: string;
+          roomId?: string;
+          stayPackage?: string;
+          timeCondition?: string;
+        }> = [];
         for (const e of activeEntries) {
           for (const f of e.scopedRates || []) {
             if (
               f.eligible !== false &&
               (f.role === 'TOTAL' || f.role === 'PACKAGE_RATE' || f.role === 'BASE_2H' || f.role === 'ALT_21_40')
             ) {
-              eligiblePrimaryRates.push({ amountVnd: f.amountVnd, evidenceId: e.evidenceId, role: f.role });
+              eligiblePrimaryRates.push({
+                amountVnd: f.amountVnd,
+                evidenceId: e.evidenceId,
+                role: f.role,
+                roomId: f.roomId ?? e.roomId,
+                stayPackage: f.stayPackage ?? e.stayPackage,
+                timeCondition: f.timeCondition ?? e.timeCondition,
+              });
             }
           }
           if ((!e.scopedRates || e.scopedRates.length === 0) && e.eligible !== false && typeof e.amountVnd === 'number') {
-            eligiblePrimaryRates.push({ amountVnd: e.amountVnd, evidenceId: e.evidenceId, role: 'TOTAL' });
+            eligiblePrimaryRates.push({
+              amountVnd: e.amountVnd,
+              evidenceId: e.evidenceId,
+              role: 'TOTAL',
+              roomId: e.roomId,
+              stayPackage: e.stayPackage,
+              timeCondition: e.timeCondition,
+            });
           }
         }
         // Supplement from category snapshots only when no QUOTE rates were fetched for comparison
@@ -1086,37 +1153,75 @@ export class ClaimLevelValidator {
                 ...(sn.dayNightVnds || []),
                 ...(sn.hourlyExtendedVnds || []),
               ]) {
-                eligiblePrimaryRates.push({ amountVnd: v, evidenceId: e.evidenceId, role: 'CATALOG_RATE' });
+                eligiblePrimaryRates.push({ amountVnd: v, evidenceId: e.evidenceId, role: 'CATALOG_RATE', roomId: sn.category });
               }
             }
           }
         }
 
-        // 3a) BUDGET_DELTA: Verified quote/package rate minus verified guestBudgetVnd
-        if (typeof context.guestBudgetVnd === 'number' && context.guestBudgetVnd > 0) {
-          const budgetMatched = eligiblePrimaryRates.find(
-            (r) => Math.abs(r.amountVnd - context.guestBudgetVnd!) === mention.amountVnd
+        const statedOperandAmounts = new Set<number>(
+          mentions
+            .filter((m) => m.index !== mention.index && m.amountVnd !== context.guestBudgetVnd)
+            .map((m) => m.amountVnd)
+        );
+        const deltaPhraseCtx = localPreDelta;
+        const isOverDirection =
+          /(?<![\p{L}\d])(?:vượt(?:\s+ngân sách)?|thiếu|cao hơn|đắt hơn|nhỉnh hơn|cố thêm)(?![\p{L}\d])/iu.test(
+            deltaPhraseCtx
           );
+        const isUnderDirection =
+          /(?<![\p{L}\d])(?:dư|còn dư|thấp hơn|rẻ hơn|tiết kiệm|ít hơn)(?![\p{L}\d])/iu.test(deltaPhraseCtx);
+        const isNeutralDeltaDirection =
+          /(?<![\p{L}\d])chênh(?:\s*lệch|\s*nhau)?(?![\p{L}\d])/iu.test(deltaPhraseCtx);
+
+        // 3a) BUDGET_DELTA: Signed check (quote - guestBudgetVnd) enforcing over vs under direction (NO blind Math.abs!)
+        if (typeof context.guestBudgetVnd === 'number' && context.guestBudgetVnd > 0) {
+          const budgetPool = eligiblePrimaryRates.some((r) => statedOperandAmounts.has(r.amountVnd))
+            ? eligiblePrimaryRates.filter((r) => statedOperandAmounts.has(r.amountVnd) || r.role === 'TOTAL')
+            : eligiblePrimaryRates;
+          const budgetMatched = budgetPool.find((r) => {
+            const signedDiff = r.amountVnd - context.guestBudgetVnd!;
+            if (isOverDirection && !isUnderDirection) {
+              return signedDiff > 0 && signedDiff === mention.amountVnd;
+            }
+            if (isUnderDirection && !isOverDirection) {
+              return signedDiff < 0 && -signedDiff === mention.amountVnd;
+            }
+            if (isNeutralDeltaDirection || (!isOverDirection && !isUnderDirection)) {
+              return Math.abs(signedDiff) === mention.amountVnd;
+            }
+            return false;
+          });
           if (budgetMatched) {
-            verifiedClaims.push(`VERIFIED_BUDGET_DELTA: ${mention.raw} (${budgetMatched.amountVnd} - ${context.guestBudgetVnd}).`);
+            verifiedClaims.push(
+              `VERIFIED_BUDGET_DELTA: ${mention.raw} (${budgetMatched.amountVnd} - ${context.guestBudgetVnd}).`
+            );
             recordCheck({
               claim_type: 'PRICE',
               raw_text: mention.raw,
               normalized_value: mention.amountVnd,
               status: 'VERIFIED',
-              reason: `Verified BUDGET_DELTA (${mention.raw}) between verified quote ${budgetMatched.amountVnd.toLocaleString('vi-VN')}đ and guestBudgetVnd ${context.guestBudgetVnd.toLocaleString('vi-VN')}đ.`,
+              reason: `Verified signed BUDGET_DELTA (${mention.raw}) between verified quote ${budgetMatched.amountVnd.toLocaleString('vi-VN')}đ and guestBudgetVnd ${context.guestBudgetVnd.toLocaleString('vi-VN')}đ.`,
               matched_evidence_id: budgetMatched.evidenceId,
             });
             continue;
           }
         }
 
-        // 3b) QUOTE_COMPARISON_DELTA: Difference between two verified eligible primary quote/package rates
+        // 3b) QUOTE_COMPARISON_DELTA: Require explicit stated operands in text (no random subtraction from unrelated rates)
         let matchedQuoteDelta: { evidenceId: string; a: number; b: number } | null = null;
-        for (let i = 0; i < eligiblePrimaryRates.length && !matchedQuoteDelta; i++) {
-          for (let j = i + 1; j < eligiblePrimaryRates.length; j++) {
-            const r1 = eligiblePrimaryRates[i];
-            const r2 = eligiblePrimaryRates[j];
+        const comparableRates = eligiblePrimaryRates.filter((r) => statedOperandAmounts.has(r.amountVnd));
+        for (let i = 0; i < comparableRates.length && !matchedQuoteDelta; i++) {
+          for (let j = i + 1; j < comparableRates.length; j++) {
+            const r1 = comparableRates[i];
+            const r2 = comparableRates[j];
+            if (r1.amountVnd === r2.amountVnd) continue;
+            const sameScopeDup =
+              r1.roomId === r2.roomId &&
+              r1.stayPackage === r2.stayPackage &&
+              r1.timeCondition === r2.timeCondition &&
+              r1.role !== r2.role;
+            if (sameScopeDup) continue;
             if (Math.abs(r1.amountVnd - r2.amountVnd) === mention.amountVnd) {
               matchedQuoteDelta = { evidenceId: r1.evidenceId, a: r1.amountVnd, b: r2.amountVnd };
               break;
@@ -1130,7 +1235,7 @@ export class ClaimLevelValidator {
             raw_text: mention.raw,
             normalized_value: mention.amountVnd,
             status: 'VERIFIED',
-            reason: `Verified QUOTE_COMPARISON_DELTA (${mention.raw}) between ${matchedQuoteDelta.a.toLocaleString('vi-VN')}đ and ${matchedQuoteDelta.b.toLocaleString('vi-VN')}đ.`,
+            reason: `Verified operand-linked QUOTE_COMPARISON_DELTA (${mention.raw}) between ${matchedQuoteDelta.a.toLocaleString('vi-VN')}đ and ${matchedQuoteDelta.b.toLocaleString('vi-VN')}đ.`,
             matched_evidence_id: matchedQuoteDelta.evidenceId,
           });
           continue;
@@ -1141,7 +1246,7 @@ export class ClaimLevelValidator {
           raw_text: mention.raw,
           normalized_value: mention.amountVnd,
           status: 'CONTRADICTED',
-          reason: `REJECTED_INVALID_DELTA_CLAIM: Stated delta ${mention.raw} does not match any verified BUDGET_DELTA or QUOTE_COMPARISON_DELTA.`,
+          reason: `REJECTED_INVALID_DELTA_CLAIM: Stated delta ${mention.raw} fails signed BUDGET_DELTA or operand-linked QUOTE_COMPARISON_DELTA verification.`,
         });
         continue;
       }
@@ -1180,7 +1285,13 @@ export class ClaimLevelValidator {
           clauseScope.monetaryRole !== 'ANY' &&
           clauseScope.monetaryRole !== binding.role &&
           !(binding.role === 'BASE_2H' && clauseScope.monetaryRole === 'TOTAL' && binding.durationHours === 2) &&
-          !(binding.role === 'TOTAL' && clauseScope.monetaryRole === 'BASE_2H' && binding.durationHours === 2);
+          !(binding.role === 'TOTAL' && clauseScope.monetaryRole === 'BASE_2H' && binding.durationHours === 2) &&
+          !(
+            binding.role === 'PACKAGE_RATE' &&
+            binding.stayPackage === 'qua_dem' &&
+            clauseScope.monetaryRole === 'ALT_21_40' &&
+            clauseScope.hasValidAlt2140Condition
+          );
         if (roleConflict) {
           renderedBindingsQueue.splice(boundIdx, 1);
           recordCheck({
@@ -1457,22 +1568,49 @@ export class ClaimLevelValidator {
         !isMultiHourSubtotalClause);
 
     const detectPkg = (seg: string): StayType | undefined => {
-      if (/ngày đêm|ngay dem|cả ngày/iu.test(seg)) return 'ngay_dem';
-      if (/qua đêm|qua dem|\/đêm|\/dem/iu.test(seg) && !/nghỉ giờ/iu.test(localPre)) return 'qua_dem';
-      if (/nghỉ giờ|nghi gio|\b(?:2|3|4|5|6)\s*(?:giờ|tiếng|h)(?![\p{L}\d])/iu.test(seg)) return 'nghi_gio';
-      return undefined;
+      let bestIdx = -1;
+      let bestPkg: StayType | undefined;
+      for (const m of seg.matchAll(/ngày đêm|ngay dem|cả ngày/giu)) {
+        if ((m.index ?? 0) >= bestIdx) {
+          bestIdx = m.index ?? 0;
+          bestPkg = 'ngay_dem';
+        }
+      }
+      if (!/nghỉ giờ/iu.test(localPre)) {
+        for (const m of seg.matchAll(/qua đêm|qua dem|\/đêm|\/dem/giu)) {
+          if ((m.index ?? 0) >= bestIdx) {
+            bestIdx = m.index ?? 0;
+            bestPkg = 'qua_dem';
+          }
+        }
+      }
+      for (const m of seg.matchAll(/nghỉ giờ|nghi gio|\b(?:2|3|4|5|6)\s*(?:giờ|tiếng|h)(?![\p{L}\d])/giu)) {
+        if ((m.index ?? 0) >= bestIdx) {
+          bestIdx = m.index ?? 0;
+          bestPkg = 'nghi_gio';
+        }
+      }
+      return bestPkg;
     };
 
     const appositivePkgMatch =
       afterRaw.match(/^\s*\*\*\s*\((?:gói\s+)?(ngày đêm|qua đêm)/iu) ||
       afterRaw.match(/^\s*\((?:gói\s+)?(ngày đêm|qua đêm)/iu);
 
+    const subMentionEnd = subClause.indexOf(rawLower);
+    const subPreOnly = subMentionEnd !== -1 ? subClause.slice(0, subMentionEnd + rawLower.length) : subClause;
+    const preContextForPkg = s.slice(Math.max(0, mRelIdx - 45), mRelIdx + rawLower.length);
     if (isMultiHourSubtotalClause || isPerHourUnitRate) {
       stayPackage = 'EXTRA_HOUR';
     } else if (appositivePkgMatch) {
       stayPackage = /ngày/iu.test(appositivePkgMatch[1]) ? 'ngay_dem' : 'qua_dem';
     } else {
-      stayPackage = detectPkg(subClause) ?? detectPkg(s) ?? (precedingHeader ? detectPkg(precedingHeader.toLowerCase()) : undefined);
+      stayPackage =
+        detectPkg(subPreOnly) ??
+        detectPkg(preContextForPkg) ??
+        detectPkg(subClause) ??
+        detectPkg(s) ??
+        (precedingHeader ? detectPkg(precedingHeader.toLowerCase()) : undefined);
     }
 
     const isBase2hOnly =
@@ -1489,20 +1627,46 @@ export class ClaimLevelValidator {
         ? parseInt(durMatch[1], 10)
         : undefined;
 
-    // Structural Pricing Engine threshold check for conditional overnight (ALT_21_40: checkin >= 21:40 / 22:00)
-    // WITHOUT bespoke phrasing lists, and strictly rejecting claims applying qua_dem unconditionally to an earlier (<21:40) arrival!
-    const has2140ThresholdInSentence = /\b(?:21[:h]40|22[:h]00)\b/iu.test(s);
-    const sentenceClockMatches = Array.from(s.matchAll(/\b(\d{1,2})[:h](\d{2})\b/g)).map(
-      (m) => parseInt(m[1], 10) * 60 + parseInt(m[2], 10)
-    );
-    const hasEarlierPre2140Clock = sentenceClockMatches.some((mins) => mins >= 120 && mins < 21 * 60 + 40);
-    const explicitIneligibilityFraming =
-      /(?:không\s+(?:áp dụng|đủ điều kiện|hợp lệ|tính được)|chưa\s+(?:đủ điều kiện|áp dụng|tới giờ)|chỉ\s+(?:áp dụng|tính)\s*(?:từ|khi|nếu)|ngoài\s+khung)/iu.test(
-        s
+    // Structural Pricing Engine threshold check for conditional overnight (ALT_21_40: checkin >= 21:40, including 21:45/22:00+)
+    // Check per-clause arrival clock windows: NEVER allow affirming qua_dem for a pre-21:40 clock even if 21:40/22:00 appears elsewhere!
+    const parseClocksExcludingCheckout = (seg: string): number[] => {
+      const results: number[] = [];
+      for (const m of seg.matchAll(/(?<!\d)(\d{1,2})[:h](\d{2})(?!\d)/g)) {
+        const hh = parseInt(m[1], 10);
+        const mm = parseInt(m[2], 10);
+        if (hh > 23 || mm > 59) continue;
+        const pre = seg.slice(Math.max(0, (m.index ?? 0) - 25), m.index ?? 0);
+        const post = seg.slice((m.index ?? 0) + m[0].length, (m.index ?? 0) + m[0].length + 20);
+        if (hh === 12 && mm === 0 && (/(?:đến|tới|trả|check-?out)\s*$/iu.test(pre) || /^\s*(?:trưa|hôm sau)/iu.test(post))) {
+          continue;
+        }
+        results.push(hh * 60 + mm);
+      }
+      return results;
+    };
+
+    const sentenceClauses = s.split(/[,;.\n()]+|\bnhưng\b|\btuy nhiên\b|\bcòn\b/iu).map((c) => c.trim()).filter(Boolean);
+    const hasOvernightNegation = (seg: string): boolean =>
+      /(?:không\s+(?:áp dụng|đủ điều kiện|hợp lệ|tính được)|chưa\s+(?:đủ điều kiện|áp dụng|tới giờ)|chỉ\s+(?:áp dụng|tính)\s*(?:từ|khi|nếu)|ngoài\s+khung|thay vì|ngày\s*đêm)/iu.test(
+        seg
       );
+
+    const hasFalseEarlyOvernightAssertion = sentenceClauses.some((cl) => {
+      const clClocks = parseClocksExcludingCheckout(cl);
+      const hasPre2140Arrival = clClocks.some((mins) => mins >= 14 * 60 && mins < 21 * 60 + 40);
+      if (!hasPre2140Arrival) return false;
+      const bindsToOvernightOrSubClause = /qua đêm|qua dem/iu.test(cl) || (subClause.length > 0 && cl.includes(subClause));
+      const mentionsPre2140OnlyOrPositive = !hasOvernightNegation(cl);
+      const hasHigherAlternativeInSameClause = clClocks.some((mins) => mins >= 21 * 60 + 40 || mins < 6 * 60);
+      return bindsToOvernightOrSubClause && mentionsPre2140OnlyOrPositive && !hasHigherAlternativeInSameClause;
+    });
+
+    const allArrivalClocks = parseClocksExcludingCheckout(s);
+    const hasEligibleOvernightArrivalClock = allArrivalClocks.some((mins) => mins >= 21 * 60 + 40 || mins < 6 * 60);
+    const explicitIneligibilityFraming =
+      hasOvernightNegation(s) && !hasFalseEarlyOvernightAssertion;
     const hasValidAlt2140Condition =
-      has2140ThresholdInSentence &&
-      (!hasEarlierPre2140Clock || explicitIneligibilityFraming || /\bnếu\b|\btrường hợp\b|\bân hạn\b|\btừ\s*21[:h]40/iu.test(s));
+      hasEligibleOvernightArrivalClock && !hasFalseEarlyOvernightAssertion;
 
     let monetaryRole: 'TOTAL' | 'BASE_2H' | 'PACKAGE_RATE' | 'EXTRA_HOUR_RATE' | 'EXTRA_HOUR_SUBTOTAL' | 'ALT_21_40' | 'ANY' =
       'ANY';
@@ -1512,16 +1676,16 @@ export class ClaimLevelValidator {
       monetaryRole = 'EXTRA_HOUR_RATE';
     } else if (isBase2hOnly) {
       monetaryRole = 'BASE_2H';
-    } else if (stayPackage === 'qua_dem' && hasValidAlt2140Condition && !isMultiHourSubtotalClause) {
-      monetaryRole = 'ALT_21_40';
-    } else if (stayPackage === 'nghi_gio' && explicitTotalHours && explicitTotalHours >= 3) {
-      monetaryRole = 'TOTAL';
     } else if (/(?:tổng\s*(?:cộng|tiền|chi phí|thanh toán|giá|hết|là)|thành tiền)\s*(?:là|:|=)?\s*$/iu.test(immediatePre35)) {
       monetaryRole = 'TOTAL';
     } else if (
-      /(?:tổng\s*(?:cộng|tiền|chi phí|thanh toán)|thành tiền)/iu.test(subClause + ' ' + localPre) &&
+      /(?:tổng\s*(?:cộng|tiền|chi phí|thanh toán)|thành tiền)/iu.test(subClause) &&
       !/giá\s*(?:gói|cơ bản|gốc)\s*$/iu.test(immediatePre35)
     ) {
+      monetaryRole = 'TOTAL';
+    } else if (stayPackage === 'qua_dem' && hasValidAlt2140Condition && !isMultiHourSubtotalClause) {
+      monetaryRole = 'ALT_21_40';
+    } else if (stayPackage === 'nghi_gio' && explicitTotalHours && explicitTotalHours >= 3) {
       monetaryRole = 'TOTAL';
     } else if (stayPackage === 'qua_dem' || stayPackage === 'ngay_dem') {
       monetaryRole = /giá\s*(?:gói|cơ bản|gốc)/iu.test(immediatePre35) || /giá\s*(?:gói|cơ bản|gốc)/iu.test(subClause) ? 'PACKAGE_RATE' : 'ANY';
@@ -1665,7 +1829,12 @@ export class ClaimLevelValidator {
     if (expectedRole === 'BASE_2H') {
       return factRole === 'BASE_2H' || (factRole === 'TOTAL' && fact.stayPackage === 'nghi_gio' && factDurationHours === 2);
     }
-    if (expectedRole === 'ALT_21_40') return factRole === 'ALT_21_40';
+    if (expectedRole === 'ALT_21_40') {
+      return (
+        factRole === 'ALT_21_40' ||
+        (factRole === 'PACKAGE_RATE' && fact.stayPackage === 'qua_dem' && fact.eligible !== false)
+      );
+    }
     if (expectedRole === 'TOTAL') {
       if (factRole !== 'TOTAL') return false;
       // Multi-hour hourly totals (>= 3h) require matching explicit duration in the clause/header context
@@ -2010,6 +2179,7 @@ export class ClaimLevelValidator {
         effectivePolicyVersion: activeEffectivePolicy,
         activeDatasetHash,
         allowIneligibleContext: false,
+        enforceMandatoryScope: context.enforceMandatoryScope,
       });
 
       if (lookup.status === 'MATCHED') {
@@ -2050,34 +2220,46 @@ export class ClaimLevelValidator {
           });
           continue;
         }
-        if (context.sessionId && exactEv.sessionId && exactEv.sessionId !== context.sessionId) {
+        if (
+          context.enforceMandatoryScope
+            ? !exactEv.sessionId || !context.sessionId || exactEv.sessionId !== context.sessionId
+            : context.sessionId && exactEv.sessionId && exactEv.sessionId !== context.sessionId
+        ) {
           recordCheck({
             claim_type: 'POLICY',
             raw_text: rawRef,
             status: 'CONTRADICTED',
-            reason: `REJECTED_CROSS_SESSION_CLAIM_REF: Structured claim_ref "${rawRef}" belongs to session "${exactEv.sessionId}", not "${context.sessionId}".`,
+            reason: `REJECTED_CROSS_SESSION_CLAIM_REF: Structured claim_ref "${rawRef}" belongs to session "${exactEv.sessionId || 'MISSING'}", not "${context.sessionId || 'MISSING'}".`,
           });
           continue;
         }
-        if (context.facility && exactEv.propertyId !== context.facility) {
+        if (
+          context.enforceMandatoryScope
+            ? !exactEv.propertyId || !context.facility || exactEv.propertyId !== context.facility
+            : context.facility && exactEv.propertyId !== context.facility
+        ) {
           recordCheck({
             claim_type: 'POLICY',
             raw_text: rawRef,
             status: 'CONTRADICTED',
-            reason: `REJECTED_INVALID_CLAIM_REF: Structured claim_ref "${rawRef}" belongs to property "${exactEv.propertyId}", not "${context.facility}".`,
+            reason: `REJECTED_INVALID_CLAIM_REF: Structured claim_ref "${rawRef}" belongs to property "${exactEv.propertyId || 'MISSING'}", not "${context.facility || 'MISSING'}".`,
           });
           continue;
         }
-        if (exactEv.effectivePolicyVersion !== activeEffectivePolicy) {
+        if (!exactEv.effectivePolicyVersion || exactEv.effectivePolicyVersion !== activeEffectivePolicy) {
           recordCheck({
             claim_type: 'POLICY',
             raw_text: rawRef,
             status: 'CONTRADICTED',
-            reason: `REJECTED_POLICY_VERSION_MISMATCH: Structured claim_ref "${rawRef}" uses policy "${exactEv.effectivePolicyVersion}", not "${activeEffectivePolicy}".`,
+            reason: `REJECTED_POLICY_VERSION_MISMATCH: Structured claim_ref "${rawRef}" uses policy "${exactEv.effectivePolicyVersion || 'MISSING'}", not "${activeEffectivePolicy}".`,
           });
           continue;
         }
-        if (exactEv.datasetVersion && exactEv.datasetVersion !== activeDatasetHash) {
+        if (
+          context.enforceMandatoryScope
+            ? !exactEv.datasetVersion || exactEv.datasetVersion !== activeDatasetHash
+            : exactEv.datasetVersion && exactEv.datasetVersion !== activeDatasetHash
+        ) {
           recordCheck({
             claim_type: 'POLICY',
             raw_text: rawRef,

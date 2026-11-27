@@ -7,6 +7,7 @@ import { ClaimLevelValidator } from '../src/conversation/grounding/claim-validat
 import {
   computeDatasetVersionHash,
   lookupStructuredReference,
+  recordToolResultAsEvidence,
   renderStructuredMonetaryPlaceholders,
 } from '../src/conversation/grounding/business-evidence.js';
 import { AgentLLMDecision, BusinessEvidenceRecord } from '../src/agent/agent-contracts.js';
@@ -679,5 +680,205 @@ describe('J COLLECTION — Final Contract Compatibility Offline Replay & Mutatio
     });
     expect(legacyRendered.errors).toEqual([]);
     expect(legacyRendered.renderedText).toBe('Tổng: 849.000đ');
+  });
+
+  it('4. Pre-flight A-B-C Audits: signed budget delta, operand-linked comparison, 21:45 without 21:40 & 18:30 bypass block, mandatory metadata & reload/collision isolation', async () => {
+    // Prepare full-runtime verified evidence for 601 (849k Sat 4h) and 201 (18:30 elig + ALT_21_40)
+    const runtimeA = new JCollectionAgent(dataset, 'jacayl-ha-dong', {
+      llmAdapter: makeMockSequenceAdapter([
+        {
+          action: 'CALL_TOOLS',
+          thought_summary: 'Quote 601 4h Sat & 101 4h Wed',
+          tool_calls: [
+            {
+              tool_name: 'quote_price',
+              arguments: {
+                property_id: 'jacayl-ha-dong',
+                room_id: '601-50-sac-thai',
+                stay_type: 'nghi_gio',
+                duration_hours: 4,
+                checkin_datetime: '2026-11-28T15:00:00+07:00',
+              },
+            },
+          ],
+        },
+        {
+          action: 'RESPOND_DIRECTLY',
+          thought_summary: 'Answer 601 849k',
+          final_response: 'Dạ phòng 601 nghỉ 4 tiếng cuối tuần tổng 849.000đ ạ.',
+        },
+      ]),
+      strictLiveOnly: true,
+    });
+    await runtimeA.processTurn('preflight-s1', 'Phòng 601 4h thứ 7');
+    const s1State = runtimeA.getSessionState('preflight-s1');
+    const s1Evs = s1State.verifiedBusinessEvidence || [];
+    const s1FactId = s1Evs[0].scopedRates!.find((r) => r.role === 'TOTAL')!.factId!;
+    expect(s1FactId).toBe('q1_f1');
+
+    // A1) Signed budget delta: 849k vs 800k budget -> "vượt/thiếu 49k" PASSES, "còn dư/tiết kiệm/thấp hơn 49k" REJECTED!
+    const overDeltaOk = validator.validate(
+      'Dạ phòng 601 nghỉ 4 tiếng tổng 849.000đ, vượt ngân sách 800.000đ là 49.000đ ạ.',
+      {
+        sessionId: 'preflight-s1',
+        facility: 'jacayl-ha-dong',
+        guestBudgetVnd: 800000,
+        validEvidence: s1Evs,
+        effectivePolicyVersion: '1.4.6',
+        activeDatasetHash: activeHash,
+        enforceMandatoryScope: true,
+      }
+    );
+    expect(overDeltaOk.rejected_claims).toEqual([]);
+    expect(overDeltaOk.grounding_status).toBe('VERIFIED');
+
+    for (const wrongDirectionText of [
+      'Dạ phòng 601 nghỉ 4 tiếng tổng 849.000đ, còn dư 49.000đ so với ngân sách 800.000đ ạ.',
+      'Dạ phòng 601 nghỉ 4 tiếng tổng 849.000đ, tiết kiệm 49.000đ so với ngân sách 800.000đ ạ.',
+      'Dạ phòng 601 nghỉ 4 tiếng tổng 849.000đ, thấp hơn ngân sách 800.000đ là 49.000đ ạ.',
+    ]) {
+      const wrongDirRes = validator.validate(wrongDirectionText, {
+        sessionId: 'preflight-s1',
+        facility: 'jacayl-ha-dong',
+        guestBudgetVnd: 800000,
+        validEvidence: s1Evs,
+        effectivePolicyVersion: '1.4.6',
+        activeDatasetHash: activeHash,
+        enforceMandatoryScope: true,
+      });
+      expect(wrongDirRes.rejected_claims.some((r) => r.includes('REJECTED_INVALID_DELTA_CLAIM'))).toBe(true);
+    }
+
+    // A2) Quote comparison delta MUST link stated operands (no random subtraction from unrelated pool rates!)
+    // Here s1Evs has TOTAL=849k and BASE_2H=449k; 849k - 449k = 400k, or if 449k is NOT compared in text:
+    const unlinkedRandomDelta = validator.validate(
+      'Dạ phòng 601 nghỉ 4 tiếng tổng 849.000đ, chênh lệch 400.000đ ạ.',
+      {
+        sessionId: 'preflight-s1',
+        facility: 'jacayl-ha-dong',
+        validEvidence: s1Evs,
+        effectivePolicyVersion: '1.4.6',
+        activeDatasetHash: activeHash,
+        enforceMandatoryScope: true,
+      }
+    );
+    expect(unlinkedRandomDelta.rejected_claims.some((r) => r.includes('REJECTED_INVALID_DELTA_CLAIM'))).toBe(true);
+
+    // B) Conditional overnight: 21:45 accepted without literal 21:40/22:00; 18:30 bypass WITH 21:40+nếu MUST BE REJECTED!
+    const runtimeB = new JCollectionAgent(dataset, 'jacayl-ha-dong', {
+      llmAdapter: makeMockSequenceAdapter([
+        {
+          action: 'CALL_TOOLS',
+          thought_summary: 'Quote 201 18:30',
+          tool_calls: [
+            {
+              tool_name: 'quote_price',
+              arguments: {
+                property_id: 'jacayl-ha-dong',
+                room_id: '201-la-casta',
+                stay_type: 'qua_dem',
+                checkin_datetime: '2026-11-26T18:30:00+07:00',
+              },
+            },
+          ],
+        },
+        {
+          action: 'RESPOND_DIRECTLY',
+          thought_summary: 'Reply 21:45 without literal 21:40/22:00',
+          final_response:
+            'Dạ nhận phòng 201 lúc 18:30 áp dụng gói Ngày Đêm 520.000đ; nếu anh nhận phòng lúc 21:45 thì áp dụng gói qua đêm 420.000đ ạ.',
+        },
+      ]),
+      strictLiveOnly: true,
+    });
+    const res2145 = await runtimeB.processTurn('preflight-s2', 'Phòng 201 lúc 18:30 ở qua đêm được không?');
+    expect(res2145.decision_trace.verificationStatus).toBe('LIVE_LLM_DECISION_VERIFIED');
+    expect(res2145.claim_validation.rejected_claims).toEqual([]);
+
+    const bEvs = runtimeB.getSessionState('preflight-s2').verifiedBusinessEvidence || [];
+    for (const deceptive1830 of [
+      'Gói qua đêm quy định từ 21:40, nhưng nhận phòng lúc 18:30 vẫn được áp dụng gói qua đêm 420.000đ ạ.',
+      'Mặc dù khung chuẩn từ 21:40, nếu anh đến lúc 18:30 thì áp dụng gói qua đêm 420.000đ ạ.',
+    ]) {
+      const blocked = validator.validate(deceptive1830, {
+        sessionId: 'preflight-s2',
+        facility: 'jacayl-ha-dong',
+        validEvidence: bEvs,
+        effectivePolicyVersion: '1.4.6',
+        activeDatasetHash: activeHash,
+        enforceMandatoryScope: true,
+      });
+      expect(blocked.rejected_claims.some((r) => r.includes('REJECTED_INELIGIBLE_PACKAGE_CLAIM'))).toBe(true);
+    }
+
+    // Also verify Turn 2 direct 21:45 quote works with zero literal 21:40 / 22:00
+    const linkedOperandOk = validator.validate(
+      'Dạ gói Ngày Đêm 520.000đ cao hơn mức Qua Đêm (nếu nhận lúc 21:45) 420.000đ là 100.000đ ạ.',
+      {
+        sessionId: 'preflight-s2',
+        facility: 'jacayl-ha-dong',
+        validEvidence: bEvs,
+        effectivePolicyVersion: '1.4.6',
+        activeDatasetHash: activeHash,
+        enforceMandatoryScope: true,
+      }
+    );
+    expect(linkedOperandOk.rejected_claims).toEqual([]);
+
+    // C1) Mandatory live metadata enforcement: missing sessionId or datasetVersion MUST fail under enforceMandatoryScope
+    const evMissingSession: BusinessEvidenceRecord = { ...s1Evs[0], sessionId: undefined, scopedRates: s1Evs[0].scopedRates!.map((r) => ({ ...r, sessionId: undefined })) };
+    const cMissingSession = lookupStructuredReference([evMissingSession], s1FactId, {
+      sessionId: 'preflight-s1',
+      propertyId: 'jacayl-ha-dong',
+      effectivePolicyVersion: '1.4.6',
+      activeDatasetHash: activeHash,
+      enforceMandatoryScope: true,
+    });
+    expect(cMissingSession.status).toBe('REJECTED');
+
+    const evMissingDataset: BusinessEvidenceRecord = { ...s1Evs[0], datasetVersion: '', scopedRates: s1Evs[0].scopedRates!.map((r) => ({ ...r, datasetVersion: undefined })) };
+    const cMissingDataset = lookupStructuredReference([evMissingDataset], s1FactId, {
+      sessionId: 'preflight-s1',
+      propertyId: 'jacayl-ha-dong',
+      effectivePolicyVersion: '1.4.6',
+      activeDatasetHash: activeHash,
+      enforceMandatoryScope: true,
+    });
+    expect(cMissingDataset.status).toBe('REJECTED');
+
+    // C2) Two separate sessions BOTH mint q1_f1 cleanly without cross-contamination
+    const s2FactId = bEvs[0].scopedRates![0].factId!;
+    expect(s2FactId).toBe('q1_f1');
+    const isolatedS2 = lookupStructuredReference([...s1Evs, ...bEvs], 'q1_f1', {
+      sessionId: 'preflight-s2',
+      propertyId: 'jacayl-ha-dong',
+      effectivePolicyVersion: '1.4.6',
+      activeDatasetHash: activeHash,
+      enforceMandatoryScope: true,
+    });
+    expect(isolatedS2.status).toBe('MATCHED');
+    if (isolatedS2.status === 'MATCHED') {
+      expect(isolatedS2.evidence.roomId).toBe('201-la-casta');
+    }
+
+    // C3) State reload / restore with missing nextFactSeq does NOT collide or reuse q1_f1
+    const clonedReloadedState = JSON.parse(JSON.stringify(s1State));
+    delete clonedReloadedState.nextFactSeq;
+    const toolGw = new AgentToolGateway(dataset, 'jacayl-ha-dong');
+    const q101Res = await toolGw.executeTool({
+      toolCallId: 'tc_reload',
+      toolName: 'quote_price',
+      arguments: { property_id: 'jacayl-ha-dong', room_id: '101-long-chim', stay_type: 'nghi_gio', duration_hours: 2 },
+    });
+    const newlyRecorded = recordToolResultAsEvidence(
+      clonedReloadedState,
+      'quote_price',
+      q101Res,
+      dataset,
+      '1.4.6',
+      activeHash
+    );
+    expect(newlyRecorded[0].scopedRates![0].factId).toBe('q2_f1');
+    expect(clonedReloadedState.nextFactSeq).toBe(2);
   });
 });
