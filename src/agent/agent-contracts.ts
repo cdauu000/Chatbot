@@ -29,7 +29,10 @@ export interface ToolObservation {
 export type GroundingStatus = 'VERIFIED' | 'CONTRADICTED' | 'MISSING_EVIDENCE' | 'NOT_APPLICABLE';
 
 export interface ScopedRateFact {
+  factId?: string;
   ref?: string;
+  legacyRef?: string;
+  sessionId?: string;
   amountVnd: number;
   role: 'TOTAL' | 'BASE_2H' | 'EXTRA_HOUR_RATE' | 'EXTRA_HOUR_SUBTOTAL' | 'PACKAGE_RATE' | 'ALT_21_40' | 'POLICY_RATE';
   propertyId?: CoSoMa;
@@ -37,6 +40,8 @@ export interface ScopedRateFact {
   category?: string;
   stayPackage?: StayType | 'EXTRA_HOUR' | 'ALL';
   durationHours?: number;
+  checkinDatetime?: string;
+  checkoutDatetime?: string;
   timeCondition?: string;
   eligible?: boolean;
   isDefaultPolicyRate?: boolean;
@@ -59,6 +64,8 @@ export interface ImmutableBuildIdentity {
 export interface RenderedStructuredRefBinding {
   rawPlaceholder: string;
   ref: string;
+  factId?: string;
+  sessionId?: string;
   evidenceId: string;
   propertyId: CoSoMa;
   roomId?: string;
@@ -76,6 +83,7 @@ export interface RenderedStructuredRefBinding {
 
 export interface BusinessEvidenceRecord {
   evidenceId: string;
+  sessionId?: string;
   propertyId: CoSoMa;
   roomId?: string;
   roomCode?: string;
@@ -186,6 +194,15 @@ export interface LLMTelemetryTrace {
     formatRepairs: number;
     providerFailovers: number;
   };
+  telemetryEvents?: {
+    evidenceInvalidations: number;
+    replanningEvents: number;
+    groundingRejections: number;
+    repairAttempts: number;
+    repairedTurn: boolean;
+    finalGroundingBlocked: boolean;
+    upstreamApiBlocked: boolean;
+  };
 }
 
 export interface AgentLLMDecision {
@@ -204,6 +221,7 @@ export interface AgentLLMDecision {
 export interface DecisionStepTrace {
   step: number;
   phase: 'UNDERSTAND' | 'DECIDE' | 'ACT' | 'OBSERVE' | 'REVISE' | 'RESPOND';
+  eventType?: 'EVIDENCE_INVALIDATION' | 'REPLANNING' | 'GROUNDING_REJECTION' | 'GROUNDING_REPAIR';
   thoughtSummary: string;
   toolCalls?: ToolCall[];
   toolResults?: ToolResult[];
@@ -393,6 +411,7 @@ export interface AgentState {
   // Verified facts, scoped business evidence & observations
   verifiedFacts: Record<string, Evidence>;
   verifiedBusinessEvidence?: BusinessEvidenceRecord[];
+  nextFactSeq?: number;
   mediaEvidenceCache?: Record<string, RoomPresentationBlock>;
   observations: ToolObservation[];
 

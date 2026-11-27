@@ -76,33 +76,61 @@ export function buildScopedFactRef(
   return `${ev.evidenceId}::${fact.role}@${entity}/${pkg}/${dur}/${cond}/${elig}`;
 }
 
+function getEvidenceTypePrefix(evidenceType: BusinessEvidenceRecord['evidenceType']): string {
+  switch (evidenceType) {
+    case 'QUOTE':
+      return 'q';
+    case 'CATALOG_SEARCH':
+      return 'c';
+    case 'ROOM_FACTS':
+      return 'r';
+    case 'POLICY':
+      return 'p';
+    case 'ROOM_MEDIA':
+      return 'm';
+    default:
+      return 'e';
+  }
+}
+
 export function enrichEvidenceScopedFacts(
   ev: BusinessEvidenceRecord,
-  activeDatasetHash?: string
+  activeDatasetHash?: string,
+  options?: { evSeq?: number }
 ): BusinessEvidenceRecord {
   const hasExtraSubtotal = (ev.scopedRates || []).some(
     (r) => r.role === 'EXTRA_HOUR_SUBTOTAL' && r.amountVnd > 0
   );
   const pkgRate = (ev.scopedRates || []).find((r) => r.role === 'PACKAGE_RATE');
-  const enriched = (ev.scopedRates || []).map((f) => {
+  const prefix = getEvidenceTypePrefix(ev.evidenceType);
+  const parsedSuffix = ev.evidenceId.match(/_(\d+)$/)?.[1];
+  const evSeq = options?.evSeq ?? (parsedSuffix ? parseInt(parsedSuffix, 10) : 1);
+
+  const enriched = (ev.scopedRates || []).map((f, idx) => {
     const baseEq =
       f.isBaseEquivalent !== undefined
         ? f.isBaseEquivalent
         : f.role === 'PACKAGE_RATE' ||
-          f.role === 'BASE_2H' ||
-          (f.role === 'TOTAL' && f.stayPackage === 'nghi_gio' && f.durationHours === 2) ||
-          (f.role === 'TOTAL' &&
-            (f.stayPackage === 'qua_dem' || f.stayPackage === 'ngay_dem') &&
-            !hasExtraSubtotal &&
-            (!pkgRate || pkgRate.amountVnd === f.amountVnd));
+        f.role === 'BASE_2H' ||
+        (f.role === 'TOTAL' && f.stayPackage === 'nghi_gio' && f.durationHours === 2) ||
+        (f.role === 'TOTAL' &&
+          (f.stayPackage === 'qua_dem' || f.stayPackage === 'ngay_dem') &&
+          !hasExtraSubtotal &&
+          (!pkgRate || pkgRate.amountVnd === f.amountVnd));
+    const factId = f.factId || `${prefix}${evSeq}_f${idx + 1}`;
     const withMeta: ScopedRateFact = {
       ...f,
+      factId,
+      sessionId: f.sessionId ?? ev.sessionId,
       propertyId: f.propertyId ?? ev.propertyId,
+      checkinDatetime: f.checkinDatetime ?? ev.checkinDatetime,
+      checkoutDatetime: f.checkoutDatetime ?? ev.checkoutDatetime,
       datasetVersion: f.datasetVersion ?? ev.datasetVersion ?? activeDatasetHash,
       policyVersion: f.policyVersion ?? ev.effectivePolicyVersion,
       isBaseEquivalent: baseEq,
     };
-    withMeta.ref = withMeta.ref || buildScopedFactRef(ev, withMeta);
+    withMeta.legacyRef = f.legacyRef || buildScopedFactRef(ev, withMeta);
+    withMeta.ref = f.ref || factId;
     return withMeta;
   });
   return { ...ev, scopedRates: enriched };
@@ -110,19 +138,19 @@ export function enrichEvidenceScopedFacts(
 
 export type ResolvedSelectorResult =
   | {
-      status: 'MATCHED';
-      kind: 'ROLE' | 'FIELD';
-      amountVnd: number;
-      fact: ScopedRateFact;
-    }
+    status: 'MATCHED';
+    kind: 'ROLE' | 'FIELD';
+    amountVnd: number;
+    fact: ScopedRateFact;
+  }
   | {
-      status: 'AMBIGUOUS';
-      reason: string;
-    }
+    status: 'AMBIGUOUS';
+    reason: string;
+  }
   | {
-      status: 'MISSING_FIELD' | 'NOT_FOUND';
-      reason: string;
-    };
+    status: 'MISSING_FIELD' | 'NOT_FOUND';
+    reason: string;
+  };
 
 /**
  * Resolves a structured reference selector against a single BusinessEvidenceRecord.
@@ -193,8 +221,10 @@ export function resolveStructuredRateSelector(
     };
   }
 
-  // Exact full 9-dimension canonical ref match
-  const exactFullMatches = facts.filter((f) => f.ref === rawRef);
+  // Exact full opaque factId, ref, or canonical legacyRef match
+  const exactFullMatches = facts.filter(
+    (f) => f.factId === rawRef || f.ref === rawRef || f.legacyRef === rawRef
+  );
   if (exactFullMatches.length === 1) {
     return { status: 'MATCHED', kind: 'ROLE', amountVnd: exactFullMatches[0].amountVnd, fact: exactFullMatches[0] };
   }
@@ -209,6 +239,7 @@ export function resolveStructuredRateSelector(
       const qLower = qualifier.toLowerCase();
       const parts = qLower.split('/').filter(Boolean);
       candidates = candidates.filter((f) => {
+        if (f.legacyRef && f.legacyRef.toLowerCase().endsWith(`::${targetRole.toLowerCase()}@${qLower}`)) return true;
         if (f.ref && f.ref.toLowerCase().endsWith(`::${targetRole.toLowerCase()}@${qLower}`)) return true;
         return parts.every(
           (p) =>
@@ -257,57 +288,212 @@ export function resolveStructuredRateSelector(
   };
 }
 
+export interface StructuredRefLookupOptions {
+  sessionId?: string;
+  propertyId?: CoSoMa | null;
+  effectivePolicyVersion?: string;
+  activeDatasetHash?: string;
+  allowIneligibleContext?: boolean;
+}
+
+export type StructuredRefLookupResult =
+  | {
+      status: 'MATCHED';
+      kind: 'FACT_ID' | 'LEGACY_REF' | 'FIELD' | 'ROLE_SELECTOR';
+      amountVnd: number;
+      evidence: BusinessEvidenceRecord;
+      fact: ScopedRateFact;
+    }
+  | {
+      status: 'REJECTED';
+      code:
+        | 'REJECTED_INVALID_RENDER_REF'
+        | 'REJECTED_INVALID_CLAIM_REF'
+        | 'REJECTED_CROSS_SESSION_CLAIM_REF'
+        | 'REJECTED_CROSS_PROPERTY_CLAIM_REF'
+        | 'REJECTED_STALE_POLICY_RENDER_REF'
+        | 'REJECTED_STALE_DATASET_REVISION'
+        | 'REJECTED_MISSING_FIELD_REF'
+        | 'REJECTED_AMBIGUOUS_CLAIM_REF'
+        | 'REJECTED_INELIGIBLE_CLAIM_REF';
+      reason: string;
+    };
+
+export function findUnrenderedStructuredPlaceholders(text: string): string[] {
+  if (!text || !text.includes('{{')) return [];
+  const matches = text.match(/\{\{\s*ref\s*:[^}]*\}\}/g);
+  return matches ? matches.map((m) => m.trim()) : [];
+}
+
 /**
- * Renders structured monetary placeholders `{{ref:<refId>}}` deterministically from active verified evidence
- * BEFORE claim validation and outbound delivery. Rejects missing/stale/ambiguous/ineligible/null references.
+ * Single shared exact-lookup path used by BOTH placeholder rendering and ClaimLevelValidator.
+ * Matches opaque backend-issued factId (`q1_f1`), exact backend-issued legacyRef, `<evId>#<field>`,
+ * or unambiguous `<evId>::<ROLE>[@qualifier]` without regex-guessing timestamps or Unicode strings.
  */
-export function renderStructuredMonetaryPlaceholders(
-  text: string,
+export function lookupStructuredReference(
   validEvidence: BusinessEvidenceRecord[],
-  options: {
-    propertyId?: CoSoMa | null;
-    effectivePolicyVersion?: string;
-    activeDatasetHash?: string;
-  }
-): {
-  renderedText: string;
-  bindings: RenderedStructuredRefBinding[];
-  errors: string[];
-} {
-  const placeholderRegex = /\{\{\s*ref\s*:\s*([^}\s]+)\s*\}\}/g;
-  const bindings: RenderedStructuredRefBinding[] = [];
-  const errors: string[] = [];
-  if (!text || !text.includes('{{')) {
-    return { renderedText: text, bindings, errors };
+  rawRef: string,
+  options: StructuredRefLookupOptions = {}
+): StructuredRefLookupResult {
+  const trimmed = String(rawRef || '').trim();
+  if (!trimmed) {
+    return {
+      status: 'REJECTED',
+      code: 'REJECTED_INVALID_CLAIM_REF',
+      reason: 'Empty structured reference cannot be resolved.',
+    };
   }
 
-  const evMap = new Map<string, BusinessEvidenceRecord>();
+  const checkEvidenceAndFactBoundaries = (
+    ev: BusinessEvidenceRecord,
+    fact: ScopedRateFact,
+    kind: 'FACT_ID' | 'LEGACY_REF' | 'FIELD' | 'ROLE_SELECTOR'
+  ): StructuredRefLookupResult => {
+    if (!ev.isValid) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_INVALID_CLAIM_REF',
+        reason: `Structured ref "${trimmed}" references invalidated evidence "${ev.evidenceId}" (${ev.invalidatedReason || 'stale'}).`,
+      };
+    }
+    const factSessionId = fact.sessionId ?? ev.sessionId;
+    if (options.sessionId && factSessionId && factSessionId !== options.sessionId) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_CROSS_SESSION_CLAIM_REF',
+        reason: `Structured ref "${trimmed}" belongs to session "${factSessionId}", not active session "${options.sessionId}".`,
+      };
+    }
+    const factPropId = fact.propertyId ?? ev.propertyId;
+    if (options.propertyId && factPropId !== options.propertyId) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_CROSS_PROPERTY_CLAIM_REF',
+        reason: `Structured ref "${trimmed}" belongs to property "${factPropId}", not "${options.propertyId}".`,
+      };
+    }
+    const factPolicy = fact.policyVersion ?? ev.effectivePolicyVersion;
+    if (options.effectivePolicyVersion && factPolicy !== options.effectivePolicyVersion) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_STALE_POLICY_RENDER_REF',
+        reason: `Structured ref "${trimmed}" uses policy "${factPolicy}", not "${options.effectivePolicyVersion}".`,
+      };
+    }
+    const factDataset = fact.datasetVersion ?? ev.datasetVersion;
+    if (options.activeDatasetHash && factDataset && factDataset !== options.activeDatasetHash) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_STALE_DATASET_REVISION',
+        reason: `Structured ref "${trimmed}" uses revision "${factDataset}", not active "${options.activeDatasetHash}".`,
+      };
+    }
+    if (fact.eligible === false && !options.allowIneligibleContext) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_INELIGIBLE_CLAIM_REF',
+        reason: `Structured ref "${trimmed}" is marked INELIGIBLE (${fact.ineligibilityReason || 'window_mismatch'}).`,
+      };
+    }
+    if (typeof fact.amountVnd !== 'number' || !Number.isFinite(fact.amountVnd) || fact.amountVnd < 0) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_MISSING_FIELD_REF',
+        reason: `Structured ref "${trimmed}" does not carry a valid monetary value.`,
+      };
+    }
+    return {
+      status: 'MATCHED',
+      kind,
+      amountVnd: fact.amountVnd,
+      evidence: ev,
+      fact,
+    };
+  };
+
+  // 1) Exact opaque factId / ref / exact backend legacyRef lookup
+  const exactHits: Array<{ ev: BusinessEvidenceRecord; fact: ScopedRateFact; kind: 'FACT_ID' | 'LEGACY_REF' }> = [];
   for (const ev of validEvidence || []) {
-    evMap.set(ev.evidenceId, ev);
+    const enriched = enrichEvidenceScopedFacts(ev, options.activeDatasetHash);
+    for (const f of enriched.scopedRates || []) {
+      if (f.factId === trimmed || f.ref === trimmed) {
+        exactHits.push({ ev: enriched, fact: f, kind: 'FACT_ID' });
+      } else if (f.legacyRef && f.legacyRef === trimmed) {
+        exactHits.push({ ev: enriched, fact: f, kind: 'LEGACY_REF' });
+      }
+    }
+  }
+  if (exactHits.length === 1) {
+    return checkEvidenceAndFactBoundaries(exactHits[0].ev, exactHits[0].fact, exactHits[0].kind);
+  }
+  if (exactHits.length > 1) {
+    // Prefer active matching session/property if stale copy exists in the same array, otherwise reject ambiguity
+    const scopedValid = exactHits.filter(
+      (h) =>
+        h.ev.isValid &&
+        (!options.sessionId || (h.fact.sessionId ?? h.ev.sessionId) === options.sessionId) &&
+        (!options.propertyId || (h.fact.propertyId ?? h.ev.propertyId) === options.propertyId)
+    );
+    if (scopedValid.length === 1) {
+      return checkEvidenceAndFactBoundaries(scopedValid[0].ev, scopedValid[0].fact, scopedValid[0].kind);
+    }
+    return {
+      status: 'REJECTED',
+      code: 'REJECTED_AMBIGUOUS_CLAIM_REF',
+      reason: `Structured ref "${trimmed}" matched ${exactHits.length} distinct facts.`,
+    };
   }
 
-  const renderedText = text.replace(placeholderRegex, (fullMatch, rawRef: string) => {
-    const roleOrFieldMatch = rawRef.match(/^([^:#]+)(?:::|#)([a-zA-Z0-9_@/\-]+)$/);
-    const baseId = roleOrFieldMatch ? roleOrFieldMatch[1] : rawRef;
-    const ev = evMap.get(baseId);
-    if (!ev || !ev.isValid) {
-      errors.push(`REJECTED_INVALID_RENDER_REF: Structured placeholder "${rawRef}" has no active valid evidence.`);
-      return fullMatch;
+  // 2) Structured selector / field on explicit evidenceId (<evId>#<field> or <evId>::<ROLE>[@<qualifier>])
+  const fieldMatch = trimmed.match(/^([^:#]+)#([a-zA-Z0-9_]+)$/);
+  const selectorMatch = trimmed.match(/^([^:#]+)::([A-Z0-9_]+)(?:@(.+))?$/);
+  const baseId = fieldMatch ? fieldMatch[1] : selectorMatch ? selectorMatch[1] : null;
+  if (baseId) {
+    const ev = (validEvidence || []).find((e) => e.evidenceId === baseId);
+    if (!ev) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_INVALID_RENDER_REF',
+        reason: `Structured reference "${trimmed}" has no active evidence "${baseId}".`,
+      };
+    }
+    if (!ev.isValid) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_INVALID_CLAIM_REF',
+        reason: `Structured ref "${trimmed}" references invalidated evidence "${ev.evidenceId}".`,
+      };
+    }
+    if (options.sessionId && ev.sessionId && ev.sessionId !== options.sessionId) {
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_CROSS_SESSION_CLAIM_REF',
+        reason: `Structured ref "${trimmed}" belongs to session "${ev.sessionId}", not "${options.sessionId}".`,
+      };
     }
     if (options.propertyId && ev.propertyId !== options.propertyId) {
-      errors.push(`REJECTED_INVALID_RENDER_REF: Placeholder "${rawRef}" belongs to property "${ev.propertyId}", not "${options.propertyId}".`);
-      return fullMatch;
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_CROSS_PROPERTY_CLAIM_REF',
+        reason: `Structured ref "${trimmed}" belongs to property "${ev.propertyId}", not "${options.propertyId}".`,
+      };
     }
     if (options.effectivePolicyVersion && ev.effectivePolicyVersion !== options.effectivePolicyVersion) {
-      errors.push(`REJECTED_STALE_POLICY_RENDER_REF: Placeholder "${rawRef}" uses policy "${ev.effectivePolicyVersion}", not "${options.effectivePolicyVersion}".`);
-      return fullMatch;
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_STALE_POLICY_RENDER_REF',
+        reason: `Structured ref "${trimmed}" uses policy "${ev.effectivePolicyVersion}", not "${options.effectivePolicyVersion}".`,
+      };
     }
     if (options.activeDatasetHash && ev.datasetVersion && ev.datasetVersion !== options.activeDatasetHash) {
-      errors.push(`REJECTED_STALE_DATASET_REVISION: Placeholder "${rawRef}" uses revision "${ev.datasetVersion}", not active "${options.activeDatasetHash}".`);
-      return fullMatch;
+      return {
+        status: 'REJECTED',
+        code: 'REJECTED_STALE_DATASET_REVISION',
+        reason: `Structured ref "${trimmed}" uses revision "${ev.datasetVersion}", not active "${options.activeDatasetHash}".`,
+      };
     }
 
-    const resolved = resolveStructuredRateSelector(ev, rawRef);
+    const resolved = resolveStructuredRateSelector(ev, trimmed);
     if (resolved.status !== 'MATCHED') {
       const code =
         resolved.status === 'AMBIGUOUS'
@@ -315,32 +501,67 @@ export function renderStructuredMonetaryPlaceholders(
           : resolved.status === 'MISSING_FIELD'
             ? 'REJECTED_MISSING_FIELD_REF'
             : 'REJECTED_INVALID_RENDER_REF';
-      errors.push(`${code}: ${resolved.reason}`);
-      return fullMatch;
+      return { status: 'REJECTED', code, reason: resolved.reason };
     }
-    if (resolved.fact.eligible === false) {
-      errors.push(
-        `REJECTED_INELIGIBLE_CLAIM_REF: Cannot render INELIGIBLE fact "${rawRef}" (${resolved.fact.ineligibilityReason || 'window_mismatch'}).`
-      );
+    return checkEvidenceAndFactBoundaries(ev, resolved.fact, resolved.kind === 'FIELD' ? 'FIELD' : 'ROLE_SELECTOR');
+  }
+
+  return {
+    status: 'REJECTED',
+    code: 'REJECTED_INVALID_RENDER_REF',
+    reason: `Unknown or unissued structured reference "${trimmed}".`,
+  };
+}
+
+/**
+ * Renders structured monetary placeholders `{{ref:<refId>}}` deterministically from active verified evidence
+ * BEFORE claim validation and outbound delivery. Uses `lookupStructuredReference` as single source of truth.
+ */
+export function renderStructuredMonetaryPlaceholders(
+  text: string,
+  validEvidence: BusinessEvidenceRecord[],
+  options: StructuredRefLookupOptions
+): {
+  renderedText: string;
+  bindings: RenderedStructuredRefBinding[];
+  errors: string[];
+} {
+  const placeholderRegex = /\{\{\s*ref\s*:\s*([^}]+?)\s*\}\}/g;
+  const bindings: RenderedStructuredRefBinding[] = [];
+  const errors: string[] = [];
+  if (!text || !text.includes('{{')) {
+    return { renderedText: text, bindings, errors };
+  }
+
+  const renderedText = text.replace(placeholderRegex, (fullMatch, rawRef: string) => {
+    const trimmedRef = rawRef.trim();
+    const lookup = lookupStructuredReference(validEvidence, trimmedRef, {
+      ...options,
+      allowIneligibleContext: false,
+    });
+    if (lookup.status !== 'MATCHED') {
+      errors.push(`${lookup.code}: ${lookup.reason}`);
       return fullMatch;
     }
 
-    const formatted = `${resolved.amountVnd.toLocaleString('vi-VN')}đ`;
+    const formatted = `${lookup.amountVnd.toLocaleString('vi-VN')}đ`;
     bindings.push({
       rawPlaceholder: fullMatch,
-      ref: rawRef,
-      evidenceId: ev.evidenceId,
-      propertyId: ev.propertyId,
-      roomId: resolved.fact.roomId ?? ev.roomId,
-      category: resolved.fact.category ?? ev.category,
-      role: resolved.kind === 'FIELD' ? 'FIELD' : resolved.fact.role,
-      stayPackage: resolved.fact.stayPackage ?? ev.stayPackage,
-      durationHours: resolved.fact.durationHours ?? ev.durationHours,
-      timeCondition: resolved.fact.timeCondition ?? ev.timeCondition,
+      ref: trimmedRef,
+      factId: lookup.fact.factId,
+      sessionId: lookup.fact.sessionId ?? lookup.evidence.sessionId,
+      evidenceId: lookup.evidence.evidenceId,
+      propertyId: lookup.evidence.propertyId,
+      roomId: lookup.fact.roomId ?? lookup.evidence.roomId,
+      category: lookup.fact.category ?? lookup.evidence.category,
+      role: lookup.kind === 'FIELD' ? 'FIELD' : lookup.fact.role,
+      stayPackage: lookup.fact.stayPackage ?? lookup.evidence.stayPackage,
+      durationHours: lookup.fact.durationHours ?? lookup.evidence.durationHours,
+      timeCondition: lookup.fact.timeCondition ?? lookup.evidence.timeCondition,
       eligible: true,
-      datasetVersion: ev.datasetVersion,
-      policyVersion: ev.effectivePolicyVersion,
-      amountVnd: resolved.amountVnd,
+      datasetVersion: lookup.evidence.datasetVersion,
+      policyVersion: lookup.evidence.effectivePolicyVersion,
+      amountVnd: lookup.amountVnd,
       renderedText: formatted,
     });
     return formatted;
@@ -403,6 +624,18 @@ export function extractVndMentions(text: string): ParsedVndMention[] {
   return results;
 }
 
+export function normalizeClauseTimeCondition(timeCondition?: string): 'weekend_daytime' | 'weekday_or_after_18' | null {
+  if (!timeCondition) return null;
+  if (timeCondition === 'weekend_daytime' || timeCondition === 'weekday_or_after_18') {
+    return timeCondition;
+  }
+  const parts = parseVietnamDateTime(timeCondition);
+  if (!parts) return null;
+  const isWknd = parts.dayOfWeekIso === 6 || parts.dayOfWeekIso === 7;
+  const mins = parts.hour * 60 + parts.minute;
+  return isWknd && mins >= 480 && mins < 1080 ? 'weekend_daytime' : 'weekday_or_after_18';
+}
+
 function classifyCheckinTimeBucket(iso?: string): string | null {
   if (!iso || iso === 'UNSPECIFIED' || iso.startsWith('CHECKIN_') || iso.startsWith('UNSPECIFIED')) return null;
   const parts = parseVietnamDateTime(iso);
@@ -428,28 +661,32 @@ export function invalidateStaleBusinessEvidence(
     effectivePolicyVersion: string;
     datasetVersion?: string;
   }
-): void {
+): number {
   const list = state.verifiedBusinessEvidence;
-  if (!list || list.length === 0) return;
+  if (!list || list.length === 0) return 0;
 
+  let invalidatedCount = 0;
   for (const ev of list) {
     if (!ev.isValid) continue;
 
     if (ev.propertyId !== currentConstraints.propertyId) {
       ev.isValid = false;
       ev.invalidatedReason = `PROPERTY_CHANGED (${ev.propertyId} -> ${currentConstraints.propertyId})`;
+      invalidatedCount += 1;
       continue;
     }
 
     if (ev.effectivePolicyVersion !== currentConstraints.effectivePolicyVersion) {
       ev.isValid = false;
       ev.invalidatedReason = `POLICY_VERSION_CHANGED (${ev.effectivePolicyVersion} -> ${currentConstraints.effectivePolicyVersion})`;
+      invalidatedCount += 1;
       continue;
     }
 
     if (currentConstraints.datasetVersion && ev.datasetVersion !== currentConstraints.datasetVersion) {
       ev.isValid = false;
       ev.invalidatedReason = `DATASET_HASH_CHANGED (${ev.datasetVersion} -> ${currentConstraints.datasetVersion})`;
+      invalidatedCount += 1;
       continue;
     }
 
@@ -463,6 +700,7 @@ export function invalidateStaleBusinessEvidence(
       ) {
         ev.isValid = false;
         ev.invalidatedReason = `STAY_TYPE_CHANGED (${ev.stayPackage} -> ${currentConstraints.stayType})`;
+        invalidatedCount += 1;
         continue;
       }
       // If guest now asks about a different duration on hourly stay
@@ -474,6 +712,7 @@ export function invalidateStaleBusinessEvidence(
       ) {
         ev.isValid = false;
         ev.invalidatedReason = `DURATION_CHANGED (${ev.durationHours}h -> ${currentConstraints.durationHours}h)`;
+        invalidatedCount += 1;
         continue;
       }
       // If guest explicitly updates check-in or crosses weekday/weekend or time-window tier
@@ -490,6 +729,7 @@ export function invalidateStaleBusinessEvidence(
           prevBucket && nextBucket && prevBucket !== nextBucket
             ? `CHECKIN_WINDOW_SHIFTED (${prevBucket} -> ${nextBucket})`
             : `CHECKIN_CHANGED (${ev.checkinDatetime} -> ${currentConstraints.checkinDatetime})`;
+        invalidatedCount += 1;
         continue;
       }
       if (
@@ -499,10 +739,12 @@ export function invalidateStaleBusinessEvidence(
       ) {
         ev.isValid = false;
         ev.invalidatedReason = `CHECKOUT_CHANGED (${ev.checkoutDatetime} -> ${currentConstraints.checkoutDatetime})`;
+        invalidatedCount += 1;
         continue;
       }
     }
   }
+  return invalidatedCount;
 }
 
 /**
@@ -610,9 +852,11 @@ export function recordToolResultAsEvidence(
       if (!q || !q.room_id) continue;
       const altSet = new Set<number>();
       const scopedRates: ScopedRateFact[] = [];
-      const durHours = typeof q.duration_hours === 'number' ? q.duration_hours : undefined;
+      const durHours = q.stay_type === 'nghi_gio' && typeof q.duration_hours === 'number' ? q.duration_hours : undefined;
       const pushRate = (fact: ScopedRateFact) => {
-        altSet.add(fact.amountVnd);
+        if (fact.eligible !== false && fact.role !== 'ALT_21_40') {
+          altSet.add(fact.amountVnd);
+        }
         scopedRates.push(fact);
       };
 
@@ -690,6 +934,7 @@ export function recordToolResultAsEvidence(
           const rawPkgType = String(pkg.stay_type ?? q.stay_type);
           const pkgType = (rawPkgType.startsWith('ngay_dem') ? 'ngay_dem' : rawPkgType) as StayType;
           const pkgCond = pkg.applicable_window || (pkg.requires_reception_confirmation_for_early_checkin ? 'early_before_14_requires_reception' : undefined);
+          const pkgDur = pkgType === 'nghi_gio' && typeof (pkg.duration_hours ?? durHours) === 'number' ? (pkg.duration_hours ?? durHours) : undefined;
           if (typeof pkg.total_price_vnd === 'number') {
             pushRate({
               amountVnd: pkg.total_price_vnd,
@@ -697,7 +942,7 @@ export function recordToolResultAsEvidence(
               roomId: q.room_id,
               category: q.category,
               stayPackage: pkgType,
-              durationHours: pkg.duration_hours ?? durHours,
+              durationHours: pkgDur,
               timeCondition: pkgCond,
               eligible: pkg._elig,
               ineligibilityReason: pkg._elig ? undefined : String(pkg.reason || elig.business_reason || ''),
@@ -722,12 +967,22 @@ export function recordToolResultAsEvidence(
               roomId: q.room_id,
               category: q.category,
               stayPackage: pkgType,
-              durationHours: pkg.duration_hours ?? durHours,
+              durationHours: pkgDur,
               timeCondition: pkgCond,
               eligible: pkg._elig,
             });
           }
           if (typeof pkg.alternative_if_delayed_to_21_40_vnd === 'number') {
+            pushRate({
+              amountVnd: pkg.alternative_if_delayed_to_21_40_vnd,
+              role: 'PACKAGE_RATE',
+              roomId: q.room_id,
+              category: q.category,
+              stayPackage: pkgType,
+              timeCondition: q.checkin_conditions?.checkin_datetime,
+              eligible: false,
+              ineligibilityReason: String(pkg.reason || elig.business_reason || 'Requested arrival before 21:40 is ineligible for overnight package'),
+            });
             pushRate({ amountVnd: pkg.alternative_if_delayed_to_21_40_vnd, role: 'ALT_21_40', roomId: q.room_id, category: q.category, stayPackage: 'qua_dem', timeCondition: 'delayed_to_21_40', eligible: true });
           }
         }
@@ -952,7 +1207,11 @@ export function recordToolResultAsEvidence(
     });
   }
 
-  const finalizedCreated = created.map((ev) => enrichEvidenceScopedFacts(ev, datasetVersion));
+  const finalizedCreated = created.map((ev) => {
+    state.nextFactSeq = (state.nextFactSeq ?? 0) + 1;
+    const withSession: BusinessEvidenceRecord = { ...ev, sessionId: ev.sessionId ?? state.sessionId };
+    return enrichEvidenceScopedFacts(withSession, datasetVersion, { evSeq: state.nextFactSeq });
+  });
   state.verifiedBusinessEvidence.push(...finalizedCreated);
   // Keep session evidence bounded to avoid unbounded growth across long multi-turn dialogs
   if (state.verifiedBusinessEvidence.length > 24) {
@@ -1014,11 +1273,12 @@ export function formatValidEvidenceForPrompt(state: AgentState): string {
     const eligTag = ev.eligible === false ? `INELIGIBLE(${ev.ineligibilityReason || 'window_mismatch'})` : 'ELIGIBLE';
     const roleHints = (ev.scopedRates || [])
       .filter((r) => r.eligible !== false)
-      .slice(0, 5)
-      .map((r) => `${r.role}=${r.amountVnd}${r.timeCondition ? `@${r.timeCondition}` : ''} (ref=${r.ref || `${ev.evidenceId}::${r.role}`})`)
+      .slice(0, 8)
+      .map((r) => `${r.factId || r.ref}=${r.role}(${r.amountVnd}${r.timeCondition ? `@${r.timeCondition}` : ''})`)
       .join(', ');
+    const durLabel = ev.stayPackage === 'nghi_gio' && typeof ev.durationHours === 'number' ? `, ${ev.durationHours}h` : '';
     lines.push(
-      `[${ev.evidenceId} QUOTE | prop=${ev.propertyId} | pol=${ev.effectivePolicyVersion} | rev=${ev.datasetVersion} | ${eligTag}]: ${ev.roomName || ev.roomId} (${ev.stayPackage || 'pkg'}, ${ev.durationHours ?? '?'}h, checkin=${ev.checkinDatetime || 'UNSPECIFIED'}) => ${amt}${roleHints ? ` [roles: ${roleHints}]` : ''}`
+      `[${ev.evidenceId} QUOTE | prop=${ev.propertyId} | pol=${ev.effectivePolicyVersion} | rev=${ev.datasetVersion} | ${eligTag}]: ${ev.roomName || ev.roomId} (${ev.stayPackage || 'pkg'}${durLabel}, checkin=${ev.checkinDatetime || 'UNSPECIFIED'}) => ${amt}${roleHints ? ` [FACT_REFS: ${roleHints}]` : ''}`
     );
   }
 

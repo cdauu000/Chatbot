@@ -65,13 +65,30 @@ export const QuotePriceArgsSchema = z
     room_ids: z.array(z.string()).nullish(),
     stay_type: z.enum(['nghi_gio', 'qua_dem', 'ngay_dem']).nullish().transform((v) => v ?? 'nghi_gio'),
     stay_intent: z.enum(['hourly', 'overnight_until_next_day', 'day_night', 'unspecified']).nullish(),
-    duration_hours: z.number().int().min(1).nullish().transform((v) => v ?? 2),
+    duration_hours: z.number().positive().nullish(),
     checkin_datetime: z.string().nullish(),
     checkout_datetime: z.string().nullish(),
     checkin_confidence: z.enum(['CONFIRMED', 'INFERRED', 'CONDITIONAL', 'UNKNOWN']).nullish(),
   })
-  .refine((data) => data.room_id || (data.room_ids && data.room_ids.length > 0), {
-    message: 'Either room_id or room_ids must be provided',
+  .superRefine((data, ctx) => {
+    if (!data.room_id && (!data.room_ids || data.room_ids.length === 0)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Either room_id or room_ids must be provided',
+      });
+    }
+    if (
+      data.stay_type === 'nghi_gio' &&
+      data.duration_hours !== undefined &&
+      data.duration_hours !== null &&
+      (!Number.isInteger(data.duration_hours) || data.duration_hours < 1)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['duration_hours'],
+        message: 'duration_hours must be an integer >= 1 for hourly stay_type nghi_gio',
+      });
+    }
   });
 
 export interface AgentToolDeclaration {
@@ -809,8 +826,8 @@ export class AgentToolGateway {
 
             const effectiveDuration =
               parsed.data.stay_type === 'nghi_gio'
-                ? Math.max(2, parsed.data.duration_hours)
-                : parsed.data.duration_hours;
+                ? Math.max(2, parsed.data.duration_hours ?? 2)
+                : 2;
 
             const rawCheckin = parsed.data.checkin_datetime?.trim();
             const hasExplicitCheckin = Boolean(rawCheckin && rawCheckin.toUpperCase() !== 'UNSPECIFIED' && rawCheckin.length >= 10);
@@ -1032,7 +1049,7 @@ export class AgentToolGateway {
                     stay_type: requestedStay,
                   },
                   stay_type: requestedStay,
-                  duration_hours: 1,
+                  duration_hours: undefined,
                   total_price_vnd: null,
                   price_breakdown_text: eligibility.customer_explanation,
                   pricing_status: 'NEEDS_POLICY_CLARIFICATION',
@@ -1079,7 +1096,7 @@ export class AgentToolGateway {
                     stay_type: eligibility.recommended_stay_type,
                   },
                   stay_type: eligibility.recommended_stay_type,
-                  duration_hours: 1,
+                  duration_hours: undefined,
                   total_price_vnd: null,
                   price_breakdown_text: recommendedQuote.price_breakdown_text,
                   pricing_status: 'INVALID_DATETIME',
@@ -1137,10 +1154,9 @@ export class AgentToolGateway {
                   checkin_confidence: parsed.data.checkin_confidence ?? 'CONFIRMED',
                   checkout_datetime: recommendedQuote.confirmed_checkout ?? parsed.data.checkout_datetime ?? 'UNSPECIFIED (package ends 12:00 next day)',
                   stay_type: eligibility.recommended_stay_type,
-                  duration_hours: 1,
                 },
                 stay_type: eligibility.recommended_stay_type,
-                duration_hours: 1,
+                duration_hours: undefined,
                 base_price: recommendedQuote.base_2h_price,
                 base_price_vnd: recommendedQuote.base_2h_price,
                 base_package_price_vnd: recommendedQuote.base_2h_price,
@@ -1229,10 +1245,10 @@ export class AgentToolGateway {
                 checkout_datetime: quote.confirmed_checkout ?? parsed.data.checkout_datetime ?? 'UNSPECIFIED',
                 assumption_type: hasExplicitCheckin ? 'EXPLICIT_OR_RESOLVED' : 'POLICY_INVARIANT_RATE',
                 stay_type: quote.stay_type,
-                duration_hours: quote.duration_hours,
+                duration_hours: quote.stay_type === 'nghi_gio' ? quote.duration_hours : undefined,
               },
               stay_type: quote.stay_type,
-              duration_hours: quote.duration_hours,
+              duration_hours: quote.stay_type === 'nghi_gio' ? quote.duration_hours : undefined,
               base_price: quote.base_2h_price,
               base_price_vnd: quote.base_2h_price,
               base_package_price_vnd: quote.base_2h_price,

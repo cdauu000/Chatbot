@@ -386,6 +386,11 @@ export class JCollectionAgent {
     let schemaRejections = 0;
     let formatRepairs = 0;
     let providerFailovers = 0;
+    let evidenceInvalidations = 0;
+    let replanningEvents = 0;
+    let groundingRejections = 0;
+    let repairAttempts = 0;
+    let upstreamApiBlocked = false;
     let activeProvider = (this.llmAdapter as any)?.name || 'deterministic-solver';
     let activeModel = (this.llmAdapter as any)?.modelName || 'generic-constraint-v2.2';
     let usedLiveLLM = false;
@@ -628,20 +633,41 @@ export class JCollectionAgent {
       state.hardConstraints.requiredAmenities.push('may_chieu');
     }
 
-    // Budget parsing
+    // Budget parsing: strictly match CUSTOMER_BUDGET framing, never treating package/quote inquiry figures
+    // (e.g. "áp dụng gói qua đêm 420k được không?") as a customer budget constraint!
     let budget: number | undefined;
-    const budgetMatch = lower.match(/(\d+)\s*(nghìn|nghin|k|triệu|trieu)/);
-    if (budgetMatch) {
-      const val = parseInt(budgetMatch[1], 10);
-      const unit = budgetMatch[2];
-      if (unit.startsWith('tri')) budget = val * 1000000;
-      else budget = val * 1000;
-      StructuredStateManager.updateConstraint(state, 'budget', budget);
-    } else {
-      const numMatch = lower.match(/(\d{3,4})\s*k/);
-      if (numMatch) {
-        budget = parseInt(numMatch[1], 10) * 1000;
+    const budgetScanRegex =
+      /(?<!:)(?<![\d.])(\d+(?:[.,]\d+)?)\s*(?:(triệu|trieu|tr)(?![\p{L}\d])|(nghìn|nghin|ngàn|ngan|k)(?![\p{L}\d])|(vnđ|vnd|đồng|dong|đ)(?![\p{L}\d]))/giu;
+    let bMatch: RegExpExecArray | null;
+    while ((bMatch = budgetScanRegex.exec(lower)) !== null) {
+      const mStart = bMatch.index;
+      const mEnd = mStart + bMatch[0].length;
+      const prefix = lower.slice(Math.max(0, mStart - 40), mStart);
+      const suffix = lower.slice(mEnd, Math.min(lower.length, mEnd + 20));
+      const looksLikePackageOrQuotePrice =
+        /(?:gói(?:\s+\S+){0,3}|giá(?:\s+\S+){0,2}|qua đêm|ngày đêm|cả ngày|nghỉ giờ|\d+\s*(?:h|giờ|tiếng)|phòng\s*\d+|áp dụng(?:\s+\S+){0,4})\s*$/i.test(
+          prefix
+        );
+      if (looksLikePackageOrQuotePrice) continue;
+      const hasBudgetFraming =
+        /(?:ngân sách|tài chính|tầm tiền|tầm giá|tầm|khoảng|dưới|tối đa|mức trần|loanh quanh|quanh mức|không quá|budget|kinh phí|mức)(?:\s+(?:của|cho|là|cỡ|khoảng|tầm|chỉ|có|chỉ có|anh|chị|em|mình|tôi|bạn|tối đa))*\s*:?\s*$/i.test(
+          prefix
+        ) || /^\s*(?:đổ lại|trở xuống|quay đầu|trở lại|thôi)\b/i.test(suffix);
+      if (!hasBudgetFraming) continue;
+
+      const rawNum = bMatch[1];
+      let parsedBudget = NaN;
+      if (bMatch[2]) {
+        parsedBudget = Math.round(parseFloat(rawNum.replace(',', '.')) * 1_000_000);
+      } else if (bMatch[3]) {
+        parsedBudget = Math.round(parseFloat(rawNum.replace(/\.(?=\d{3}\b)/g, '').replace(',', '.')) * 1_000);
+      } else {
+        parsedBudget = Math.round(parseFloat(rawNum.replace(/[.,](?=\d{3}\b)/g, '').replace(/,/g, '.')));
+      }
+      if (Number.isFinite(parsedBudget) && parsedBudget > 0) {
+        budget = parsedBudget;
         StructuredStateManager.updateConstraint(state, 'budget', budget);
+        break;
       }
     }
 
@@ -1207,6 +1233,7 @@ export class JCollectionAgent {
                   excludeProviders: failedProvidersThisTurn,
                 });
               } catch (callErr: any) {
+                upstreamApiBlocked = true;
                 fallbackReason = callErr.message;
                 break; // All real providers exhausted or blocked
               }
@@ -1216,6 +1243,7 @@ export class JCollectionAgent {
               totalCompletionTokens += llmRes.telemetry?.completion_tokens ?? 0;
 
               if (!llmRes.telemetry?.provider || llmRes.telemetry.provider === 'mock') {
+                upstreamApiBlocked = true;
                 fallbackReason = llmRes.telemetry?.error || 'Gateway returned mock instead of live provider';
                 break;
               }
@@ -1363,6 +1391,7 @@ export class JCollectionAgent {
             lastRenderedErrors = renderedResult.errors;
 
             const precheck = this.claimValidator.validate(finalCustomerResponse, {
+              sessionId: state.sessionId,
               facility: this.propertyId,
               focusedRoomKey: state.focusedRoomId,
               expectedQuotes: this.buildExpectedQuotesForValidation(quoteResultsRecord, activePolicyVersion),
@@ -1387,7 +1416,9 @@ export class JCollectionAgent {
                 ...(precheck.missing_evidence_claims || []),
               ].slice(0, 4);
 
+              groundingRejections += 1;
               if (currentIteration < maxIterations) {
+                repairAttempts += 1;
                 const feedbackMsg =
                   `GROUNDING_GATE (${precheck.grounding_status}): Draft reply blocked before release: ${issues.join(' | ')}. ` +
                   `Call quote_price/search_rooms/get_room_media/get_policies (or supply valid media_refs) to obtain verified evidence, or clarify without unverified numbers/room codes.`;
@@ -1402,6 +1433,7 @@ export class JCollectionAgent {
                 decisionSteps.push({
                   step: decisionSteps.length + 1,
                   phase: 'REVISE',
+                  eventType: 'GROUNDING_REJECTION',
                   thoughtSummary: feedbackMsg,
                 });
                 finalCustomerResponse = '';
@@ -1504,7 +1536,7 @@ export class JCollectionAgent {
                     : firstQ.confirmed_checkout ?? state.conditionalAssumptions?.checkoutDatetime,
               };
             }
-            invalidateStaleBusinessEvidence(state, {
+            const invalidatedCount = invalidateStaleBusinessEvidence(state, {
               propertyId: this.propertyId,
               stayType: firstQ?.stay_type ?? state.hardConstraints.stayType,
               durationHours:
@@ -1516,6 +1548,7 @@ export class JCollectionAgent {
               effectivePolicyVersion: activePolicyVersion,
               datasetVersion: activeDatasetHash,
             });
+            evidenceInvalidations += invalidatedCount;
           } else if (tc.toolName === 'get_room_facts' && res.status === 'SUCCESS') {
             factsResultRecord = res.data;
           } else if (tc.toolName === 'get_room_media' && res.status === 'SUCCESS') {
@@ -1550,7 +1583,12 @@ export class JCollectionAgent {
           if (res.status === 'SUCCESS') {
             const createdEvs = recordToolResultAsEvidence(state, tc.toolName, res, this.dataset, activePolicyVersion, activeDatasetHash);
             const refs = createdEvs.flatMap((ev) =>
-              (ev.scopedRates || []).filter((sr) => sr.eligible !== false).slice(0, 6).map((sr) => sr.ref || `${ev.evidenceId}::${sr.role}`)
+              (ev.scopedRates || []).filter((sr) => sr.eligible !== false).slice(0, 12).map((sr) => {
+                const fId = sr.factId || sr.ref || `${ev.evidenceId}::${sr.role}`;
+                const condPart = sr.timeCondition ? `@${sr.timeCondition}` : '';
+                const durPart = sr.stayPackage === 'nghi_gio' && typeof sr.durationHours === 'number' ? `/${sr.durationHours}h` : '';
+                return `${fId} => ${sr.roomId || ev.roomId || ''}/${sr.stayPackage || ev.stayPackage || ''}/${sr.role}${durPart}${condPart}=${sr.amountVnd.toLocaleString('vi-VN')}đ`;
+              })
             );
             if (refs.length > 0) {
               recordedRefsByToolCall.set(tc.toolCallId, refs);
@@ -1581,29 +1619,29 @@ export class JCollectionAgent {
               const catSummary =
                 catSummaryList.length > 0
                   ? catSummaryList
-                      .map((cs: any) => {
-                        const fmtRange = (rg: { min: number; max: number }) =>
-                          rg.min === rg.max ? `${rg.min}đ` : `${rg.min}đ–${rg.max}đ`;
-                        const varStr = Array.isArray(cs.room_rate_variants)
-                          ? ` [EXTRA_HOUR_VARIES: ${cs.room_rate_variants.map((v: any) => `${v.extra_hour_rate_vnd}đ/h={${v.rooms.join(',')}}`).join(' ; ')}]`
-                          : '';
-                        return `${cs.category}(${cs.room_count} rooms, base_2h=${fmtRange(cs.ranges.base_2h_vnd)}, overnight=${fmtRange(cs.ranges.qua_dem_vnd)}, extra=${fmtRange(cs.ranges.extra_hour_rate_vnd)}${varStr})`;
-                      })
-                      .join(' | ')
+                    .map((cs: any) => {
+                      const fmtRange = (rg: { min: number; max: number }) =>
+                        rg.min === rg.max ? `${rg.min}đ` : `${rg.min}đ–${rg.max}đ`;
+                      const varStr = Array.isArray(cs.room_rate_variants)
+                        ? ` [EXTRA_HOUR_VARIES: ${cs.room_rate_variants.map((v: any) => `${v.extra_hour_rate_vnd}đ/h={${v.rooms.join(',')}}`).join(' ; ')}]`
+                        : '';
+                      return `${cs.category}(${cs.room_count} rooms, base_2h=${fmtRange(cs.ranges.base_2h_vnd)}, overnight=${fmtRange(cs.ranges.qua_dem_vnd)}, extra=${fmtRange(cs.ranges.extra_hour_rate_vnd)}${varStr})`;
+                    })
+                    .join(' | ')
                   : (() => {
-                      const byCat: Record<string, { count: number; min2h: number; minOvernight: number; sampleIds: string[] }> = {};
-                      for (const c of allCands) {
-                        const cat = c.category || 'Other';
-                        if (!byCat[cat]) byCat[cat] = { count: 0, min2h: 9999999, minOvernight: 9999999, sampleIds: [] };
-                        byCat[cat].count += 1;
-                        if (c.base_pricing?.nghi_gio_2h) byCat[cat].min2h = Math.min(byCat[cat].min2h, c.base_pricing.nghi_gio_2h);
-                        if (c.base_pricing?.qua_dem) byCat[cat].minOvernight = Math.min(byCat[cat].minOvernight, c.base_pricing.qua_dem);
-                        if (byCat[cat].sampleIds.length < 3) byCat[cat].sampleIds.push(c.room_id);
-                      }
-                      return Object.entries(byCat)
-                        .map(([cat, info]) => `${cat}(${info.count} rooms, base_2h=${info.min2h}đ, overnight=${info.minOvernight}đ, e.g. ${info.sampleIds.join(',')})`)
-                        .join(' | ');
-                    })();
+                    const byCat: Record<string, { count: number; min2h: number; minOvernight: number; sampleIds: string[] }> = {};
+                    for (const c of allCands) {
+                      const cat = c.category || 'Other';
+                      if (!byCat[cat]) byCat[cat] = { count: 0, min2h: 9999999, minOvernight: 9999999, sampleIds: [] };
+                      byCat[cat].count += 1;
+                      if (c.base_pricing?.nghi_gio_2h) byCat[cat].min2h = Math.min(byCat[cat].min2h, c.base_pricing.nghi_gio_2h);
+                      if (c.base_pricing?.qua_dem) byCat[cat].minOvernight = Math.min(byCat[cat].minOvernight, c.base_pricing.qua_dem);
+                      if (byCat[cat].sampleIds.length < 3) byCat[cat].sampleIds.push(c.room_id);
+                    }
+                    return Object.entries(byCat)
+                      .map(([cat, info]) => `${cat}(${info.count} rooms, base_2h=${info.min2h}đ, overnight=${info.minOvernight}đ, e.g. ${info.sampleIds.join(',')})`)
+                      .join(' | ');
+                  })();
               const cList = allCands
                 .map((c: any) => `${c.room_id}|${c.room_name}|${c.category}|[${(c.confirmed_amenities || []).join(',')}]|2h=${c.base_pricing?.nghi_gio_2h ?? '?'}đ|od=${c.base_pricing?.qua_dem ?? '?'}đ|extra=${c.base_pricing?.gio_phat_sinh_ap_dung ?? '?'}đ/h`)
                 .join('; ');
@@ -1657,7 +1695,7 @@ export class JCollectionAgent {
                 .join('\n') +
                 variationNote +
                 ((recordedRefsByToolCall.get(r.toolCallId)?.length ?? 0) > 0
-                  ? `\n[STRUCTURED_REFS (use in claim_refs or {{ref:...}}): ${recordedRefsByToolCall.get(r.toolCallId)!.join(' | ')}]`
+                  ? `\n[FACT_REFS (use short opaque factId like q1_f1 in claim_refs or {{ref:<factId>}}): ${recordedRefsByToolCall.get(r.toolCallId)!.join(' | ')}]`
                   : '');
             }
             if (r.toolName === 'get_room_facts') {
@@ -1695,7 +1733,6 @@ export class JCollectionAgent {
           step: decisionSteps.length + 1,
           phase: 'OBSERVE',
           thoughtSummary: `Quan sát: ${obsSummary}`,
-          toolResults,
         });
 
         // Observation Replanning: Check budget exceedance
@@ -1703,9 +1740,11 @@ export class JCollectionAgent {
         if (quoteResultsRecord.length > 0 && maxBudget) {
           const exceeded = quoteResultsRecord.filter((q) => typeof q.total_price_vnd === 'number' && q.total_price_vnd > maxBudget);
           if (exceeded.length > 0) {
+            replanningEvents += 1;
             decisionSteps.push({
               step: decisionSteps.length + 1,
               phase: 'REVISE',
+              eventType: 'REPLANNING',
               thoughtSummary: `Điều chỉnh kế hoạch (Observation Replanning): Nhận thấy ${exceeded.map((e) => e.room_name).join(', ')} vượt ngân sách ${maxBudget.toLocaleString('vi-VN')}đ. Đề xuất phương án tối ưu trong ngân sách và giữ phương án vượt làm lựa chọn nâng cấp minh bạch.`,
             });
           }
@@ -1774,6 +1813,7 @@ export class JCollectionAgent {
     // PHASE 7: BUSINESS GUARD & CLAIM VALIDATOR
     // =========================================================================
     const validationSummary = this.claimValidator.validate(finalCustomerResponse, {
+      sessionId: state.sessionId,
       facility: this.propertyId,
       focusedRoomKey: state.focusedRoomId,
       expectedQuotes: this.buildExpectedQuotesForValidation(quoteResultsRecord, activePolicyVersion),
@@ -1835,6 +1875,15 @@ export class JCollectionAgent {
           schemaRejections,
           formatRepairs,
           providerFailovers,
+        },
+        telemetryEvents: {
+          evidenceInvalidations,
+          replanningEvents,
+          groundingRejections,
+          repairAttempts,
+          repairedTurn: repairAttempts > 0 && !groundingBlocked && !fallbackHappened && usedModelResponse,
+          finalGroundingBlocked: groundingBlocked,
+          upstreamApiBlocked,
         },
       },
     };
@@ -2749,12 +2798,12 @@ INVARIANTS (POLICY V1.4.3 + OWNER ADDENDUM V1.4.6):
    - Classify timing honestly: CONFIRMED | INFERRED | CONDITIONAL | UNKNOWN. Ask 1 short clarifying question only if missing timing materially alters the answer.
    - Package & Late Checkout rules: Overnight ('qua_dem') = 22:00 (grace from 21:40) to 12:00 next day; Day-Night ('ngay_dem') = 14:00 to 12:00 next day. Arriving 14:00-21:39 staying until next day applies 'ngay_dem'. For checkout past 12:00 on 'qua_dem'/'ngay_dem': 10-minute grace applies to EVERY extra-hour boundary (12:00-12:10 = 0h; 12:11-13:10 = 1h; 13:11-14:10 = 2h; 14:11-15:10 = 3h...), billed via 'quote_price' at that room's canonical extra_hour_rate. Pass checkin_datetime, checkout_datetime (when stated), stay_type/stay_intent to 'quote_price' and follow returned calculations strictly. Never treat prior-turn assistant prose as price truth if the requested package/duration/room was not verified by tool evidence.
 4. Pricing, Media & Natural UX:
-   - Quote strictly from active 'quote_price'/'get_room_facts' evidence (may embed {{ref:<ref_id>}} in final_response for backend canonical VND rendering). Call 'search_rooms' first if exact room_id slugs are not yet in Valid Evidence/observations. When guest asks a duration (e.g. 4h), compute/quote the total for that duration via 'quote_price'.
+   - Quote strictly from active 'quote_price'/'get_room_facts' evidence (may cite short opaque factIds like q1_f1 from [FACT_REFS] in claim_refs or {{ref:<factId>}} in final_response for backend canonical VND rendering). Call 'search_rooms' first if exact room_id slugs are not yet in Valid Evidence/observations. When guest asks a duration (e.g. 4h), compute/quote the total for that duration via 'quote_price'.
    - Only call 'get_room_media' (or list cached composite keys/room IDs in "media_refs" to re-send cached albums) when photos are requested or clearly desired. Align reply room order with albums. NEVER paste raw image URLs (.webp/.jpg) into "final_response" text. Honor preferences (photo-only -> skip prices; no-photos -> skip get_room_media/media_refs).
    - Natural concise Vietnamese: Answer directly! Do NOT mechanically append address, hotline, full room rate tables, or trailing generic questions on every turn.
 5. Output JSON ONLY (when action="CALL_TOOLS", final_response=null; Vietnamese guest reply ONLY in "final_response", no <think>/JSON/tool names):
 ${toolsBlock}
-Schema: {"action":"CALL_TOOLS"|"RESPOND_DIRECTLY"|"CLARIFY"|"ESCALATE","thought_summary":"...","tool_calls":[{"tool_name":"...","arguments":{...}}],"claim_refs":["optional_evidence_id"],"media_refs":["optional_room_id_to_resend_cached_album"],"clarification_question":null,"final_response":null|"..."}`;
+Schema: {"action":"CALL_TOOLS"|"RESPOND_DIRECTLY"|"CLARIFY"|"ESCALATE","thought_summary":"...","tool_calls":[{"tool_name":"...","arguments":{...}}],"claim_refs":["optional_opaque_fact_id_like_q1_f1"],"media_refs":["optional_room_id_to_resend_cached_album"],"clarification_question":null,"final_response":null|"..."}`;
 
     const lastPresentedSummary =
       state.lastPresentedRooms && state.lastPresentedRooms.length > 0

@@ -23,8 +23,10 @@ import {
   computeDatasetVersionHash,
   enrichEvidenceScopedFacts,
   extractVndMentions,
+  findUnrenderedStructuredPlaceholders,
+  lookupStructuredReference,
+  normalizeClauseTimeCondition,
   ParsedVndMention,
-  resolveStructuredRateSelector,
 } from './business-evidence.js';
 
 export interface ClaimValidationConfig {
@@ -53,6 +55,7 @@ export interface ExpectedQuoteInput {
 }
 
 export interface ClaimValidationContext {
+  sessionId?: string;
   facility?: CoSoMa | null;
   focusedRoomKey?: string | null;
   expectedQuotes?: ExpectedQuoteInput[];
@@ -977,9 +980,36 @@ export class ClaimLevelValidator {
 
     for (const mention of mentions) {
       const localPre = text.slice(Math.max(0, mention.index - 55), mention.index).toLowerCase();
+      const immediateBudgetPre = text.slice(Math.max(0, mention.index - 24), mention.index).toLowerCase();
 
-      // 1) Distinguish guest budget / echoed user figures -> NOT_APPLICABLE
-      if (this.isBudgetOrEchoMention(text, mention, context.guestBudgetVnd)) {
+      const isReferenceBudgetTarget =
+        typeof context.guestBudgetVnd === 'number' &&
+        mention.amountVnd === context.guestBudgetVnd &&
+        /(?:so với(?:\s+mức|\s+ngân sách)?|ngân sách|mức|tầm|dưới|tối đa|khoảng|của)\s*$/iu.test(immediateBudgetPre);
+
+      const isDeltaPhrase =
+        !isReferenceBudgetTarget &&
+        (/(?:(?<![\p{L}\d])(?:vượt(?:\s+ngân sách)?|chênh(?:\s*lệch|\s*nhau)?|cao hơn|thấp hơn|rẻ hơn|tiết kiệm|ít hơn|đắt hơn|thiếu|dư|còn dư|nhỉnh hơn|cố thêm)(?![\p{L}\d]))\s*[^.\n:]*$/iu.test(
+          localPre
+        ) ||
+          /\((?:thiếu|còn\s+dư|(?<![\p{L}\d])dư(?![\p{L}\d])|chênh|vượt)[^)]*$/iu.test(localPre) ||
+          (typeof context.guestBudgetVnd === 'number' &&
+            mention.amountVnd !== context.guestBudgetVnd &&
+            /(?:ngân sách|vượt|thiếu|còn\s+dư|(?<![\p{L}\d])dư(?![\p{L}\d])|chênh)[^.\n()]{0,40}\(\s*[^)]*$/iu.test(localPre)));
+
+      // 1) Distinguish guest budget / echoed user figures -> NOT_APPLICABLE (NEVER bypass tampered deltas!)
+      const matchesGuestBudgetOrImmediateEcho =
+        !isDeltaPhrase &&
+        (this.isBudgetOrEchoMention(text, mention, context.guestBudgetVnd) ||
+          (typeof context.guestBudgetVnd === 'number' &&
+            mention.amountVnd === context.guestBudgetVnd &&
+            /(?:ngân sách|tầm|khoảng|dưới|tối đa|vượt)/i.test(mention.sentenceLower)));
+      const matchesExplicitBudgetKeyword =
+        !isDeltaPhrase &&
+        /(?:ngân sách|tài chính|tầm giá|tầm tiền|tầm|mức trần|tối đa|bạn đưa ra|bạn vừa nêu|bạn hỏi|anh\/chị nêu|khách nêu)\s*(?:là|của[^:\n]{0,20})?\s*$/i.test(
+          immediateBudgetPre
+        );
+      if (matchesGuestBudgetOrImmediateEcho || matchesExplicitBudgetKeyword) {
         recordCheck({
           claim_type: 'PRICE',
           raw_text: mention.raw,
@@ -1030,35 +1060,90 @@ export class ClaimLevelValidator {
         continue;
       }
 
-      // 3) Price difference / savings delta between two verified evidence values
-      if (/(?:chênh lệch|chênh nhau|cao hơn|thấp hơn|rẻ hơn|tiết kiệm|ít hơn|đắt hơn)\s*[^.\n:]*$/i.test(localPre)) {
-        const allValidPool = new Set<number>();
+      // 3) Explicit delta validation: BUDGET_DELTA vs QUOTE_COMPARISON_DELTA (never random subtraction across an unstructured pool)
+      if (isDeltaPhrase) {
+        const eligiblePrimaryRates: Array<{ amountVnd: number; evidenceId: string; role: string }> = [];
         for (const e of activeEntries) {
-          if (typeof e.amountVnd === 'number') allValidPool.add(e.amountVnd);
-          for (const a of e.alternateAmountsVnd || []) allValidPool.add(a);
+          for (const f of e.scopedRates || []) {
+            if (
+              f.eligible !== false &&
+              (f.role === 'TOTAL' || f.role === 'PACKAGE_RATE' || f.role === 'BASE_2H' || f.role === 'ALT_21_40')
+            ) {
+              eligiblePrimaryRates.push({ amountVnd: f.amountVnd, evidenceId: e.evidenceId, role: f.role });
+            }
+          }
+          if ((!e.scopedRates || e.scopedRates.length === 0) && e.eligible !== false && typeof e.amountVnd === 'number') {
+            eligiblePrimaryRates.push({ amountVnd: e.amountVnd, evidenceId: e.evidenceId, role: 'TOTAL' });
+          }
         }
-        const poolArr = Array.from(allValidPool);
-        let matchedDelta = false;
-        for (let i = 0; i < poolArr.length; i++) {
-          for (let j = i + 1; j < poolArr.length; j++) {
-            if (Math.abs(poolArr[i] - poolArr[j]) === mention.amountVnd) {
-              matchedDelta = true;
+        // Supplement from category snapshots only when no QUOTE rates were fetched for comparison
+        if (eligiblePrimaryRates.length === 0) {
+          for (const e of activeEntries) {
+            for (const sn of e.categoryRateSnapshots || []) {
+              for (const v of [
+                ...(sn.base2hVnds || []),
+                ...(sn.overnightVnds || []),
+                ...(sn.dayNightVnds || []),
+                ...(sn.hourlyExtendedVnds || []),
+              ]) {
+                eligiblePrimaryRates.push({ amountVnd: v, evidenceId: e.evidenceId, role: 'CATALOG_RATE' });
+              }
+            }
+          }
+        }
+
+        // 3a) BUDGET_DELTA: Verified quote/package rate minus verified guestBudgetVnd
+        if (typeof context.guestBudgetVnd === 'number' && context.guestBudgetVnd > 0) {
+          const budgetMatched = eligiblePrimaryRates.find(
+            (r) => Math.abs(r.amountVnd - context.guestBudgetVnd!) === mention.amountVnd
+          );
+          if (budgetMatched) {
+            verifiedClaims.push(`VERIFIED_BUDGET_DELTA: ${mention.raw} (${budgetMatched.amountVnd} - ${context.guestBudgetVnd}).`);
+            recordCheck({
+              claim_type: 'PRICE',
+              raw_text: mention.raw,
+              normalized_value: mention.amountVnd,
+              status: 'VERIFIED',
+              reason: `Verified BUDGET_DELTA (${mention.raw}) between verified quote ${budgetMatched.amountVnd.toLocaleString('vi-VN')}đ and guestBudgetVnd ${context.guestBudgetVnd.toLocaleString('vi-VN')}đ.`,
+              matched_evidence_id: budgetMatched.evidenceId,
+            });
+            continue;
+          }
+        }
+
+        // 3b) QUOTE_COMPARISON_DELTA: Difference between two verified eligible primary quote/package rates
+        let matchedQuoteDelta: { evidenceId: string; a: number; b: number } | null = null;
+        for (let i = 0; i < eligiblePrimaryRates.length && !matchedQuoteDelta; i++) {
+          for (let j = i + 1; j < eligiblePrimaryRates.length; j++) {
+            const r1 = eligiblePrimaryRates[i];
+            const r2 = eligiblePrimaryRates[j];
+            if (Math.abs(r1.amountVnd - r2.amountVnd) === mention.amountVnd) {
+              matchedQuoteDelta = { evidenceId: r1.evidenceId, a: r1.amountVnd, b: r2.amountVnd };
               break;
             }
           }
-          if (matchedDelta) break;
         }
-        if (matchedDelta) {
+        if (matchedQuoteDelta) {
+          verifiedClaims.push(`VERIFIED_QUOTE_COMPARISON_DELTA: ${mention.raw}.`);
           recordCheck({
             claim_type: 'PRICE',
             raw_text: mention.raw,
             normalized_value: mention.amountVnd,
             status: 'VERIFIED',
-            reason: `Verified price difference delta (${mention.raw}) across active quote evidence.`,
-            matched_evidence_id: activeEntries[0]?.evidenceId || 'quote_delta',
+            reason: `Verified QUOTE_COMPARISON_DELTA (${mention.raw}) between ${matchedQuoteDelta.a.toLocaleString('vi-VN')}đ and ${matchedQuoteDelta.b.toLocaleString('vi-VN')}đ.`,
+            matched_evidence_id: matchedQuoteDelta.evidenceId,
           });
           continue;
         }
+
+        recordCheck({
+          claim_type: 'PRICE',
+          raw_text: mention.raw,
+          normalized_value: mention.amountVnd,
+          status: 'CONTRADICTED',
+          reason: `REJECTED_INVALID_DELTA_CLAIM: Stated delta ${mention.raw} does not match any verified BUDGET_DELTA or QUOTE_COMPARISON_DELTA.`,
+        });
+        continue;
       }
 
       // 4) Hotel rate / quote total / extra-hour surcharge check against scoped activeEntries
@@ -1104,6 +1189,20 @@ export class ClaimLevelValidator {
             normalized_value: mention.amountVnd,
             status: 'CONTRADICTED',
             reason: `REJECTED_RENDERED_ROLE_CONFLICT: Rendered ref "${binding.ref}" (${binding.role}) contradicts surrounding clause framing (${clauseScope.monetaryRole}).`,
+          });
+          continue;
+        }
+        if (
+          (binding.role === 'ALT_21_40' || binding.timeCondition === 'delayed_to_21_40') &&
+          !clauseScope.hasValidAlt2140Condition
+        ) {
+          renderedBindingsQueue.splice(boundIdx, 1);
+          recordCheck({
+            claim_type: 'POLICY',
+            raw_text: mention.raw,
+            normalized_value: mention.amountVnd,
+            status: 'CONTRADICTED',
+            reason: `REJECTED_INELIGIBLE_PACKAGE_CLAIM: Conditional overnight alternative (${binding.ref}) requires stating valid >= 21:40 arrival condition and cannot apply unconditionally to earlier arrival.`,
           });
           continue;
         }
@@ -1223,14 +1322,22 @@ export class ClaimLevelValidator {
 
   private isBudgetOrEchoMention(text: string, mention: ParsedVndMention, guestBudgetVnd?: number): boolean {
     const localPre = text.slice(Math.max(0, mention.index - 55), mention.index).toLowerCase();
+    const immediatePre = text.slice(Math.max(0, mention.index - 28), mention.index).toLowerCase();
     const localAround = text
       .slice(Math.max(0, mention.index - 50), Math.min(text.length, mention.index + mention.raw.length + 40))
       .toLowerCase();
+    const isDeltaFollowingBudget =
+      /(?<![\p{L}\d])(?:vượt|thiếu|dư|còn dư|chênh|nhỉnh hơn|cố thêm)(?![\p{L}\d])[^.\n]*$/iu.test(localPre) &&
+      (typeof guestBudgetVnd !== 'number' || mention.amountVnd !== guestBudgetVnd);
+    if (isDeltaFollowingBudget) {
+      return false;
+    }
     return (
-      /(?:ngân sách|tầm giá|tầm tiền|trong tầm|tài chính|mức trần|tối đa|dưới mức|dưới\s*$|trên\s*$|bạn đưa ra|bạn vừa nêu|bạn hỏi|anh\/chị nêu|khách nêu|với mức)\s*[^.\n:]*$/i.test(
-        localPre
+      /(?:ngân sách|tầm giá|tầm tiền|trong tầm|tài chính|mức trần|tối đa|dưới mức|dưới\s*$|trên\s*$|bạn đưa ra|bạn vừa nêu|bạn hỏi|anh\/chị nêu|khách nêu|với mức)\s*(?:của[^:\n]{0,20})?\s*$/i.test(
+        immediatePre
       ) ||
-      /(?:của anh\/chị|của bạn|vượt ngân sách|nằm trong ngân sách)/i.test(localAround) ||
+      /(?:của anh\/chị|của bạn|vượt ngân sách|nằm trong ngân sách)/i.test(localAround.slice(Math.max(0, localAround.length - 45))) &&
+        (typeof guestBudgetVnd !== 'number' || mention.amountVnd === guestBudgetVnd) ||
       (typeof guestBudgetVnd === 'number' &&
         mention.amountVnd === guestBudgetVnd &&
         /(?:ngân sách|tầm|khoảng|dưới|tối đa|vượt)/i.test(mention.sentenceLower))
@@ -1249,6 +1356,7 @@ export class ClaimLevelValidator {
     monetaryRole: 'TOTAL' | 'BASE_2H' | 'PACKAGE_RATE' | 'EXTRA_HOUR_RATE' | 'EXTRA_HOUR_SUBTOTAL' | 'ALT_21_40' | 'ANY';
     clauseTimeCondition: 'weekend_daytime' | 'weekday_or_after_18' | null;
     explicitIneligibilityFraming: boolean;
+    hasValidAlt2140Condition: boolean;
     isBase2hOnly?: boolean;
     explicitTotalHours?: number;
     summary: string;
@@ -1321,13 +1429,19 @@ export class ClaimLevelValidator {
 
     let stayPackage: StayType | 'EXTRA_HOUR' | undefined;
     const afterRaw = s.slice(mRelIdx + rawLower.length, mRelIdx + rawLower.length + 32);
-    const immediateAfter = s.slice(mRelIdx + rawLower.length, mRelIdx + rawLower.length + 10);
+    const immediateAfter = s.slice(mRelIdx + rawLower.length, mRelIdx + rawLower.length + 12);
+    const immediatePre35 = s.slice(Math.max(0, mRelIdx - 35), mRelIdx);
     const hasPerHourUnit =
       /\/\s*(?:giờ|gio|h|tiếng|tieng)(?![\p{L}\d])/iu.test(rawLower) ||
       /^\s*(?:\*\*|__)?\s*\/\s*(?:giờ|gio|h|tiếng|tieng)(?![\p{L}\d])/iu.test(immediateAfter) ||
       /(?:^|[\s\d\(])[x×*]\s*$/iu.test(localPre);
+    const hasLocalPerHourPrefix =
+      /(?:mỗi\s*(?:giờ|tiếng|h)|đơn giá(?:\s*mỗi)?\s*(?:giờ|tiếng)|phụ thu thêm giờ|phát sinh mỗi giờ|mỗi giờ tiếp theo|quá giờ mỗi tiếng)\s*(?:là|tính|:)?\s*$/iu.test(
+        immediatePre35
+      );
     const isMultiHourSubtotalClause =
       !hasPerHourUnit &&
+      !hasLocalPerHourPrefix &&
       (/\b(?:[1-9]\d?)\s*(?:giờ|tiếng|h)\s*(?:thêm|sau|tiếp theo|phát sinh|quá giờ|cộng)|(?:thêm|phát sinh|trễ)\s*(?:[1-9]\d?)\s*(?:giờ|tiếng|h)/iu.test(
         subClause
       ) ||
@@ -1336,6 +1450,7 @@ export class ClaimLevelValidator {
         ));
     const isPerHourUnitRate =
       hasPerHourUnit ||
+      hasLocalPerHourPrefix ||
       (/(?:phụ thu thêm giờ|phát sinh mỗi giờ|mỗi giờ tiếp theo|thêm giờ là|quá giờ mỗi tiếng|đơn giá giờ phát sinh)[^.\n=]*$/iu.test(
         localPre
       ) &&
@@ -1374,6 +1489,21 @@ export class ClaimLevelValidator {
         ? parseInt(durMatch[1], 10)
         : undefined;
 
+    // Structural Pricing Engine threshold check for conditional overnight (ALT_21_40: checkin >= 21:40 / 22:00)
+    // WITHOUT bespoke phrasing lists, and strictly rejecting claims applying qua_dem unconditionally to an earlier (<21:40) arrival!
+    const has2140ThresholdInSentence = /\b(?:21[:h]40|22[:h]00)\b/iu.test(s);
+    const sentenceClockMatches = Array.from(s.matchAll(/\b(\d{1,2})[:h](\d{2})\b/g)).map(
+      (m) => parseInt(m[1], 10) * 60 + parseInt(m[2], 10)
+    );
+    const hasEarlierPre2140Clock = sentenceClockMatches.some((mins) => mins >= 120 && mins < 21 * 60 + 40);
+    const explicitIneligibilityFraming =
+      /(?:không\s+(?:áp dụng|đủ điều kiện|hợp lệ|tính được)|chưa\s+(?:đủ điều kiện|áp dụng|tới giờ)|chỉ\s+(?:áp dụng|tính)\s*(?:từ|khi|nếu)|ngoài\s+khung)/iu.test(
+        s
+      );
+    const hasValidAlt2140Condition =
+      has2140ThresholdInSentence &&
+      (!hasEarlierPre2140Clock || explicitIneligibilityFraming || /\bnếu\b|\btrường hợp\b|\bân hạn\b|\btừ\s*21[:h]40/iu.test(s));
+
     let monetaryRole: 'TOTAL' | 'BASE_2H' | 'PACKAGE_RATE' | 'EXTRA_HOUR_RATE' | 'EXTRA_HOUR_SUBTOTAL' | 'ALT_21_40' | 'ANY' =
       'ANY';
     if (isMultiHourSubtotalClause) {
@@ -1382,14 +1512,19 @@ export class ClaimLevelValidator {
       monetaryRole = 'EXTRA_HOUR_RATE';
     } else if (isBase2hOnly) {
       monetaryRole = 'BASE_2H';
-    } else if (/(?:đợi|chờ|lùi|nếu nhận)\s*(?:đến|tới|từ)?\s*21[:h]40/iu.test(s) && /qua đêm|qua dem|sau 21[:h]40|gói đêm/iu.test(subClause)) {
+    } else if (stayPackage === 'qua_dem' && hasValidAlt2140Condition && !isMultiHourSubtotalClause) {
       monetaryRole = 'ALT_21_40';
     } else if (stayPackage === 'nghi_gio' && explicitTotalHours && explicitTotalHours >= 3) {
       monetaryRole = 'TOTAL';
-    } else if (/(?:tổng\s*(?:cộng|tiền|chi phí|thanh toán)|thành tiền)/iu.test(subClause + ' ' + localPre)) {
+    } else if (/(?:tổng\s*(?:cộng|tiền|chi phí|thanh toán|giá|hết|là)|thành tiền)\s*(?:là|:|=)?\s*$/iu.test(immediatePre35)) {
+      monetaryRole = 'TOTAL';
+    } else if (
+      /(?:tổng\s*(?:cộng|tiền|chi phí|thanh toán)|thành tiền)/iu.test(subClause + ' ' + localPre) &&
+      !/giá\s*(?:gói|cơ bản|gốc)\s*$/iu.test(immediatePre35)
+    ) {
       monetaryRole = 'TOTAL';
     } else if (stayPackage === 'qua_dem' || stayPackage === 'ngay_dem') {
-      monetaryRole = /giá\s*(?:gói|cơ bản|gốc)/iu.test(subClause) ? 'PACKAGE_RATE' : 'ANY';
+      monetaryRole = /giá\s*(?:gói|cơ bản|gốc)/iu.test(immediatePre35) || /giá\s*(?:gói|cơ bản|gốc)/iu.test(subClause) ? 'PACKAGE_RATE' : 'ANY';
     }
 
     const condCtx = `${subClause} ${localPre}`;
@@ -1398,11 +1533,6 @@ export class ClaimLevelValidator {
     const clauseTimeCondition: 'weekend_daytime' | 'weekday_or_after_18' | null =
       mentionsWknd && !mentionsWkd ? 'weekend_daytime' : mentionsWkd && !mentionsWknd ? 'weekday_or_after_18' : null;
 
-    const explicitIneligibilityFraming =
-      /(?:không\s+(?:áp dụng|đủ điều kiện|hợp lệ|tính được)|chưa\s+(?:đủ điều kiện|áp dụng|tới giờ)|chỉ\s+áp dụng\s+từ|ngoài\s+khung|nếu\s+(?:đợi|chờ|lùi)\s*(?:đến|tới)?\s*21[:h]40)/iu.test(
-        s
-      );
-
     return {
       roomId,
       category,
@@ -1410,6 +1540,7 @@ export class ClaimLevelValidator {
       monetaryRole,
       clauseTimeCondition,
       explicitIneligibilityFraming,
+      hasValidAlt2140Condition,
       isBase2hOnly,
       explicitTotalHours,
       summary: `${roomId || category || 'facility'}:${stayPackage || 'any'}:${monetaryRole}${explicitTotalHours ? `(${explicitTotalHours}h)` : ''}`,
@@ -1589,8 +1720,8 @@ export class ClaimLevelValidator {
       // P0-3 Precedence check: when a specific room is named, resolve its canonical per-room extra_hour_rate first
       const roomCanonicalRate = scope.roomId
         ? scopedQuotes.find((q) => typeof q.extraHourRateVnd === 'number' && q.extraHourRateVnd > 0)?.extraHourRateVnd ??
-          this.dataset.phong.find((p) => p.ma_phong === scope.roomId && (!quoteEntries[0]?.propertyId || p.co_so_ma === quoteEntries[0]?.propertyId))
-            ?.gia_goc_dataset.gio_phat_sinh_ap_dung
+        this.dataset.phong.find((p) => p.ma_phong === scope.roomId && (!quoteEntries[0]?.propertyId || p.co_so_ma === quoteEntries[0]?.propertyId))
+          ?.gia_goc_dataset.gio_phat_sinh_ap_dung
         : undefined;
 
       if (scope.monetaryRole === 'EXTRA_HOUR_SUBTOTAL') {
@@ -1692,15 +1823,16 @@ export class ClaimLevelValidator {
               sawIneligibleMatch = true;
               continue;
             }
-            if (r.role === 'ALT_21_40' && !scope.explicitIneligibilityFraming) {
+            if (r.role === 'ALT_21_40' && !scope.hasValidAlt2140Condition) {
               sawIneligibleMatch = true;
               continue;
             }
-            // P0-2b: Enforce weekday vs weekend conditional time windows
+            // P0-2b: Enforce weekday vs weekend conditional time windows (including ISO timestamps)
+            const factTimeCond = normalizeClauseTimeCondition(r.timeCondition);
             if (
               scope.clauseTimeCondition &&
-              (r.timeCondition === 'weekend_daytime' || r.timeCondition === 'weekday_or_after_18') &&
-              r.timeCondition !== scope.clauseTimeCondition
+              factTimeCond &&
+              factTimeCond !== scope.clauseTimeCondition
             ) {
               sawTimeConditionConflict = true;
               continue;
@@ -1810,6 +1942,21 @@ export class ClaimLevelValidator {
     recordCheck: (c: DetailedClaimCheck) => void,
     claimChecks: DetailedClaimCheck[]
   ): void {
+    // 0) Reject any unrendered {{ref:...}} placeholder still remaining in outbound text
+    const leakedPlaceholders = findUnrenderedStructuredPlaceholders(text);
+    const existingErrSet = new Set(context.renderedRefErrors || []);
+    for (const ph of leakedPlaceholders) {
+      const alreadyReported = Array.from(existingErrSet).some((e) => e.includes(ph) || ph.includes(e));
+      if (!alreadyReported) {
+        recordCheck({
+          claim_type: 'PRICE',
+          raw_text: ph,
+          status: 'CONTRADICTED',
+          reason: `REJECTED_UNRENDERED_STRUCTURED_PLACEHOLDER: Unresolved placeholder "${ph}" cannot be sent to customer.`,
+        });
+      }
+    }
+
     // 1) Propagate any errors caught during deterministic backend {{ref:...}} rendering
     for (const renderErr of context.renderedRefErrors || []) {
       recordCheck({
@@ -1856,10 +2003,43 @@ export class ClaimLevelValidator {
     }
 
     for (const rawRef of refs) {
-      const roleOrFieldMatch = rawRef.match(/^([^:#]+)(?:::|#)([a-zA-Z0-9_@/\-]+)$/);
-      const baseId = roleOrFieldMatch ? roleOrFieldMatch[1] : rawRef;
-      const exactEv = evidenceMap.get(baseId);
+      const hasSelectorSyntax = rawRef.includes('::') || rawRef.includes('#') || /^[a-z]\d+_f\d+$/i.test(rawRef.trim());
+      const lookup = lookupStructuredReference(allEvidence, rawRef, {
+        sessionId: context.sessionId,
+        propertyId: context.facility,
+        effectivePolicyVersion: activeEffectivePolicy,
+        activeDatasetHash,
+        allowIneligibleContext: false,
+      });
 
+      if (lookup.status === 'MATCHED') {
+        const isRoleVerifiedInText =
+          nonBudgetAmounts.has(lookup.amountVnd) &&
+          (verifiedAmountsByRole.get(lookup.amountVnd)?.size ?? 0) > 0;
+        if (!isRoleVerifiedInText) {
+          recordCheck({
+            claim_type: 'PRICE',
+            raw_text: rawRef,
+            normalized_value: lookup.amountVnd,
+            status: 'CONTRADICTED',
+            reason: `REJECTED_CLAIM_REF_TEXT_MISMATCH: Structured ref "${rawRef}" expects ${lookup.amountVnd.toLocaleString('vi-VN')}đ as a verified non-budget hotel claim in final text, but it is missing or unverified.`,
+          });
+        }
+        continue;
+      }
+
+      if (hasSelectorSyntax) {
+        recordCheck({
+          claim_type: lookup.code === 'REJECTED_MISSING_FIELD_REF' ? 'PRICE' : 'POLICY',
+          raw_text: rawRef,
+          status: 'CONTRADICTED',
+          reason: `${lookup.code}: ${lookup.reason}`,
+        });
+        continue;
+      }
+
+      // Legacy fallback ONLY for plain evidenceId or plain canonical roomId (never opaque factId/selector tokens)
+      const exactEv = evidenceMap.get(rawRef);
       if (exactEv) {
         if (!exactEv.isValid) {
           recordCheck({
@@ -1867,6 +2047,15 @@ export class ClaimLevelValidator {
             raw_text: rawRef,
             status: 'CONTRADICTED',
             reason: `REJECTED_INVALID_CLAIM_REF: Structured claim_ref "${rawRef}" is missing or invalidated.`,
+          });
+          continue;
+        }
+        if (context.sessionId && exactEv.sessionId && exactEv.sessionId !== context.sessionId) {
+          recordCheck({
+            claim_type: 'POLICY',
+            raw_text: rawRef,
+            status: 'CONTRADICTED',
+            reason: `REJECTED_CROSS_SESSION_CLAIM_REF: Structured claim_ref "${rawRef}" belongs to session "${exactEv.sessionId}", not "${context.sessionId}".`,
           });
           continue;
         }
@@ -1897,63 +2086,6 @@ export class ClaimLevelValidator {
           });
           continue;
         }
-
-        if (roleOrFieldMatch) {
-          const resolved = resolveStructuredRateSelector(exactEv, rawRef);
-          if (resolved.status === 'MISSING_FIELD') {
-            recordCheck({
-              claim_type: 'PRICE',
-              raw_text: rawRef,
-              status: 'CONTRADICTED',
-              reason: `REJECTED_MISSING_FIELD_REF: ${resolved.reason}`,
-            });
-            continue;
-          }
-          if (resolved.status === 'AMBIGUOUS') {
-            recordCheck({
-              claim_type: 'PRICE',
-              raw_text: rawRef,
-              status: 'CONTRADICTED',
-              reason: `REJECTED_AMBIGUOUS_CLAIM_REF: ${resolved.reason}`,
-            });
-            continue;
-          }
-          if (resolved.status !== 'MATCHED') {
-            recordCheck({
-              claim_type: 'PRICE',
-              raw_text: rawRef,
-              status: 'CONTRADICTED',
-              reason: `REJECTED_MISSING_SCOPED_ROLE_REF: ${resolved.reason}`,
-            });
-            continue;
-          }
-          if (resolved.fact.eligible === false && !/(?:không\s+(?:áp dụng|đủ điều kiện)|ngoài khung|nếu\s+(?:đợi|chờ|lùi)\s*(?:đến|tới)?\s*21[:h]40)/iu.test(text)) {
-            recordCheck({
-              claim_type: 'POLICY',
-              raw_text: rawRef,
-              status: 'CONTRADICTED',
-              reason: `REJECTED_INELIGIBLE_CLAIM_REF: Referenced rate ${rawRef} is marked INELIGIBLE (${resolved.fact.ineligibilityReason || 'window_mismatch'}).`,
-            });
-            continue;
-          }
-          // Every referenced monetary role/field MUST appear as a VERIFIED non-budget amount in final text (no textPrices.size > 0 bypass!)
-          const isRoleVerifiedInText =
-            nonBudgetAmounts.has(resolved.amountVnd) &&
-            (verifiedAmountsByRole.get(resolved.amountVnd)?.size ?? 0) > 0;
-          if (!isRoleVerifiedInText) {
-            recordCheck({
-              claim_type: 'PRICE',
-              raw_text: rawRef,
-              normalized_value: resolved.amountVnd,
-              status: 'CONTRADICTED',
-              reason: `REJECTED_CLAIM_REF_TEXT_MISMATCH: Structured ref "${rawRef}" expects ${resolved.amountVnd.toLocaleString('vi-VN')}đ as a verified non-budget hotel claim in final text, but it is missing or unverified.`,
-            });
-            continue;
-          }
-          continue;
-        }
-
-        // Plain evidenceId ref (without ::ROLE or #field) on QUOTE: require exact quote amount in non-budget text
         if (exactEv.evidenceType === 'QUOTE' && typeof exactEv.amountVnd === 'number') {
           const expectedSet = new Set<number>([exactEv.amountVnd, ...(exactEv.alternateAmountsVnd || [])]);
           const hasAnyExpected = Array.from(nonBudgetAmounts).some((p) => expectedSet.has(p));
@@ -1971,7 +2103,7 @@ export class ClaimLevelValidator {
       }
 
       const matchingRoomEvs = activeValid.filter(
-        (ev) => ev.roomId === baseId || ev.roomCode === baseId || (ev.catalogRoomIds || []).includes(baseId)
+        (ev) => ev.roomId === rawRef || ev.roomCode === rawRef || (ev.catalogRoomIds || []).includes(rawRef)
       );
       if (matchingRoomEvs.length === 0) {
         recordCheck({
