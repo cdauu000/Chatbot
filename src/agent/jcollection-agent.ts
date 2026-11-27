@@ -15,6 +15,7 @@ import {
   AgentLLMDecision,
   BusinessEvidenceRecord,
   RenderedStructuredRefBinding,
+  BlockedDraftAttempt,
   PropertyContext,
   RoomPresentationBlock,
   RoomPresentationImage,
@@ -1009,6 +1010,7 @@ export class JCollectionAgent {
     let groundingBlocked = false;
     let lastRenderedBindings: RenderedStructuredRefBinding[] = [];
     let lastRenderedErrors: string[] = [];
+    const blockedDraftAttempts: BlockedDraftAttempt[] = [];
     const activePolicyVersion = getEffectivePolicyMetadata().effectivePolicyVersion;
     const activeDatasetHash = this.getCachedDatasetHash();
 
@@ -1418,6 +1420,25 @@ export class JCollectionAgent {
                 ...(precheck.contradicted_claims || []),
                 ...(precheck.missing_evidence_claims || []),
               ].slice(0, 4);
+              const rejectionCodes = [
+                ...(precheck.contradicted_claims || []),
+                ...(precheck.missing_evidence_claims || []),
+              ].map((msg) => {
+                const codeMatch = String(msg).match(/^([A-Z0-9_]+):/);
+                return codeMatch ? codeMatch[1] : String(msg);
+              });
+              blockedDraftAttempts.push({
+                iteration: currentIteration,
+                sanitizedDraftResponse: String(finalCustomerResponse || '')
+                  .replace(/<think>[\s\S]*?<\/think>/gi, '')
+                  .trim()
+                  .slice(0, 1200),
+                claimRefs: llmDecision.claim_refs ?? undefined,
+                renderedBindings: lastRenderedBindings,
+                renderedErrors: lastRenderedErrors.length > 0 ? lastRenderedErrors : undefined,
+                rejectionCodes,
+                groundingStatus: precheck.grounding_status,
+              });
 
               groundingRejections += 1;
               if (currentIteration < maxIterations) {
@@ -1452,6 +1473,8 @@ export class JCollectionAgent {
                 finalCustomerResponse =
                   `Dạ hiện hệ thống chưa hoàn tất đối soát đầy đủ dữ kiện biểu giá hoặc danh mục phòng xác thực cho nội dung vừa rồi từ công cụ dữ liệu, nên em chưa thể xác nhận con số cụ thể ạ. Anh/chị vui lòng cho em biết cụ thể hơn hạng phòng/thời điểm mong muốn hoặc liên hệ trực tiếp lễ tân (${this.propertyContext.phone || 'hotline cơ sở'}) để được hỗ trợ chính xác nhất ạ.`;
                 usedModelResponse = false;
+                lastRenderedBindings = [];
+                lastRenderedErrors = [];
               }
             }
           }
@@ -1698,7 +1721,19 @@ export class JCollectionAgent {
                 .join('\n') +
                 variationNote +
                 ((recordedRefsByToolCall.get(r.toolCallId)?.length ?? 0) > 0
-                  ? `\n[FACT_REFS (use short opaque factId like q1_f1 in claim_refs or {{ref:<factId>}}): ${recordedRefsByToolCall.get(r.toolCallId)!.join(' | ')}]`
+                  ? (() => {
+                      const allR = recordedRefsByToolCall.get(r.toolCallId)!;
+                      const quotableR = allR.filter((s) => !s.includes('/ALT_21_40'));
+                      const condR = allR.filter((s) => s.includes('/ALT_21_40'));
+                      const parts: string[] = [];
+                      if (quotableR.length > 0) {
+                        parts.push(`[QUOTABLE_FACTS (use {{ref:<factId>}} inline for canonical VND rendering): ${quotableR.join(' | ')}]`);
+                      }
+                      if (condR.length > 0) {
+                        parts.push(`[CONDITIONAL_ALTERNATIVES (require stating arrival >= 21:40 / stated window): ${condR.join(' | ')}]`);
+                      }
+                      return parts.length > 0 ? `\n${parts.join('\n')}` : '';
+                    })()
                   : '');
             }
             if (r.toolName === 'get_room_facts') {
@@ -1828,10 +1863,14 @@ export class JCollectionAgent {
       guestBudgetVnd: state.hardConstraints.budget ?? budget,
       referenceClock: effectiveClock,
       checkinConfidence: state.conditionalAssumptions?.checkinConfidence,
-      structuredClaimRefs: structuredDecisions[structuredDecisions.length - 1]?.claim_refs ?? undefined,
-      structuredMediaRefs: structuredDecisions[structuredDecisions.length - 1]?.media_refs ?? undefined,
-      renderedRefBindings: lastRenderedBindings,
-      renderedRefErrors: lastRenderedErrors,
+      structuredClaimRefs: groundingBlocked
+        ? undefined
+        : (structuredDecisions[structuredDecisions.length - 1]?.claim_refs ?? undefined),
+      structuredMediaRefs: groundingBlocked
+        ? undefined
+        : (structuredDecisions[structuredDecisions.length - 1]?.media_refs ?? undefined),
+      renderedRefBindings: groundingBlocked ? [] : lastRenderedBindings,
+      renderedRefErrors: groundingBlocked ? [] : lastRenderedErrors,
       activeDatasetHash,
       enforceMandatoryScope: true,
     });
@@ -1842,11 +1881,13 @@ export class JCollectionAgent {
       !usedLiveLLM &&
       !fallbackHappened &&
       (isSecurityAttempt || (isExplicitEscalation && (!isRealLLM || !isCompoundEscalationQuestion)));
-    const verificationStatus: LLMVerificationStatus = isTrueLiveLLMControlled
-      ? 'LIVE_LLM_DECISION_VERIFIED'
-      : isIntentionalSafetyGuard || !isRealLLM
-        ? 'DETERMINISTIC_AGENT_FLOW'
-        : 'DEGRADED_DETERMINISTIC_MODE';
+    const verificationStatus: LLMVerificationStatus = groundingBlocked
+      ? 'GROUNDING_BLOCKED'
+      : isTrueLiveLLMControlled
+        ? 'LIVE_LLM_DECISION_VERIFIED'
+        : isIntentionalSafetyGuard || !isRealLLM
+          ? 'DETERMINISTIC_AGENT_FLOW'
+          : 'DEGRADED_DETERMINISTIC_MODE';
 
     const decisionTrace: DecisionTrace = {
       turnIndex: state.turnCount,
@@ -1870,8 +1911,9 @@ export class JCollectionAgent {
         latencyMs,
         structuredDecisions: structuredDecisions.length > 0 ? structuredDecisions : undefined,
         finalModelResponse,
+        blockedDraftAttempts: blockedDraftAttempts.length > 0 ? blockedDraftAttempts : undefined,
         fallbackState: {
-          isFallback: fallbackHappened || !isTrueLiveLLMControlled,
+          isFallback: !groundingBlocked && (fallbackHappened || !isTrueLiveLLMControlled),
           fallbackReason:
             fallbackReason ?? (!isTrueLiveLLMControlled ? 'Live LLM unavailable or offline mode (Deterministic/Degraded Mode active)' : undefined),
         },
@@ -2802,7 +2844,7 @@ INVARIANTS (POLICY V1.4.3 + OWNER ADDENDUM V1.4.6):
    - Classify timing honestly: CONFIRMED | INFERRED | CONDITIONAL | UNKNOWN. Ask 1 short clarifying question only if missing timing materially alters the answer.
    - Package & Late Checkout rules: Overnight ('qua_dem') = 22:00 (grace from 21:40) to 12:00 next day; Day-Night ('ngay_dem') = 14:00 to 12:00 next day. Arriving 14:00-21:39 staying until next day applies 'ngay_dem'. For checkout past 12:00 on 'qua_dem'/'ngay_dem': 10-minute grace applies to EVERY extra-hour boundary (12:00-12:10 = 0h; 12:11-13:10 = 1h; 13:11-14:10 = 2h; 14:11-15:10 = 3h...), billed via 'quote_price' at that room's canonical extra_hour_rate. Pass checkin_datetime, checkout_datetime (when stated), stay_type/stay_intent to 'quote_price' and follow returned calculations strictly. Never treat prior-turn assistant prose as price truth if the requested package/duration/room was not verified by tool evidence.
 4. Pricing, Media & Natural UX:
-   - Quote strictly from active 'quote_price'/'get_room_facts' evidence (may cite short opaque factIds like q1_f1 from [FACT_REFS] in claim_refs or {{ref:<factId>}} in final_response for backend canonical VND rendering). Call 'search_rooms' first if exact room_id slugs are not yet in Valid Evidence/observations. When guest asks a duration (e.g. 4h), compute/quote the total for that duration via 'quote_price'.
+   - Quote strictly from active 'quote_price'/'get_room_facts' evidence (prefer short opaque factIds from QUOTABLE_FACTS/CONDITIONAL_ALTERNATIVES via {{ref:<factId>}} inline in final_response for backend canonical VND rendering; never reference INELIGIBLE_OPTIONS_NO_REF; no need to repeat inline {{ref:...}} refs in claim_refs). Call 'search_rooms' first if exact room_id slugs are not yet in Valid Evidence/observations. When guest asks a duration (e.g. 4h), compute/quote the total for that duration via 'quote_price'.
    - Only call 'get_room_media' (or list cached composite keys/room IDs in "media_refs" to re-send cached albums) when photos are requested or clearly desired. Align reply room order with albums. NEVER paste raw image URLs (.webp/.jpg) into "final_response" text. Honor preferences (photo-only -> skip prices; no-photos -> skip get_room_media/media_refs).
    - Natural concise Vietnamese: Answer directly! Do NOT mechanically append address, hotline, full room rate tables, or trailing generic questions on every turn.
 5. Output JSON ONLY (when action="CALL_TOOLS", final_response=null; Vietnamese guest reply ONLY in "final_response", no <think>/JSON/tool names):

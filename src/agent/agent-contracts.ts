@@ -79,6 +79,18 @@ export interface RenderedStructuredRefBinding {
   policyVersion: string;
   amountVnd: number;
   renderedText: string;
+  startIndex?: number;
+  endIndex?: number;
+}
+
+export interface BlockedDraftAttempt {
+  iteration: number;
+  sanitizedDraftResponse: string;
+  claimRefs?: string[];
+  renderedBindings: RenderedStructuredRefBinding[];
+  renderedErrors?: string[];
+  rejectionCodes: string[];
+  groundingStatus: 'CONTRADICTED' | 'MISSING_EVIDENCE';
 }
 
 export interface BusinessEvidenceRecord {
@@ -167,6 +179,7 @@ export type LLMVerificationStatus =
   | 'DETERMINISTIC_AGENT_FLOW'
   | 'MOCK_AGENT_FLOW'
   | 'PROVIDER_FALLBACK'
+  | 'GROUNDING_BLOCKED'
   | 'DEGRADED_DETERMINISTIC_MODE'
   | 'BLOCKED';
 
@@ -185,6 +198,7 @@ export interface LLMTelemetryTrace {
   latencyMs: number;
   structuredDecisions?: AgentLLMDecision[];
   finalModelResponse?: string;
+  blockedDraftAttempts?: BlockedDraftAttempt[];
   fallbackState?: {
     isFallback: boolean;
     fallbackReason?: string;

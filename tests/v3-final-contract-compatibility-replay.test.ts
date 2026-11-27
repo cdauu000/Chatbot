@@ -881,4 +881,330 @@ describe('J COLLECTION — Final Contract Compatibility Offline Replay & Mutatio
     expect(newlyRecorded[0].scopedRates![0].factId).toBe('q2_f1');
     expect(clonedReloadedState.nextFactSeq).toBe(2);
   });
+
+  it('4. ACC-HD-01 T2 Verbatim Blocked Drafts Replay (L619/L630/L641): ZERO repairs via Tool -> Evidence -> Decision -> Renderer -> Validator -> Response', async () => {
+    const t2Drafts: Array<{ label: string; claim_refs: string[]; final_response: string }> = [
+      {
+        label: 'Attempt 1 (L619 — all 4 opaque refs)',
+        claim_refs: ['q2_f1', 'q2_f2', 'q2_f3', 'q2_f4'],
+        final_response:
+          'Dạ, phòng 101 — Lồng Chim cho gói nghỉ 4 tiếng vào tối nay (từ 20h00) có tổng chi phí là {{ref:q2_f1}}, chi tiết gồm:\n- 2 giờ đầu: {{ref:q2_f2}}\n- 2 giờ phát sinh tiếp theo ({{ref:q2_f3}}/giờ): {{ref:q2_f4}} ạ.',
+      },
+      {
+        label: 'Attempt 2 (L630 — 3 opaque refs + single-line parens + plaintext 200.000đ)',
+        claim_refs: ['q2_f2', 'q2_f3', 'q2_f1'],
+        final_response:
+          'Dạ, phòng 101 — Lồng Chim cho gói nghỉ 4 tiếng (từ 20h00 tối nay) có tổng chi phí là {{ref:q2_f1}}, trong đó 2 giờ đầu là {{ref:q2_f2}} và 2 giờ phát sinh tiếp theo (với mức phí {{ref:q2_f3}}/giờ) là 200.000đ ạ.',
+      },
+      {
+        label: 'Attempt 3 (L641 — 3 opaque refs + bullet parens + plaintext 200.000đ)',
+        claim_refs: ['q2_f1', 'q2_f2', 'q2_f3'],
+        final_response:
+          'Dạ, phòng 101 — Lồng Chim cho gói nghỉ 4 tiếng (từ 20h00 tối nay) có tổng chi phí là {{ref:q2_f1}}, trong đó:\n- Tiền 2 giờ đầu: {{ref:q2_f2}}\n- Tiền 2 giờ phát sinh tiếp theo (với mức phí {{ref:q2_f3}}/giờ): 200.000đ ạ.',
+      },
+    ];
+
+    for (const draft of t2Drafts) {
+      const adapter = makeMockSequenceAdapter([
+        {
+          action: 'CALL_TOOLS',
+          thought_summary: 'Quote 101 2h at 20:00 Wed',
+          tool_calls: [
+            {
+              tool_name: 'quote_price',
+              arguments: {
+                property_id: 'jacayl-ha-dong',
+                room_id: '101-long-chim',
+                stay_type: 'nghi_gio',
+                stay_intent: 'hourly',
+                duration_hours: 2,
+                checkin_datetime: '2026-11-25T20:00:00+07:00',
+                checkin_confidence: 'CONFIRMED',
+              },
+            },
+          ],
+        },
+        {
+          action: 'RESPOND_DIRECTLY',
+          thought_summary: 'Answer T1 2h price',
+          claim_refs: ['q1_f1'],
+          final_response: 'Dạ phòng 101 — Lồng Chim nghỉ 2 tiếng lúc 20:00 tối nay là {{ref:q1_f1}} ạ.',
+        },
+        {
+          action: 'CALL_TOOLS',
+          thought_summary: 'Quote 101 4h at 20:00 Wed',
+          tool_calls: [
+            {
+              tool_name: 'quote_price',
+              arguments: {
+                property_id: 'jacayl-ha-dong',
+                room_id: '101-long-chim',
+                stay_type: 'nghi_gio',
+                stay_intent: 'hourly',
+                duration_hours: 4,
+                checkin_datetime: '2026-11-25T20:00:00+07:00',
+                checkin_confidence: 'CONFIRMED',
+              },
+            },
+          ],
+        },
+        {
+          action: 'RESPOND_DIRECTLY',
+          thought_summary: `Replay ${draft.label}`,
+          claim_refs: draft.claim_refs,
+          final_response: draft.final_response,
+        },
+      ]);
+
+      const agent = new JCollectionAgent(dataset, 'jacayl-ha-dong', {
+        llmAdapter: adapter as any,
+        strictLiveOnly: true,
+      });
+      const sess = `replay-hd01-t2-${draft.label.slice(0, 9).replace(/\s+/g, '-')}`;
+      await agent.processTurn(sess, 'Phòng 101 tối nay 20:00 nghỉ 2 tiếng giá bao nhiêu?', {
+        referenceClock: '2026-11-25T13:00:00+07:00',
+        strictLiveOnly: true,
+      });
+      const t2 = await agent.processTurn(sess, 'Nghỉ 4 tiếng luôn thì sao?', {
+        referenceClock: '2026-11-25T13:05:00+07:00',
+        strictLiveOnly: true,
+      });
+
+      expect(t2.decision_trace?.verificationStatus).toBe('LIVE_LLM_DECISION_VERIFIED');
+      expect(t2.decision_trace?.llmTelemetry?.telemetryEvents?.groundingRejections).toBe(0);
+      expect(t2.decision_trace?.llmTelemetry?.telemetryEvents?.repairAttempts).toBe(0);
+      expect(t2.decision_trace?.llmTelemetry?.telemetryEvents?.finalGroundingBlocked).toBe(false);
+      expect(t2.decision_trace?.llmTelemetry?.blockedDraftAttempts).toBeUndefined();
+      expect(t2.claim_validation.grounding_status).toBe('VERIFIED');
+      expect(t2.customer_visible_response).toContain('599.000đ');
+      expect(t2.customer_visible_response).toContain('399.000đ');
+      expect(t2.customer_visible_response).toContain('100.000đ');
+      expect(t2.customer_visible_response).toContain('200.000đ');
+    }
+  });
+
+  it('5. Section III/IV/V Positive & Negative Contract Matrix: positional binding, equal-amount roles, dedupe, mutations & blocked telemetry', async () => {
+    const toolGw = new AgentToolGateway(dataset, 'jacayl-ha-dong');
+
+    // A) ACC-HD-02 T1 evidence dedupe & clean tier separation (no duplicate ngay_dem facts; ineligible stays off QUOTABLE_FACTS)
+    const hd02State: any = { sessionId: 'sess-hd02-dedupe', turnCount: 1, trustedPropertyId: 'jacayl-ha-dong', verifiedBusinessEvidence: [] };
+    const hd02Quote = await toolGw.executeTool({
+      toolCallId: 'tc_hd02',
+      toolName: 'quote_price',
+      arguments: {
+        property_id: 'jacayl-ha-dong',
+        room_id: '101-long-chim',
+        stay_type: 'qua_dem',
+        stay_intent: 'overnight_until_next_day',
+        duration_hours: 17.5,
+        checkin_datetime: '2026-11-27T18:30:00+07:00',
+        checkout_datetime: '2026-11-28T12:00:00+07:00',
+        checkin_confidence: 'CONFIRMED',
+      },
+    });
+    const hd02Evs = recordToolResultAsEvidence(hd02State, 'quote_price', hd02Quote, dataset, '1.4.6', activeHash);
+    const eligibleDayNightTotals = (hd02Evs[0].scopedRates || []).filter(
+      (r) => r.role === 'TOTAL' && r.stayPackage === 'ngay_dem' && r.eligible !== false
+    );
+    expect(eligibleDayNightTotals.length).toBe(1);
+    const hd02Inelig = (hd02Evs[0].scopedRates || []).filter((r) => r.eligible === false);
+    expect(hd02Inelig.length).toBeGreaterThan(0);
+
+    // B) Positive variants on Room 601 (3h): EXTRA_HOUR_RATE === 200k AND EXTRA_HOUR_SUBTOTAL === 200k share identical amount!
+    const s601: any = { sessionId: 'sess-601-pos', turnCount: 1, trustedPropertyId: 'jacayl-ha-dong', verifiedBusinessEvidence: [] };
+    const q601Res = await toolGw.executeTool({
+      toolCallId: 'tc_601_3h',
+      toolName: 'quote_price',
+      arguments: {
+        property_id: 'jacayl-ha-dong',
+        room_id: '601-50-sac-thai',
+        stay_type: 'nghi_gio',
+        stay_intent: 'hourly',
+        duration_hours: 3,
+        checkin_datetime: '2026-11-27T20:00:00+07:00',
+        checkin_confidence: 'CONFIRMED',
+      },
+    });
+    const ev601 = recordToolResultAsEvidence(s601, 'quote_price', q601Res, dataset, '1.4.6', activeHash);
+    const f601Total = ev601[0].scopedRates!.find((r) => r.role === 'TOTAL')!;
+    const f601Base = ev601[0].scopedRates!.find((r) => r.role === 'BASE_2H')!;
+    const f601Rate = ev601[0].scopedRates!.find((r) => r.role === 'EXTRA_HOUR_RATE')!;
+    const f601Sub = ev601[0].scopedRates!.find((r) => r.role === 'EXTRA_HOUR_SUBTOTAL')!;
+    expect(f601Rate.amountVnd).toBe(200000);
+    expect(f601Sub.amountVnd).toBe(200000);
+
+    // B1: Equal amounts (rate vs subtotal), repeated factId, omitted claim_refs, equals/parens/multiline
+    const posDrafts = [
+      `Dạ phòng 601 — 50 Sắc Thái nghỉ 3 tiếng tổng là {{ref:${f601Total.factId}}} (gồm 2h đầu {{ref:${f601Base.factId}}}, 1 giờ phát sinh tiếp theo với mức {{ref:${f601Rate.factId}}}/giờ: {{ref:${f601Sub.factId}}}); xác nhận lại tổng là {{ref:${f601Total.factId}}} ạ.`,
+      `Dạ phòng 601 — 50 Sắc Thái nghỉ 3 tiếng:\n- 2 giờ đầu = {{ref:${f601Base.factId}}}\n- 1 giờ phát sinh thêm = {{ref:${f601Sub.factId}}} (đơn giá {{ref:${f601Rate.factId}}}/giờ)\n- Tổng cộng = {{ref:${f601Total.factId}}} ạ.`,
+      `Dạ phòng 601 — 50 Sắc Thái nghỉ 3 tiếng giá {{ref:${f601Total.factId}}} ạ (1h phát sinh thêm là {{ref:${f601Sub.factId}}}, đơn giá {{ref:${f601Rate.factId}}}/giờ).`,
+    ];
+    for (const rawDraft of posDrafts) {
+      const rendered = renderStructuredMonetaryPlaceholders(rawDraft, ev601, {
+        sessionId: 'sess-601-pos',
+        propertyId: 'jacayl-ha-dong',
+        effectivePolicyVersion: '1.4.6',
+        activeDatasetHash: activeHash,
+        enforceMandatoryScope: true,
+      });
+      expect(rendered.errors).toEqual([]);
+      for (const b of rendered.bindings) {
+        expect(typeof b.startIndex).toBe('number');
+        expect(typeof b.endIndex).toBe('number');
+        expect(rendered.renderedText.slice(b.startIndex!, b.endIndex!)).toBe(b.renderedText);
+      }
+      const res = validator.validate(rendered.renderedText, {
+        sessionId: 'sess-601-pos',
+        facility: 'jacayl-ha-dong',
+        validEvidence: ev601,
+        effectivePolicyVersion: '1.4.6',
+        activeDatasetHash: activeHash,
+        renderedRefBindings: rendered.bindings,
+        renderedRefErrors: rendered.errors,
+        enforceMandatoryScope: true,
+      });
+      expect(res.grounding_status).toBe('VERIFIED');
+      expect(res.contradicted_claims).toEqual([]);
+    }
+
+    // C) Negative mutations MUST all reject cleanly:
+    // Neg 1: Swapped TOTAL and EXTRA_HOUR_SUBTOTAL
+    const negSwapRender = renderStructuredMonetaryPlaceholders(
+      `Dạ phòng 601 tổng chi phí là {{ref:${f601Sub.factId}}}, còn 1 giờ phát sinh tiếp theo là {{ref:${f601Total.factId}}} ạ.`,
+      ev601,
+      { sessionId: 'sess-601-pos', propertyId: 'jacayl-ha-dong', effectivePolicyVersion: '1.4.6', activeDatasetHash: activeHash, enforceMandatoryScope: true }
+    );
+    const negSwapVal = validator.validate(negSwapRender.renderedText, {
+      sessionId: 'sess-601-pos',
+      facility: 'jacayl-ha-dong',
+      validEvidence: ev601,
+      effectivePolicyVersion: '1.4.6',
+      activeDatasetHash: activeHash,
+      renderedRefBindings: negSwapRender.bindings,
+      enforceMandatoryScope: true,
+    });
+    expect(negSwapVal.grounding_status).toBe('CONTRADICTED');
+
+    // Neg 2: Wrong rate / hours / total in plaintext
+    for (const badPlain of [
+      'Dạ phòng 601 — 50 Sắc Thái nghỉ 3 tiếng tổng chi phí là 799.000đ ạ.',
+      'Dạ phòng 601 — 50 Sắc Thái phụ thu thêm giờ là 100.000đ/giờ ạ.',
+      'Dạ phòng 601 — 50 Sắc Thái tiền 1 giờ phát sinh tiếp theo là 300.000đ ạ.',
+    ]) {
+      const negPlainVal = validator.validate(badPlain, {
+        sessionId: 'sess-601-pos',
+        facility: 'jacayl-ha-dong',
+        validEvidence: ev601,
+        effectivePolicyVersion: '1.4.6',
+        activeDatasetHash: activeHash,
+        enforceMandatoryScope: true,
+      });
+      expect(negPlainVal.grounding_status).toBe('CONTRADICTED');
+    }
+
+    // Neg 3: Right fact applied to WRONG room (101 fact injected into 601 clause!)
+    const s101: any = { sessionId: 'sess-601-pos', turnCount: 2, trustedPropertyId: 'jacayl-ha-dong', verifiedBusinessEvidence: [] };
+    const q101Res = await toolGw.executeTool({
+      toolCallId: 'tc_101_3h',
+      toolName: 'quote_price',
+      arguments: { property_id: 'jacayl-ha-dong', room_id: '101-long-chim', stay_type: 'nghi_gio', stay_intent: 'hourly', duration_hours: 3, checkin_datetime: '2026-11-27T20:00:00+07:00', checkin_confidence: 'CONFIRMED' },
+    });
+    const ev101 = recordToolResultAsEvidence(s101, 'quote_price', q101Res, dataset, '1.4.6', activeHash);
+    const f101Total = ev101[0].scopedRates!.find((r) => r.role === 'TOTAL')!;
+    const negWrongRoomRender = renderStructuredMonetaryPlaceholders(
+      `Dạ phòng 601 — 50 Sắc Thái nghỉ 3 tiếng giá {{ref:${f101Total.factId}}} ạ.`,
+      [...ev601, ...ev101],
+      { sessionId: 'sess-601-pos', propertyId: 'jacayl-ha-dong', effectivePolicyVersion: '1.4.6', activeDatasetHash: activeHash, enforceMandatoryScope: true }
+    );
+    const negWrongRoomVal = validator.validate(negWrongRoomRender.renderedText, {
+      sessionId: 'sess-601-pos',
+      facility: 'jacayl-ha-dong',
+      validEvidence: [...ev601, ...ev101],
+      effectivePolicyVersion: '1.4.6',
+      activeDatasetHash: activeHash,
+      renderedRefBindings: negWrongRoomRender.bindings,
+      enforceMandatoryScope: true,
+    });
+    expect(negWrongRoomVal.grounding_status).toBe('CONTRADICTED');
+
+    // Neg 4: ALT_21_40 applied unconditionally to 18:30 arrival
+    const altFact = hd02Evs[0].scopedRates!.find((r) => r.role === 'ALT_21_40')!;
+    const negAltRender = renderStructuredMonetaryPlaceholders(
+      `Dạ nhận phòng lúc 18:30 nghỉ qua đêm phòng 101 có giá {{ref:${altFact.factId}}} ạ.`,
+      hd02Evs,
+      { sessionId: 'sess-hd02-dedupe', propertyId: 'jacayl-ha-dong', effectivePolicyVersion: '1.4.6', activeDatasetHash: activeHash, enforceMandatoryScope: true }
+    );
+    const negAltVal = validator.validate(negAltRender.renderedText, {
+      sessionId: 'sess-hd02-dedupe',
+      facility: 'jacayl-ha-dong',
+      validEvidence: hd02Evs,
+      effectivePolicyVersion: '1.4.6',
+      activeDatasetHash: activeHash,
+      renderedRefBindings: negAltRender.bindings,
+      enforceMandatoryScope: true,
+    });
+    expect(negAltVal.grounding_status).toBe('CONTRADICTED');
+
+    // Neg 5: Cross-property & stale invalidated evidence MUST reject
+    const wrongPropRender = renderStructuredMonetaryPlaceholders(
+      `Giá {{ref:${f601Total.factId}}} ạ.`,
+      ev601,
+      { sessionId: 'sess-601-pos', propertyId: 'j-village', effectivePolicyVersion: '1.4.6', activeDatasetHash: activeHash, enforceMandatoryScope: true }
+    );
+    expect(wrongPropRender.errors.some((e) => e.includes('REJECTED_CROSS_PROPERTY_CLAIM_REF'))).toBe(true);
+
+    const invalidatedEv: BusinessEvidenceRecord = { ...ev601[0], isValid: false, invalidatedReason: 'superseded' };
+    const staleRender = renderStructuredMonetaryPlaceholders(
+      `Giá {{ref:${f601Total.factId}}} ạ.`,
+      [invalidatedEv],
+      { sessionId: 'sess-601-pos', propertyId: 'jacayl-ha-dong', effectivePolicyVersion: '1.4.6', activeDatasetHash: activeHash, enforceMandatoryScope: true }
+    );
+    expect(staleRender.errors.some((e) => e.includes('REJECTED_INVALID_CLAIM_REF'))).toBe(true);
+
+    // D) Section VI Telemetry Integrity on GROUNDING_BLOCKED: separated blockedDraftAttempts + clean safe refusal validation
+    const blockingAdapter = makeMockSequenceAdapter([
+      {
+        action: 'CALL_TOOLS',
+        thought_summary: 'Quote 101 2h',
+        tool_calls: [
+          {
+            tool_name: 'quote_price',
+            arguments: { property_id: 'jacayl-ha-dong', room_id: '101-long-chim', stay_type: 'nghi_gio', stay_intent: 'hourly', duration_hours: 2 },
+          },
+        ],
+      },
+      {
+        action: 'RESPOND_DIRECTLY',
+        thought_summary: 'Hallucinated draft 1',
+        claim_refs: ['q1_f1'],
+        final_response: 'Dạ phòng 101 — Lồng Chim nghỉ 2 tiếng là 999.000đ ạ.',
+      },
+      {
+        action: 'RESPOND_DIRECTLY',
+        thought_summary: 'Hallucinated draft 2',
+        claim_refs: ['q1_f1'],
+        final_response: 'Dạ phòng 101 — Lồng Chim nghỉ 2 tiếng là 888.000đ ạ.',
+      },
+      {
+        action: 'RESPOND_DIRECTLY',
+        thought_summary: 'Hallucinated draft 3',
+        claim_refs: ['q1_f1'],
+        final_response: 'Dạ phòng 101 — Lồng Chim nghỉ 2 tiếng là 777.000đ ạ.',
+      },
+    ]);
+    const blockedAgent = new JCollectionAgent(dataset, 'jacayl-ha-dong', {
+      llmAdapter: blockingAdapter as any,
+      strictLiveOnly: true,
+    });
+    const blockedRes = await blockedAgent.processTurn('sess-telemetry-block', 'Phòng 101 nghỉ 2 tiếng bao nhiêu?', {
+      strictLiveOnly: true,
+    });
+    expect(blockedRes.decision_trace?.verificationStatus).toBe('GROUNDING_BLOCKED');
+    expect(blockedRes.decision_trace?.llmTelemetry?.fallbackState?.isFallback).toBe(false);
+    expect(blockedRes.decision_trace?.llmTelemetry?.telemetryEvents?.finalGroundingBlocked).toBe(true);
+    expect(blockedRes.decision_trace?.llmTelemetry?.blockedDraftAttempts?.length).toBe(3);
+    expect(blockedRes.decision_trace?.llmTelemetry?.blockedDraftAttempts?.[0].rejectionCodes.length).toBeGreaterThan(0);
+    expect(blockedRes.decision_trace?.llmTelemetry?.blockedDraftAttempts?.[0].claimRefs).toEqual(['q1_f1']);
+    expect(blockedRes.claim_validation.grounding_status).not.toBe('CONTRADICTED');
+  });
 });

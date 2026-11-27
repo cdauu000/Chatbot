@@ -299,26 +299,26 @@ export interface StructuredRefLookupOptions {
 
 export type StructuredRefLookupResult =
   | {
-      status: 'MATCHED';
-      kind: 'FACT_ID' | 'LEGACY_REF' | 'FIELD' | 'ROLE_SELECTOR';
-      amountVnd: number;
-      evidence: BusinessEvidenceRecord;
-      fact: ScopedRateFact;
-    }
+    status: 'MATCHED';
+    kind: 'FACT_ID' | 'LEGACY_REF' | 'FIELD' | 'ROLE_SELECTOR';
+    amountVnd: number;
+    evidence: BusinessEvidenceRecord;
+    fact: ScopedRateFact;
+  }
   | {
-      status: 'REJECTED';
-      code:
-        | 'REJECTED_INVALID_RENDER_REF'
-        | 'REJECTED_INVALID_CLAIM_REF'
-        | 'REJECTED_CROSS_SESSION_CLAIM_REF'
-        | 'REJECTED_CROSS_PROPERTY_CLAIM_REF'
-        | 'REJECTED_STALE_POLICY_RENDER_REF'
-        | 'REJECTED_STALE_DATASET_REVISION'
-        | 'REJECTED_MISSING_FIELD_REF'
-        | 'REJECTED_AMBIGUOUS_CLAIM_REF'
-        | 'REJECTED_INELIGIBLE_CLAIM_REF';
-      reason: string;
-    };
+    status: 'REJECTED';
+    code:
+    | 'REJECTED_INVALID_RENDER_REF'
+    | 'REJECTED_INVALID_CLAIM_REF'
+    | 'REJECTED_CROSS_SESSION_CLAIM_REF'
+    | 'REJECTED_CROSS_PROPERTY_CLAIM_REF'
+    | 'REJECTED_STALE_POLICY_RENDER_REF'
+    | 'REJECTED_STALE_DATASET_REVISION'
+    | 'REJECTED_MISSING_FIELD_REF'
+    | 'REJECTED_AMBIGUOUS_CLAIM_REF'
+    | 'REJECTED_INELIGIBLE_CLAIM_REF';
+    reason: string;
+  };
 
 export function findUnrenderedStructuredPlaceholders(text: string): string[] {
   if (!text || !text.includes('{{')) return [];
@@ -590,18 +590,28 @@ export function renderStructuredMonetaryPlaceholders(
     return { renderedText: text, bindings, errors };
   }
 
-  const renderedText = text.replace(placeholderRegex, (fullMatch, rawRef: string) => {
-    const trimmedRef = rawRef.trim();
+  let out = '';
+  let lastCursor = 0;
+  let m: RegExpExecArray | null;
+  while ((m = placeholderRegex.exec(text)) !== null) {
+    out += text.slice(lastCursor, m.index);
+    lastCursor = m.index + m[0].length;
+    const fullMatch = m[0];
+    const trimmedRef = m[1].trim();
     const lookup = lookupStructuredReference(validEvidence, trimmedRef, {
       ...options,
       allowIneligibleContext: false,
     });
     if (lookup.status !== 'MATCHED') {
       errors.push(`${lookup.code}: ${lookup.reason}`);
-      return fullMatch;
+      out += fullMatch;
+      continue;
     }
 
     const formatted = `${lookup.amountVnd.toLocaleString('vi-VN')}đ`;
+    const startIndex = out.length;
+    out += formatted;
+    const endIndex = out.length;
     bindings.push({
       rawPlaceholder: fullMatch,
       ref: trimmedRef,
@@ -620,11 +630,13 @@ export function renderStructuredMonetaryPlaceholders(
       policyVersion: lookup.evidence.effectivePolicyVersion,
       amountVnd: lookup.amountVnd,
       renderedText: formatted,
+      startIndex,
+      endIndex,
     });
-    return formatted;
-  });
+  }
+  out += text.slice(lastCursor);
 
-  return { renderedText, bindings, errors };
+  return { renderedText: out, bindings, errors };
 }
 
 /**
@@ -910,7 +922,37 @@ export function recordToolResultAsEvidence(
       const altSet = new Set<number>();
       const scopedRates: ScopedRateFact[] = [];
       const durHours = q.stay_type === 'nghi_gio' && typeof q.duration_hours === 'number' ? q.duration_hours : undefined;
+      const normalizeFactCondBucket = (cond?: string): string => {
+        if (!cond) return 'default';
+        if (cond === 'delayed_to_21_40' || cond === 'weekend_daytime' || cond === 'weekday_or_after_18') return cond;
+        if (/^\d{4}-\d{2}-\d{2}t/i.test(cond) || /\b(?:hôm nay|hôm sau|trưa|đến)\b/iu.test(cond)) return 'default';
+        return cond;
+      };
       const pushRate = (fact: ScopedRateFact) => {
+        const factBucket = normalizeFactCondBucket(fact.timeCondition);
+        const dup = scopedRates.find(
+          (e) =>
+            (e.roomId || '') === (fact.roomId || '') &&
+            e.role === fact.role &&
+            (e.stayPackage || '') === (fact.stayPackage || '') &&
+            e.durationHours === fact.durationHours &&
+            (e.eligible !== false) === (fact.eligible !== false) &&
+            e.amountVnd === fact.amountVnd &&
+            normalizeFactCondBucket(e.timeCondition) === factBucket
+        );
+        if (dup) {
+          if (
+            fact.timeCondition &&
+            (!dup.timeCondition || /^\d{4}-\d{2}-\d{2}t/i.test(dup.timeCondition)) &&
+            !/^\d{4}-\d{2}-\d{2}t/i.test(fact.timeCondition)
+          ) {
+            dup.timeCondition = fact.timeCondition;
+          }
+          if (!dup.ineligibilityReason && fact.ineligibilityReason) {
+            dup.ineligibilityReason = fact.ineligibilityReason;
+          }
+          return;
+        }
         if (fact.eligible !== false && fact.role !== 'ALT_21_40') {
           altSet.add(fact.amountVnd);
         }
@@ -1339,14 +1381,32 @@ export function formatValidEvidenceForPrompt(state: AgentState): string {
   for (const ev of Array.from(dedupedQuotes.values()).slice(-6)) {
     const amt = typeof ev.amountVnd === 'number' ? `${ev.amountVnd.toLocaleString('vi-VN')}đ` : `alts=[${(ev.alternateAmountsVnd || []).join(',')}]`;
     const eligTag = ev.eligible === false ? `INELIGIBLE(${ev.ineligibilityReason || 'window_mismatch'})` : 'ELIGIBLE';
-    const roleHints = (ev.scopedRates || [])
-      .filter((r) => r.eligible !== false)
+    const rates = ev.scopedRates || [];
+    const quotableHints = rates
+      .filter((r) => r.eligible !== false && r.role !== 'ALT_21_40')
       .slice(0, 8)
       .map((r) => `${r.factId || r.ref}=${r.role}(${r.amountVnd}${r.timeCondition ? `@${r.timeCondition}` : ''})`)
       .join(', ');
+    const conditionalHints = rates
+      .filter((r) => r.eligible !== false && r.role === 'ALT_21_40')
+      .slice(0, 4)
+      .map((r) => `${r.factId || r.ref}=${r.role}(${r.amountVnd}@${r.timeCondition || 'delayed_to_21_40'})`)
+      .join(', ');
+    const ineligibleHints = rates
+      .filter((r) => r.eligible === false)
+      .slice(0, 4)
+      .map((r) => `${r.stayPackage || r.role}(${r.ineligibilityReason || 'window_mismatch'})`)
+      .join(', ');
     const durLabel = ev.stayPackage === 'nghi_gio' && typeof ev.durationHours === 'number' ? `, ${ev.durationHours}h` : '';
+    const refSections = [
+      quotableHints ? `QUOTABLE_FACTS: ${quotableHints}` : '',
+      conditionalHints ? `CONDITIONAL_ALTERNATIVES: ${conditionalHints}` : '',
+      ineligibleHints ? `INELIGIBLE_OPTIONS_NO_REF: ${ineligibleHints}` : '',
+    ]
+      .filter(Boolean)
+      .join(' | ');
     lines.push(
-      `[${ev.evidenceId} QUOTE | prop=${ev.propertyId} | pol=${ev.effectivePolicyVersion} | rev=${ev.datasetVersion} | ${eligTag}]: ${ev.roomName || ev.roomId} (${ev.stayPackage || 'pkg'}${durLabel}, checkin=${ev.checkinDatetime || 'UNSPECIFIED'}) => ${amt}${roleHints ? ` [FACT_REFS: ${roleHints}]` : ''}`
+      `[${ev.evidenceId} QUOTE | prop=${ev.propertyId} | pol=${ev.effectivePolicyVersion} | rev=${ev.datasetVersion} | ${eligTag}]: ${ev.roomName || ev.roomId} (${ev.stayPackage || 'pkg'}${durLabel}, checkin=${ev.checkinDatetime || 'UNSPECIFIED'}) => ${amt}${refSections ? ` [${refSections}]` : ''}`
     );
   }
 

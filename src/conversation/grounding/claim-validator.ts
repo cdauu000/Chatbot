@@ -844,13 +844,13 @@ export class ClaimLevelValidator {
           ev.isValid &&
           (context.enforceMandatoryScope
             ? Boolean(ev.sessionId && context.sessionId && ev.sessionId === context.sessionId) &&
-              Boolean(ev.propertyId && context.facility && ev.propertyId === context.facility) &&
-              ev.effectivePolicyVersion === activeEffectivePolicy &&
-              Boolean(ev.datasetVersion && ev.datasetVersion === activeDatasetHash)
+            Boolean(ev.propertyId && context.facility && ev.propertyId === context.facility) &&
+            ev.effectivePolicyVersion === activeEffectivePolicy &&
+            Boolean(ev.datasetVersion && ev.datasetVersion === activeDatasetHash)
             : (!context.facility || ev.propertyId === context.facility) &&
-              (!context.sessionId || !ev.sessionId || ev.sessionId === context.sessionId) &&
-              ev.effectivePolicyVersion === activeEffectivePolicy &&
-              (!ev.datasetVersion || ev.datasetVersion === activeDatasetHash)) &&
+            (!context.sessionId || !ev.sessionId || ev.sessionId === context.sessionId) &&
+            ev.effectivePolicyVersion === activeEffectivePolicy &&
+            (!ev.datasetVersion || ev.datasetVersion === activeDatasetHash)) &&
           (ev.evidenceType === 'QUOTE' ||
             ev.evidenceType === 'CATALOG_SEARCH' ||
             ev.evidenceType === 'ROOM_FACTS' ||
@@ -1273,15 +1273,59 @@ export class ClaimLevelValidator {
         .reverse()
         .find((l) => /:\s*$/.test(l.trim()) || (l.trim().length > 8 && /chi tiết biểu giá|gồm|2\s*giờ đầu|2h đầu/iu.test(curLineTrim)));
       const precedingHeader = /^[-*•]/.test(curLineTrim) || !curLineTrim.includes(':') ? prevHeaderCandidate : undefined;
-      const clauseScope = this.detectClauseEntityScope(mention, localPre, facilityRooms, precedingHeader);
+      const clauseScope = this.detectClauseEntityScope(mention, localPre, facilityRooms, precedingHeader, text);
 
       // Direct verification when this mention was deterministically rendered from a verified backend {{ref:...}} binding
-      const boundIdx = renderedBindingsQueue.findIndex((b) => b.amountVnd === mention.amountVnd);
+      let boundIdx = renderedBindingsQueue.findIndex(
+        (b) =>
+          typeof b.startIndex === 'number' &&
+          typeof b.endIndex === 'number' &&
+          mention.index >= b.startIndex &&
+          mention.index < b.endIndex
+      );
+      if (boundIdx === -1 && renderedBindingsQueue.every((b) => typeof b.startIndex !== 'number')) {
+        boundIdx = renderedBindingsQueue.findIndex((b) => b.amountVnd === mention.amountVnd);
+      }
       if (boundIdx !== -1) {
         const binding = renderedBindingsQueue[boundIdx];
-        // Still reject if surrounding prose explicitly mislabels the rendered role (e.g. EXTRA_HOUR_SUBTOTAL labeled /giờ)
+        if (!binding.eligible) {
+          renderedBindingsQueue.splice(boundIdx, 1);
+          recordCheck({
+            claim_type: 'POLICY',
+            raw_text: mention.raw,
+            normalized_value: mention.amountVnd,
+            status: 'CONTRADICTED',
+            reason: `REJECTED_INELIGIBLE_CLAIM_REF: Rendered ref "${binding.ref}" is marked INELIGIBLE.`,
+          });
+          continue;
+        }
+        if (clauseScope.explicitClauseRoomId && binding.roomId && clauseScope.explicitClauseRoomId !== binding.roomId) {
+          renderedBindingsQueue.splice(boundIdx, 1);
+          recordCheck({
+            claim_type: 'PRICE',
+            raw_text: mention.raw,
+            normalized_value: mention.amountVnd,
+            status: 'CONTRADICTED',
+            reason: `REJECTED_RENDERED_ENTITY_MISMATCH: Rendered ref "${binding.ref}" belongs to room "${binding.roomId}", not "${clauseScope.explicitClauseRoomId}".`,
+          });
+          continue;
+        }
+        const bindingTimeCond = normalizeClauseTimeCondition(binding.timeCondition);
+        if (clauseScope.clauseTimeCondition && bindingTimeCond && clauseScope.clauseTimeCondition !== bindingTimeCond) {
+          renderedBindingsQueue.splice(boundIdx, 1);
+          recordCheck({
+            claim_type: 'POLICY',
+            raw_text: mention.raw,
+            normalized_value: mention.amountVnd,
+            status: 'CONTRADICTED',
+            reason: `REJECTED_TIME_CONDITION_MISMATCH: Rendered ref "${binding.ref}" (${bindingTimeCond}) contradicts stated check-in time/day condition (${clauseScope.clauseTimeCondition}).`,
+          });
+          continue;
+        }
+        // Only reject when surrounding prose asserts an EXPLICIT contradicting role (never on heuristic-unknown/ANY)
         const roleConflict =
           binding.role !== 'FIELD' &&
+          clauseScope.explicitRoleCue &&
           clauseScope.monetaryRole !== 'ANY' &&
           clauseScope.monetaryRole !== binding.role &&
           !(binding.role === 'BASE_2H' && clauseScope.monetaryRole === 'TOTAL' && binding.durationHours === 2) &&
@@ -1448,7 +1492,7 @@ export class ClaimLevelValidator {
         immediatePre
       ) ||
       /(?:của anh\/chị|của bạn|vượt ngân sách|nằm trong ngân sách)/i.test(localAround.slice(Math.max(0, localAround.length - 45))) &&
-        (typeof guestBudgetVnd !== 'number' || mention.amountVnd === guestBudgetVnd) ||
+      (typeof guestBudgetVnd !== 'number' || mention.amountVnd === guestBudgetVnd) ||
       (typeof guestBudgetVnd === 'number' &&
         mention.amountVnd === guestBudgetVnd &&
         /(?:ngân sách|tầm|khoảng|dưới|tối đa|vượt)/i.test(mention.sentenceLower))
@@ -1459,12 +1503,15 @@ export class ClaimLevelValidator {
     mention: ParsedVndMention,
     localPre: string,
     facilityRooms: NormalizedRoom[],
-    precedingHeader?: string
+    precedingHeader?: string,
+    fullText?: string
   ): {
     roomId?: string;
+    explicitClauseRoomId?: string;
     category?: string;
     stayPackage?: StayType | 'EXTRA_HOUR';
     monetaryRole: 'TOTAL' | 'BASE_2H' | 'PACKAGE_RATE' | 'EXTRA_HOUR_RATE' | 'EXTRA_HOUR_SUBTOTAL' | 'ALT_21_40' | 'ANY';
+    explicitRoleCue: boolean;
     clauseTimeCondition: 'weekend_daytime' | 'weekday_or_after_18' | null;
     explicitIneligibilityFraming: boolean;
     hasValidAlt2140Condition: boolean;
@@ -1474,30 +1521,56 @@ export class ClaimLevelValidator {
   } {
     const s = mention.sentenceLower;
     const rawLower = mention.raw.toLowerCase();
-    const mRelIdx = Math.max(0, s.indexOf(rawLower));
+    const lineStartIdx = fullText ? Math.max(0, fullText.lastIndexOf('\n', mention.index) + 1) : -1;
+    const rawLineSlice = lineStartIdx >= 0 && fullText ? fullText.slice(lineStartIdx) : '';
+    const leadingWs = rawLineSlice.length - rawLineSlice.trimStart().length;
+    const mRelExact = lineStartIdx >= 0 ? mention.index - lineStartIdx - leadingWs : -1;
+    const mRelIdx = mRelExact >= 0 && mRelExact < s.length ? mRelExact : Math.max(0, s.indexOf(rawLower));
+
+    // Mask parenthetical side-notes (...) that do NOT enclose this mention (handles nested parens like (2h đầu + 2h thêm (2 x 100k): 200k = 649k))
+    let scopeSentence = s;
+    while (true) {
+      let changed = false;
+      scopeSentence = scopeSentence.replace(/\([^()]*\)/g, (m, offset: number) => {
+        if (offset <= mRelIdx && mRelIdx < offset + m.length) {
+          return m;
+        }
+        changed = true;
+        return ' '.repeat(m.length);
+      });
+      if (!changed) break;
+    }
+
     const leftBound = Math.max(
-      s.lastIndexOf(',', mRelIdx),
-      s.lastIndexOf(';', mRelIdx),
-      s.lastIndexOf('(', mRelIdx),
-      s.lastIndexOf(')', mRelIdx),
-      s.lastIndexOf('+', mRelIdx),
-      s.lastIndexOf('=', mRelIdx),
-      s.lastIndexOf(' hoặc ', mRelIdx),
-      s.lastIndexOf(' và ', mRelIdx)
+      scopeSentence.lastIndexOf(',', mRelIdx),
+      scopeSentence.lastIndexOf(';', mRelIdx),
+      scopeSentence.lastIndexOf('(', mRelIdx),
+      scopeSentence.lastIndexOf(')', mRelIdx),
+      scopeSentence.lastIndexOf('+', mRelIdx),
+      scopeSentence.lastIndexOf('=', mRelIdx),
+      scopeSentence.lastIndexOf(' hoặc ', mRelIdx),
+      scopeSentence.lastIndexOf(' và ', mRelIdx)
     );
     const rightCandidates = [
-      s.indexOf(',', mRelIdx + rawLower.length),
-      s.indexOf(';', mRelIdx + rawLower.length),
-      s.indexOf(')', mRelIdx + rawLower.length),
-      s.indexOf('(', mRelIdx + rawLower.length),
-      s.indexOf('+', mRelIdx + rawLower.length),
-      s.indexOf('=', mRelIdx + rawLower.length),
-      s.indexOf(' hoặc ', mRelIdx + rawLower.length),
-      s.indexOf(' và ', mRelIdx + rawLower.length),
+      scopeSentence.indexOf(',', mRelIdx + rawLower.length),
+      scopeSentence.indexOf(';', mRelIdx + rawLower.length),
+      scopeSentence.indexOf(')', mRelIdx + rawLower.length),
+      scopeSentence.indexOf('(', mRelIdx + rawLower.length),
+      scopeSentence.indexOf('+', mRelIdx + rawLower.length),
+      scopeSentence.indexOf('=', mRelIdx + rawLower.length),
+      scopeSentence.indexOf(' hoặc ', mRelIdx + rawLower.length),
+      scopeSentence.indexOf(' và ', mRelIdx + rawLower.length),
     ].filter((x) => x !== -1);
-    const rightBound = rightCandidates.length > 0 ? Math.min(...rightCandidates) : s.length;
-    const subClause = s.slice(leftBound === -1 ? 0 : leftBound + 1, rightBound).trim();
-    const headerSlice = s.slice(0, Math.min(mRelIdx, Math.max(0, s.indexOf(':')))).trim();
+    const rightBound = rightCandidates.length > 0 ? Math.min(...rightCandidates) : scopeSentence.length;
+    const subClause = scopeSentence
+      .slice(leftBound === -1 ? 0 : leftBound + 1, rightBound)
+      .replace(/\s+/g, ' ')
+      .trim();
+    const subClausePre = scopeSentence
+      .slice(leftBound === -1 ? 0 : leftBound + 1, mRelIdx)
+      .replace(/\s+/g, ' ')
+      .trim();
+    const headerSlice = scopeSentence.slice(0, Math.min(mRelIdx, Math.max(0, scopeSentence.indexOf(':')))).replace(/\s+/g, ' ').trim();
 
     const extractRoomAndCat = (textSeg: string): { roomId?: string; category?: string } => {
       const segNorm = textSeg.replace(/\*/g, '').replace(/\s*[—–-]\s*/g, ' ');
@@ -1527,12 +1600,15 @@ export class ClaimLevelValidator {
       return { roomId: rId, category: cat };
     };
 
-    let { roomId, category } = extractRoomAndCat(subClause);
-    if (!roomId && !category && headerSlice) {
-      ({ roomId, category } = extractRoomAndCat(headerSlice));
+    const subRoom = extractRoomAndCat(subClause);
+    const headerRoom = !subRoom.roomId && !subRoom.category && headerSlice ? extractRoomAndCat(headerSlice) : undefined;
+    const explicitClauseRoomId = subRoom.roomId ?? headerRoom?.roomId;
+    let { roomId, category } = subRoom;
+    if (!roomId && !category && headerRoom) {
+      ({ roomId, category } = headerRoom);
     }
     if (!roomId && !category) {
-      ({ roomId, category } = extractRoomAndCat(s.slice(0, mRelIdx + rawLower.length)));
+      ({ roomId, category } = extractRoomAndCat(scopeSentence.slice(0, mRelIdx + rawLower.length)));
     }
     if (!roomId && !category && precedingHeader) {
       ({ roomId, category } = extractRoomAndCat(precedingHeader.toLowerCase()));
@@ -1540,30 +1616,40 @@ export class ClaimLevelValidator {
 
     let stayPackage: StayType | 'EXTRA_HOUR' | undefined;
     const afterRaw = s.slice(mRelIdx + rawLower.length, mRelIdx + rawLower.length + 32);
-    const immediateAfter = s.slice(mRelIdx + rawLower.length, mRelIdx + rawLower.length + 12);
-    const immediatePre35 = s.slice(Math.max(0, mRelIdx - 35), mRelIdx);
+    const immediateAfter = s.slice(mRelIdx + rawLower.length, mRelIdx + rawLower.length + 14);
+    const immediatePre35 = scopeSentence
+      .slice(Math.max(0, mRelIdx - 40), mRelIdx)
+      .replace(/\s+/g, ' ');
+    const localPreNorm = scopeSentence.slice(Math.max(0, mRelIdx - 65), mRelIdx).replace(/\s+/g, ' ');
     const hasPerHourUnit =
       /\/\s*(?:giờ|gio|h|tiếng|tieng)(?![\p{L}\d])/iu.test(rawLower) ||
-      /^\s*(?:\*\*|__)?\s*\/\s*(?:giờ|gio|h|tiếng|tieng)(?![\p{L}\d])/iu.test(immediateAfter) ||
+      /^\s*(?:\*\*|__)?\s*(?:\/\s*|mỗi\s+)(?:giờ|gio|h|tiếng|tieng)(?![\p{L}\d])/iu.test(immediateAfter) ||
       /(?:^|[\s\d\(])[x×*]\s*$/iu.test(localPre);
     const hasLocalPerHourPrefix =
       /(?:mỗi\s*(?:giờ|tiếng|h)|đơn giá(?:\s*mỗi)?\s*(?:giờ|tiếng)|phụ thu thêm giờ|phát sinh mỗi giờ|mỗi giờ tiếp theo|quá giờ mỗi tiếng)\s*(?:là|tính|:)?\s*$/iu.test(
         immediatePre35
       );
+    const hasImmediateOverallTotalPrefix =
+      /(?:tổng\s*(?:cộng|tiền|chi phí|thanh toán|giá|hết|là)|thành tiền)\s*(?:là|:|=)?\s*$/iu.test(immediatePre35);
+    const hourModWords = '(?:thêm|sau|tiếp\\s+theo|phát\\s+sinh|quá\\s+giờ|cộng|lẻ)';
+    const hourPrefixWords = '(?:thêm|phát\\s+sinh|quá|trễ|cộng)';
+    const multiHourPattern = new RegExp(
+      `(?:\\b(?:[1-9]\\d?)\\s*(?:giờ|tiếng|h)\\s*(?:${hourModWords}(?![\\p{L}\\d])\\s*)+|(?:${hourPrefixWords}\\s+)+(?:[1-9]\\d?)\\s*(?:giờ|tiếng|h)(?![\\p{L}\\d]))`,
+      'iu'
+    );
     const isMultiHourSubtotalClause =
       !hasPerHourUnit &&
       !hasLocalPerHourPrefix &&
-      (/\b(?:[1-9]\d?)\s*(?:giờ|tiếng|h)\s*(?:thêm|sau|tiếp theo|phát sinh|quá giờ|cộng)|(?:thêm|phát sinh|trễ)\s*(?:[1-9]\d?)\s*(?:giờ|tiếng|h)/iu.test(
-        subClause
-      ) ||
-        /(?:\b(?:[1-9]\d?)\s*(?:giờ|tiếng|h)\s*(?:thêm|sau|tiếp theo|phát sinh|quá giờ|cộng)(?:\s*\([^)]*\))?\s*[:là]?\s*|(?:tổng\s+)?(?:phí\s+)?(?:phụ thu\s+trễ|quá giờ|tiền phát sinh|tiền thêm giờ)\s*[:là]?\s*)$/iu.test(
-          localPre
+      !hasImmediateOverallTotalPrefix &&
+      (multiHourPattern.test(subClausePre) ||
+        /(?:tổng\s+)?(?:phí\s+)?(?:phụ thu\s+trễ|quá giờ|tiền phát sinh|tiền thêm giờ)\s*(?:[:là=])?\s*$/iu.test(
+          subClausePre
         ));
     const isPerHourUnitRate =
       hasPerHourUnit ||
       hasLocalPerHourPrefix ||
       (/(?:phụ thu thêm giờ|phát sinh mỗi giờ|mỗi giờ tiếp theo|thêm giờ là|quá giờ mỗi tiếng|đơn giá giờ phát sinh)[^.\n=]*$/iu.test(
-        localPre
+        localPreNorm
       ) &&
         !isMultiHourSubtotalClause);
 
@@ -1670,25 +1756,36 @@ export class ClaimLevelValidator {
 
     let monetaryRole: 'TOTAL' | 'BASE_2H' | 'PACKAGE_RATE' | 'EXTRA_HOUR_RATE' | 'EXTRA_HOUR_SUBTOTAL' | 'ALT_21_40' | 'ANY' =
       'ANY';
+    let explicitRoleCue = false;
     if (isMultiHourSubtotalClause) {
       monetaryRole = 'EXTRA_HOUR_SUBTOTAL';
+      explicitRoleCue = true;
     } else if (isPerHourUnitRate) {
       monetaryRole = 'EXTRA_HOUR_RATE';
+      explicitRoleCue = true;
     } else if (isBase2hOnly) {
       monetaryRole = 'BASE_2H';
-    } else if (/(?:tổng\s*(?:cộng|tiền|chi phí|thanh toán|giá|hết|là)|thành tiền)\s*(?:là|:|=)?\s*$/iu.test(immediatePre35)) {
+      explicitRoleCue = true;
+    } else if (hasImmediateOverallTotalPrefix) {
       monetaryRole = 'TOTAL';
+      explicitRoleCue = true;
     } else if (
-      /(?:tổng\s*(?:cộng|tiền|chi phí|thanh toán)|thành tiền)/iu.test(subClause) &&
-      !/giá\s*(?:gói|cơ bản|gốc)\s*$/iu.test(immediatePre35)
+      /(?:tổng\s*(?:cộng|tiền|chi phí|thanh toán)|thành tiền)/iu.test(subClausePre) &&
+      !/giá\s*(?:gói|cơ bản|gốc)(?:\s*(?:qua đêm|ngày đêm))?\s*$/iu.test(immediatePre35)
     ) {
       monetaryRole = 'TOTAL';
+      explicitRoleCue = true;
     } else if (stayPackage === 'qua_dem' && hasValidAlt2140Condition && !isMultiHourSubtotalClause) {
       monetaryRole = 'ALT_21_40';
+      explicitRoleCue = true;
     } else if (stayPackage === 'nghi_gio' && explicitTotalHours && explicitTotalHours >= 3) {
       monetaryRole = 'TOTAL';
+      explicitRoleCue = false;
     } else if (stayPackage === 'qua_dem' || stayPackage === 'ngay_dem') {
-      monetaryRole = /giá\s*(?:gói|cơ bản|gốc)/iu.test(immediatePre35) || /giá\s*(?:gói|cơ bản|gốc)/iu.test(subClause) ? 'PACKAGE_RATE' : 'ANY';
+      const hasPkgCue =
+        /giá\s*(?:gói|cơ bản|gốc)/iu.test(immediatePre35) || /giá\s*(?:gói|cơ bản|gốc)/iu.test(subClausePre);
+      monetaryRole = hasPkgCue ? 'PACKAGE_RATE' : 'ANY';
+      explicitRoleCue = hasPkgCue;
     }
 
     const condCtx = `${subClause} ${localPre}`;
@@ -1699,9 +1796,11 @@ export class ClaimLevelValidator {
 
     return {
       roomId,
+      explicitClauseRoomId,
       category,
       stayPackage,
       monetaryRole,
+      explicitRoleCue,
       clauseTimeCondition,
       explicitIneligibilityFraming,
       hasValidAlt2140Condition,
